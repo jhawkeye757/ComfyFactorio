@@ -56,7 +56,7 @@ function Public.toggle_window(player)
 
 	flow2 = Public.flow_add_info_tab(flow, { 'pirates.gui_info_updates' })
 
-	Public.flow_add_info_sections(flow2, { '1', '2', '3' })
+	Public.flow_add_info_sections(flow2, { '1', '2' })
 	-- Public.flow_add_info_sections(flow2, {'updates', 'bugs'})
 
 	flow2 = Public.flow_add_info_tab(flow, { 'pirates.gui_info_credits' })

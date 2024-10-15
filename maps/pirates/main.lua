@@ -136,11 +136,13 @@ local function crew_tick()
 	local destination = Common.current_destination()
 	local tick = game.tick
 
-	if memory.age and memory.overworldx and memory.overworldx > 0 then
-		memory.age = memory.age + 5
-	end
-	if memory.real_age then
-		memory.real_age = memory.real_age + 5
+	if #Common.crew_get_crew_members() > 0 then
+		if memory.age and memory.overworldx and memory.overworldx > 0 then
+			memory.age = memory.age + 5
+		end
+		if memory.age_since_first_island then
+			memory.age_since_first_island = memory.age_since_first_island + 5
+		end
 	end
 
 	PiratesApiOnTick.boat_movement_tick(5) --arguments are tick intervals

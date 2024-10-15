@@ -19,11 +19,11 @@ local LootRaffle = require('utils.functions.loot_raffle')
 
 local Public = {}
 
-Public.starting_ships_count = 7
-Public.active_crews_cap = 7
-Public.private_run_cap = 4
+Public.starting_ships_count = 9
+Public.active_crews_cap = 9
+Public.private_run_cap = 6
 Public.protected_but_not_private_run_cap = 2
-Public.minimum_run_capacity_to_enforce_space_for = 22
+-- Public.minimum_run_capacity_to_enforce_space_for = 22
 
 -- auto-disbanding when there are no players left in the crew:
 -- Public.autodisband_hours = nil
@@ -325,7 +325,7 @@ function Public.give(player, stacks, spill_position, short_form, spill_surface, 
 	local text2 = ''
 
 	local stacks2 = stacks
-	table.sort(stacks2, function (a, b)
+	table.sort(stacks2, function(a, b)
 		return a.name < b.name
 	end)
 
@@ -1221,7 +1221,7 @@ function Public.add_tiles_from_blueprint(tilesTable, bp_string, tile_name, offse
 	if bp_tiles then
 		for _, tile in pairs(bp_tiles) do
 			tilesTable[#tilesTable + 1] =
-			{ name = tile_name, position = { x = tile.position.x + offset.x, y = tile.position.y + offset.y } }
+				{ name = tile_name, position = { x = tile.position.x + offset.x, y = tile.position.y + offset.y } }
 		end
 	end
 
@@ -1452,7 +1452,7 @@ end
 function Public.tileslist_add_area_offset(tiles_list_to_add_to, area, offset, tile_type)
 	for _, p in pairs(Public.orthog_positions_in_orthog_area(area)) do
 		tiles_list_to_add_to[#tiles_list_to_add_to + 1] =
-		{ name = tile_type, position = { x = offset.x + p.x, y = offset.y + p.y } }
+			{ name = tile_type, position = { x = offset.x + p.x, y = offset.y + p.y } }
 	end
 end
 
@@ -1786,7 +1786,7 @@ function Public.init_game_settings(technology_price_multiplier)
 
 	-- (0,2) for a symmetric search:
 	game.map_settings.path_finder.goal_pressure_ratio = -0.1 --small pressure for stupid paths
-	game.map_settings.path_finder.fwd2bwd_ratio = 2       -- on experiments I found that this value was symmetric, despite the vanilla game comments saying it is 1...
+	game.map_settings.path_finder.fwd2bwd_ratio = 2 -- on experiments I found that this value was symmetric, despite the vanilla game comments saying it is 1...
 	game.map_settings.max_failed_behavior_count = 2
 	game.map_settings.path_finder.max_work_done_per_tick = 20000
 	game.map_settings.path_finder.short_cache_min_algo_steps_to_cache = 100

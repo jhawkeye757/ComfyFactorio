@@ -457,7 +457,7 @@ function Public.click(event)
 					'pirates.crew_disbanded',
 					player.name,
 					memory.name,
-					Utils.time_longform((memory.real_age or 0) / 60),
+					Utils.time_longform((memory.age_since_first_island or 0) / 60),
 				}
 				Common.notify_game(message)
 				Server.to_discord_embed_raw(

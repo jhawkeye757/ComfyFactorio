@@ -107,7 +107,7 @@ function Public.go_from_starting_dock_to_first_destination()
 
 	memory.crewstatus = Crew.enum.ADVENTURING
 	memory.age = 0
-	memory.real_age = 0
+	memory.age_since_first_island = 0
 
 	local message = '[' .. memory.name .. '] Crew members: '
 	local b = false
