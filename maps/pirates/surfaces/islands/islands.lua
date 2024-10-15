@@ -83,7 +83,7 @@ function Public.spawn_treasure_maps(destination, points_to_avoid)
 			surface = surface,
 			target = p,
 			sprite = 'utility/gps_map_icon',
-			render_layer = '125',
+			render_layer = 'corpse',
 			x_scale = 2.4,
 			y_scale = 2.4,
 		})
@@ -133,7 +133,7 @@ function Public.spawn_ghosts(destination, points_to_avoid)
 			surface = surface,
 			target = p,
 			sprite = 'utility/create_ghost_on_entity_death_modifier_icon',
-			render_layer = '125',
+			render_layer = 'corpse',
 			x_scale = 1,
 			y_scale = 1,
 		})

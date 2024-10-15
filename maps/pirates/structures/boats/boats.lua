@@ -579,7 +579,7 @@ function Public.place_boat(boat, floor_tile, place_entities_bool, correct_tiles,
 	-- 	local p = Utils.psum{boat.position, scope.Data.comfy_rendering_position}
 	-- 	boat.rendering_comfy = rendering.draw_sprite{
 	-- 		sprite = "file/comfy2.png",
-	-- 		render_layer = '125',
+	-- 		render_layer = 'corpse',
 	-- 		surface = surface,
 	-- 		target = p,
 	-- 	}
@@ -1435,7 +1435,7 @@ local function teleport_handle_renderings(boat, oldsurface_name, newsurface_name
 	-- 		rendering.destroy(boat.rendering_comfy)
 	-- 		boat.rendering_comfy = rendering.draw_sprite{
 	-- 			sprite = "file/comfy2.png",
-	-- 			render_layer = '125',
+	-- 			render_layer = 'corpse',
 	-- 			surface = newsurface,
 	-- 			target = p,
 	-- 		}
