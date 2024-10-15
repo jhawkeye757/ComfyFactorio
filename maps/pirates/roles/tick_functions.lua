@@ -367,8 +367,18 @@ function Public.update_character_properties(tick_interval)
 
 					if main_inv.can_insert(main_gun_inv[1]) then
 						main_inv.insert(main_gun_inv[1])
+
+						Common.notify_player_expected(
+							player,
+							{ 'pirates.discard_weapon_to_inventory', Classes.display_form(class) }
+						)
 					else
 						player.character.surface.spill_item_stack(player.character.position, main_gun_inv[1])
+
+						Common.notify_player_error(
+							player,
+							{ 'pirates.discard_weapon_to_ground', Classes.display_form(class) }
+						)
 					end
 
 					main_gun_inv.remove(main_gun_inv[1])
