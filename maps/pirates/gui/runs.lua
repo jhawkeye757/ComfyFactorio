@@ -479,7 +479,12 @@ function Public.full_update(player)
 				mem.id,
 				{
 					'',
-					mem.name .. ' (' .. count .. (count == 1 and ' player' or ' players') .. ') — ',
+					{
+						'pirates.player_count_description',
+						count,
+					},
+					' ',
+					mem.name .. ' — ',
 					'[item=',
 					CoreData.difficulty_options[mem.difficulty_option].icon,
 					'], ',
