@@ -1836,7 +1836,7 @@ local function event_on_player_joined_game(event)
 
 		-- 	if memory.run_is_protected and (not Roles.captain_exists()) then
 		-- 		Common.notify_player_expected(player, {'pirates.player_joins_protected_run_with_no_captain'})
-		-- 		Common.notify_player_expected(player, {'pirates.create_new_crew_tip'})
+		-- 		Common.notify_player_expected(player, {'pirates.create_new_crew_tip_2'})
 		-- 	end
 		-- end
 	end

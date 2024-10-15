@@ -70,7 +70,7 @@ local function create_gui(player)
 	-- flow2 = GuiCommon.flow_add_floating_sprite_button(flowleft, 'crew_piratebutton')
 	-- flow2.sprite = 'utility/spawn_flag'
 	flow2 = GuiCommon.flow_add_floating_sprite_button(flow1, 'crew_piratebutton')
-	flow2.sprite = 'utility/spawn_flag'
+	flow2.sprite = 'virtual-signal/signal-skull'
 
 	flow2 = GuiCommon.flow_add_floating_sprite_button(flow1, 'classes_piratebutton')
 	flow2.sprite = 'item/light-armor'
