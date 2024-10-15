@@ -19,8 +19,8 @@ Public.static_params_default = {
 	base_starting_rock_material = 1200,
 	base_starting_wood = 800,
 	base_starting_treasure_maps = 1,
-	decorative_settings = prototypes.space_location.nauvis.map_gen_settings.autoplace_settings.decorative.settings,
-	-- decorative_settings = prototypes.space_location.fulgora.map_gen_settings.autoplace_settings.decorative.settings,
+	decorative_preset = 'nauvis',
+	-- decorative_preset = 'fulgora',
 }
 
 function Public.base_ores() --here, just for the gui:
