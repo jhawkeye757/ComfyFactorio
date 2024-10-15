@@ -680,7 +680,7 @@ function Public.click(event)
 
 					if memory.run_is_protected and (not Roles.captain_exists()) then
 						Common.notify_player_expected(player, { 'pirates.player_joins_protected_run_with_no_captain' })
-						Common.notify_player_expected(player, { 'pirates.create_new_crew_tip_2' })
+						Common.notify_player_expected(player, { 'pirates.create_new_crew_tip' })
 					end
 				else
 					Common.notify_player_error(player, { 'pirates.gui_join_private_run_error_wrong_password' })
@@ -690,7 +690,7 @@ function Public.click(event)
 
 				if memory.run_is_protected and (not Roles.captain_exists()) then
 					Common.notify_player_expected(player, { 'pirates.player_joins_protected_run_with_no_captain' })
-					Common.notify_player_expected(player, { 'pirates.create_new_crew_tip_2' })
+					Common.notify_player_expected(player, { 'pirates.create_new_crew_tip' })
 				end
 			end
 
