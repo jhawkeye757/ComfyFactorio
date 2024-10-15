@@ -523,8 +523,10 @@ local function class_on_player_used_capsule(event)
 							rendering.draw_text({
 								text = '~' .. player.name .. "'s minion~",
 								surface = player.character.surface,
-								target = e,
-								target_offset = { 0, -2.6 },
+								target = {
+									entity = e,
+									offset = { 0, -2.6 },
+								},
 								color = player.force.color,
 								scale = 1.05,
 								font = 'default-large-semibold',

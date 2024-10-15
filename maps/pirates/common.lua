@@ -832,8 +832,10 @@ function Public.new_healthbar(
 		x_scale = size * 15,
 		y_scale = size,
 		render_layer = 'light-effect',
-		target = target_entity,
-		target_offset = { 0, -2.5 + extra_offset },
+		target = {
+			entity = target_entity,
+			offset = { 0, -2.5 + extra_offset },
+		},
 		surface = target_entity.surface,
 	})
 	local render2
@@ -842,8 +844,10 @@ function Public.new_healthbar(
 			text = '',
 			color = { 255, 255, 255 },
 			scale = 1.2 + size * 2,
-			target = target_entity,
-			target_offset = { 0, -3.6 - size * 0.6 + extra_offset },
+			target = {
+				entity = target_entity,
+				offset = { 0, -3.6 - size * 0.6 + extra_offset },
+			},
 			surface = target_entity.surface,
 			alignment = 'center',
 		})

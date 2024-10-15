@@ -500,8 +500,10 @@ function Public.place_boat(boat, floor_tile, place_entities_bool, correct_tiles,
 						-- 	boat.parrot.render = rendering.draw_sprite{
 						-- 		sprite = "file/parrot/parrot_idle_fly_1.png",
 						-- 		surface = surface,
-						-- 		target = ee,
-						-- 		target_offset = Utils.psum{boat.parrot.position_relative_to_boat, boat.parrot.sprite_extra_offset},
+						-- 		target = {
+						-- 			entity = ee,
+						-- 			offset = Utils.psum{boat.parrot.position_relative_to_boat, boat.parrot.sprite_extra_offset},
+						-- 		},
 						-- 		x_scale = 2.8,
 						-- 		y_scale = 2.8,
 						-- 		visible = false,
@@ -510,8 +512,10 @@ function Public.place_boat(boat, floor_tile, place_entities_bool, correct_tiles,
 						-- 		text = 'Parrot',
 						-- 		color = CoreData.colors.parrot,
 						-- 		surface = surface,
-						-- 		target = ee,
-						-- 		target_offset = Utils.psum{boat.parrot.position_relative_to_boat, boat.parrot.text_extra_offset},
+						-- 		target = {
+						-- 			entity = ee,
+						-- 			offset = Utils.psum{boat.parrot.position_relative_to_boat, boat.parrot.text_extra_offset},
+						-- 		},
 						-- 		visible = false,
 						-- 		alignment = 'center',
 						-- 	}
@@ -1110,8 +1114,10 @@ local function process_entity_on_boat_teleportable(
 		rendering.draw_text({
 			text = '~' .. owner.name .. "'s minion~",
 			surface = newsurface,
-			target = ee,
-			target_offset = { 0, -2.6 },
+			target = {
+				entity = ee,
+				offset = { 0, -2.6 },
+			},
 			color = owner.force.color,
 			scale = 1.05,
 			font = 'default-large-semibold',
@@ -1158,8 +1164,10 @@ local function process_entity_on_boat_teleportable(
 			-- 	local r = rendering.draw_sprite{
 			-- 		sprite = "file/parrot/parrot_idle_fly_1.png",
 			-- 		surface = newsurface,
-			-- 		target = ee,
-			-- 		target_offset = Utils.psum{boat.parrot.position_relative_to_boat, boat.parrot.sprite_extra_offset},
+			-- 		target = {
+			-- 			entity = ee,
+			-- 			offset = Utils.psum{boat.parrot.position_relative_to_boat, boat.parrot.sprite_extra_offset},
+			-- 		},
 			-- 		x_scale = 2.8,
 			-- 		y_scale = 2.8,
 			-- 	}
@@ -1167,8 +1175,10 @@ local function process_entity_on_boat_teleportable(
 			-- 		text = 'Parrot',
 			-- 		color = CoreData.colors.parrot,
 			-- 		surface = newsurface,
-			-- 		target = ee,
-			-- 		target_offset = Utils.psum{boat.parrot.position_relative_to_boat, boat.parrot.text_extra_offset},
+			-- 		target = {
+			-- 			entity = ee,
+			-- 			offset = Utils.psum{boat.parrot.position_relative_to_boat, boat.parrot.text_extra_offset},
+			-- 		},
 			-- 		alignment = 'center',
 			-- 	}
 			-- 	rendering.destroy(boat.parrot.render)

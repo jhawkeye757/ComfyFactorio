@@ -41,8 +41,10 @@ Public['IslandsCommon'] = require('maps.pirates.surfaces.islands.common')
 -- 	destination.dynamic_data.rocketsilohptext = rendering.draw_text{
 -- 		text = 'HP: ' .. destination.dynamic_data.rocketsilohp .. ' / ' .. destination.dynamic_data.rocketsilomaxhp,
 -- 		surface = surface,
--- 		target = destination.dynamic_data.rocketsilos[1],
--- 		target_offset = {0, 4.5},
+-- 		target = {
+-- 			entity = destination.dynamic_data.rocketsilos[1],
+-- 			offset = {0, 4.5},
+-- 		},
 -- 		color = {0, 255, 0},
 -- 		scale = 1.20,
 -- 		font = 'default-game',
