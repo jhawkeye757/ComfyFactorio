@@ -12,6 +12,7 @@ local GuiCrew = require('maps.pirates.gui.crew')
 local GuiClasses = require('maps.pirates.gui.classes')
 local GuiMinimap = require('maps.pirates.gui.minimap')
 local GuiInfo = require('maps.pirates.gui.info')
+local GuiTreasure = require('maps.pirates.gui.treasure')
 local Quest = require('maps.pirates.quest')
 local Balance = require('maps.pirates.balance')
 local _inspect = require('utils.inspect').inspect
@@ -28,6 +29,7 @@ local IslandEnum = require('maps.pirates.surfaces.islands.island_enum')
 local Kraken = require('maps.pirates.surfaces.sea.kraken')
 local GuiWelcome = require('maps.pirates.gui.welcome')
 local ComfyGui = require('utils.gui')
+local BuriedTreasure = require('maps.pirates.buried_treasure')
 ComfyGui.set_disabled_tab('Scoreboard', true)
 ComfyGui.set_disabled_tab('Groups', true)
 
@@ -40,7 +42,7 @@ Public.classes = require('maps.pirates.gui.classes')
 Public.minimap = require('maps.pirates.gui.minimap')
 Public.info = require('maps.pirates.gui.info')
 Public.color = require('maps.pirates.gui.color')
-
+Public.treasure = require('maps.pirates.gui.treasure')
 local function create_gui(player)
 	local flow1, flow2, flow3, flow4
 
@@ -95,6 +97,10 @@ local function create_gui(player)
 	flow2.sprite = 'entity/small-biter'
 	flow2.mouse_button_filter = { 'middle' } --hack to avoid press visual
 	flow2.show_percent_for_small_numbers = true --as of factorio v1.1.59, there is a bug in which 1.002 displays as like 1e-2% or something. but after 1.01 it's ok
+
+	flow2 = GuiCommon.flow_add_floating_sprite_button(flow1, 'treasure_piratebutton')
+	flow2.tooltip = { 'pirates.gui_treasure_main_tooltip' }
+	flow2.sprite = 'utility/gps_map_icon'
 
 	flow2 = GuiCommon.flow_add_floating_sprite_button(flow1, 'minimap_piratebutton')
 	flow2.tooltip = { 'pirates.gui_minimap_main_tooltip' }
@@ -967,11 +973,14 @@ function Public.update_gui(player)
 	if GuiEvo.full_update then
 		GuiEvo.full_update(player)
 	end
-	if GuiProgress.regular_update then
-		GuiProgress.regular_update(player)
-	end --moved to event
+	if GuiProgress.full_update then
+		GuiProgress.full_update(player)
+	end
 	if GuiRuns.full_update then
 		GuiRuns.full_update(player)
+	end
+	if GuiTreasure.full_update then
+		GuiTreasure.full_update(player)
 	end
 	if GuiCrew.full_update then
 		GuiCrew.full_update(player)
@@ -1026,6 +1035,13 @@ function Public.update_gui(player)
 	flow1.number = (memory.overworldx or 0)
 	flow1.tooltip = { 'pirates.gui_progress_tooltip', tostring(memory.overworldx or 0), tostring(CoreData.victory_x) }
 	-- pirates_flow.destination_piratebutton_frame.destination_piratebutton.number = memory.destinationsvisited_indices and #memory.destinationsvisited_indices or 0
+
+	flow1 = pirates_flow.treasure_piratebutton_frame
+	local maps = BuriedTreasure.get_picked_up_treasure_maps()
+	flow1.visible = #maps > 0
+	local flow2 = flow1.treasure_piratebutton
+	flow2.tooltip = { 'pirates.gui_treasure_tooltip', #maps }
+	flow2.number = #maps
 
 	--== State-checking bools ==--
 
@@ -1321,6 +1337,9 @@ local function on_gui_click(event)
 		end
 		if GuiInfo.click then
 			GuiInfo.click(event)
+		end
+		if GuiTreasure.click then
+			GuiTreasure.click(event)
 		end
 	end
 end

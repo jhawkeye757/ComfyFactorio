@@ -5,8 +5,8 @@ local Memory = require('maps.pirates.memory')
 local Balance = require('maps.pirates.balance')
 local Common = require('maps.pirates.common')
 -- local Utils = require 'maps.pirates.utils_local'
-local Math = require 'maps.pirates.math'
-local Raffle = require 'utils.math.raffle'
+local Math = require('maps.pirates.math')
+local Raffle = require('utils.math.raffle')
 -- local Loot = require 'maps.pirates.loot'
 -- local CoreData = require 'maps.pirates.coredata'
 local IslandEnum = require('maps.pirates.surfaces.islands.island_enum')
@@ -32,7 +32,7 @@ Public.quest_icons = {
 	[enum.TIME] = '[img=utility.time_editor_icon]',
 	[enum.NODAMAGE] = '[item=stone-wall]',
 	[enum.WORMS] = '[entity=small-worm-turret]',
-	[enum.FIND] = '[img=utility.ghost_time_to_live_modifier_icon]',
+	[enum.FIND] = '[img=utility.create_ghost_on_entity_death_modifier_icon]',
 	[enum.RESOURCEFLOW] = '',
 	[enum.RESOURCECOUNT] = '',
 	[enum.FISH] = '[item=raw-fish]',

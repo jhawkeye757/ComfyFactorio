@@ -40,6 +40,7 @@ Public.default_window_positions = {
 	crew = { x = 364, y = 76 },
 	classes = { x = 442, y = 76 },
 	progress = { x = 520, y = 76 },
+	treasure = { x = 676, y = 76 },
 }
 
 function Public.new_window(player, name)
@@ -170,7 +171,6 @@ function Public.flow_add_section(flow, name, caption)
 	flow3.style.font = 'heading-2'
 	flow3.style.font_color = Public.section_header_font_color
 	flow3.style.maximal_width = 300
-	-- flow3.style.maximal_width = 220
 	-- flow3.style.single_line = false
 
 	flow3 = flow2.add({

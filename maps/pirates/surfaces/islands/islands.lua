@@ -16,6 +16,7 @@ local Token = require('utils.token')
 local Task = require('utils.task')
 local QuestStructures = require('maps.pirates.structures.quest_structures.quest_structures')
 local IslandEnum = require('maps.pirates.surfaces.islands.island_enum')
+local BuriedTreasure = require('maps.pirates.buried_treasure')
 
 local Public = {}
 local enum = IslandEnum.enum
@@ -72,26 +73,9 @@ function Public.spawn_treasure_maps(destination, points_to_avoid)
 	}
 
 	for i = 1, num do
-		local map = {}
-
 		local p = Hunt.mid_farness_position_1(args, points_to_avoid)
 
-		-- game.print(p)
-
-		map.position = p
-		map.mapobject_rendering = rendering.draw_sprite({
-			surface = surface,
-			target = p,
-			sprite = 'utility/gps_map_icon',
-			render_layer = 'corpse',
-			x_scale = 2.4,
-			y_scale = 2.4,
-		})
-		map.state = 'on_ground'
-		map.x_renderings = nil
-		map.buried_treasure_position = nil
-
-		destination.dynamic_data.treasure_maps[#destination.dynamic_data.treasure_maps + 1] = map
+		BuriedTreasure.spawn_treasure_map_at_position(p)
 	end
 end
 
