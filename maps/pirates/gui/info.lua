@@ -30,7 +30,7 @@ function Public.toggle_window(player)
 		name = window_name .. '_piratewindow',
 		direction = 'vertical',
 	})
-	flow.location = { x = 90, y = 90 }
+	flow.location = GuiCommon.default_window_positions[window_name]
 	flow.selected_tab_index = 1
 
 	flow.style = 'frame_tabbed_pane'

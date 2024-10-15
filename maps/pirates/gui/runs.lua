@@ -259,6 +259,7 @@ function Public.toggle_window(player)
 	-- PROPOSALS --
 
 	flow2 = GuiCommon.flow_add_section(flow, 'proposals', { 'pirates.gui_runs_proposals' })
+	flow2.style.horizontal_align = 'center'
 
 	flow3 = flow2.add({
 		name = 'proposals_listbox',
@@ -282,7 +283,8 @@ function Public.toggle_window(player)
 	flow4.style.minimal_width = 150
 	flow4.style.font = 'default-bold'
 	flow4.style.font_color = { r = 0.10, g = 0.10, b = 0.10 }
-	flow4.style.bottom_margin = 9
+	flow4.style.bottom_margin = 4
+	flow4.style.top_margin = 4
 
 	-- PROPOSAL MAKER --
 
@@ -474,28 +476,44 @@ function Public.full_update(player)
 		for _, mem in pairs(global_memory.crew_memories) do
 			local count = (mem.crewstatus == Crew.enum.LEAVING_INITIAL_DOCK) and Boats.players_on_boat_count(mem.boat)
 				or #mem.crewplayerindices
+
 			local crew_info = {
+				'',
+				'[font=scenario-message-dialog]',
+				mem.name .. ' (',
+				{
+					'pirates.player_count_description',
+					count,
+				},
+				')[/font] — [item=',
+				CoreData.difficulty_options[mem.difficulty_option].icon,
+				'], [item=rail]',
+				mem.overworldx or 0,
+				', [entity=small-biter]',
+				string.format('%.0f', (mem.evolution_factor or 0) * 100),
+				'%',
+			}
+
+			if mem.run_is_private then
+				table.insert(crew_info, ', ')
+				table.insert(crew_info, { 'pirates.run_condition_private_2' })
+			end
+			if mem.run_is_protected then
+				table.insert(crew_info, ', ')
+				table.insert(crew_info, { 'pirates.run_condition_captain_protected_2' })
+			end
+			if mem.run_has_blueprints_disabled then
+				table.insert(crew_info, ', ')
+				table.insert(crew_info, { 'pirates.run_condition_blueprints_disabled_2' })
+			end
+
+			local crew_info_with_id = {
 				'pirates.second_element',
 				mem.id,
-				{
-					'',
-					{
-						'pirates.player_count_description',
-						count,
-					},
-					' ',
-					mem.name .. ' — ',
-					'[item=',
-					CoreData.difficulty_options[mem.difficulty_option].icon,
-					'], ',
-					'[item=rail]',
-					mem.overworldx or 0,
-					mem.run_is_private and { 'pirates.run_condition_private' } or '',
-					mem.run_is_protected and { 'pirates.run_condition_captain_protected' } or '',
-					mem.run_has_blueprints_disabled and { 'pirates.run_condition_blueprints_disabled' } or '',
-				},
+				crew_info,
 			}
-			table.insert(wrappedmemories, crew_info)
+
+			table.insert(wrappedmemories, crew_info_with_id)
 		end
 		GuiCommon.update_listbox(ongoing_runs.body.ongoing_runs_listbox, wrappedmemories)
 
@@ -566,13 +584,31 @@ function Public.full_update(player)
 		for _, proposal in pairs(global_memory.crewproposals) do
 			local proposal_info = {
 				'',
-				proposal.name .. ' — ',
-				'[item=rail]',
-				0,
-				proposal.run_is_private and { 'pirates.run_condition_private' } or '',
-				proposal.run_is_protected and { 'pirates.run_condition_captain_protected' } or '',
-				proposal.run_has_blueprints_disabled and { 'pirates.run_condition_blueprints_disabled' } or '',
+				'[font=scenario-message-dialog]',
+				proposal.name .. '[/font]',
 			}
+			if proposal.run_is_private or proposal.run_is_protected or proposal.run_has_blueprints_disabled then
+				local i = 0
+				table.insert(proposal_info, ' — ')
+				if proposal.run_is_private then
+					table.insert(proposal_info, { 'pirates.run_condition_private_2' })
+					i = i + 1
+				end
+				if proposal.run_is_protected then
+					if i > 0 then
+						table.insert(proposal_info, ', ')
+					end
+					table.insert(proposal_info, { 'pirates.run_condition_captain_protected_2' })
+					i = i + 1
+				end
+				if proposal.run_has_blueprints_disabled then
+					if i > 0 then
+						table.insert(proposal_info, ', ')
+					end
+					table.insert(proposal_info, { 'pirates.run_condition_blueprints_disabled_2' })
+					i = i + 1
+				end
+			end
 			table.insert(wrappedproposals, proposal_info)
 		end
 		GuiCommon.update_listbox(proposals.body.proposals_listbox, wrappedproposals)

@@ -15,6 +15,8 @@ local Public = {}
 local window_name = 'progress'
 
 function Public.toggle_window(player)
+	local memory = Memory.get_crew_memory()
+
 	if player.gui.screen[window_name .. '_piratewindow'] then
 		player.gui.screen[window_name .. '_piratewindow'].destroy()
 		return
@@ -30,12 +32,18 @@ function Public.toggle_window(player)
 		name = 'leagues',
 		type = 'label',
 	})
-	flow3.style.left_margin = 5
 	flow3.style.top_margin = -3
-	flow3.style.bottom_margin = -3
 	flow3.style.single_line = false
-	flow3.style.maximal_width = 160
-	flow3.style.font = 'default-dropdown'
+
+	if (not memory.overworldx) or (memory.overworldx and memory.overworldx < 1000) then
+		flow3 = flow2.add({
+			name = 'leagues_hint',
+			type = 'label',
+			caption = { '', '[color=249,84,249]', { 'pirates.gui_progress_leagues_hint' }, '[/color]' },
+		})
+		flow3.style.top_margin = 3
+		flow3.style.single_line = false
+	end
 
 	flow2 = GuiCommon.flow_add_section(flow, 'current_location', { 'pirates.gui_progress_current_location', '' })
 
