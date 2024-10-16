@@ -1289,7 +1289,7 @@ local function on_gui_click(event)
 					memory.proceed_are_you_sure_data[player.index]
 					and memory.proceed_are_you_sure_data[player.index] > game.tick - 60 * 4
 				then
-					local destination_index = memory.mapbeingloadeddestination_index
+					local destination_index = memory.map_being_loaded_destination_index
 
 					Progression.progress_to_destination(destination_index)
 				else
