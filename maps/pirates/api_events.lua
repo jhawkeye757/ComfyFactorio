@@ -582,14 +582,14 @@ local function handle_damage_dealt_by_players(event)
 			end
 		end
 
-		if class and class == Classes.enum.SCOUT then
+		if event.entity.valid and class and class == Classes.enum.SCOUT then
 			-- event.entity.health = event.entity.health + (1 - Balance.scout_damage_dealt_multiplier) * event.final_damage_amount
 			Common.damage_hostile_entity(
 				event.entity,
 				-(1 - Balance.scout_damage_dealt_multiplier) * event.final_damage_amount
 			)
 			event.final_damage_amount = event.final_damage_amount * Balance.scout_damage_dealt_multiplier
-		elseif class and (class == Classes.enum.SAMURAI or class == Classes.enum.HATAMOTO) then
+		elseif event.entity.valid and class and (class == Classes.enum.SAMURAI or class == Classes.enum.HATAMOTO) then
 			local samurai = class == Classes.enum.SAMURAI
 			local hatamoto = class == Classes.enum.HATAMOTO
 
