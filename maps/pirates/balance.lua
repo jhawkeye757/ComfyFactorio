@@ -688,11 +688,11 @@ end
 -- 	return 0.95
 -- end
 
--- TODO: Update these for 2.0?
 function Public.player_ammo_damage_modifiers() -- modifiers are fractional. bullet affects gun turrets, but flamethrower does not affect flamer turrets
 	local data = {
 		['artillery-shell'] = 0,
 		['biological'] = 0,
+		['beam'] = 0,
 		['bullet'] = 0.1,
 		['cannon-shell'] = 0,
 		['capsule'] = 0,
@@ -700,6 +700,7 @@ function Public.player_ammo_damage_modifiers() -- modifiers are fractional. bull
 		['flamethrower'] = -0.5,
 		['grenade'] = -0.05,
 		['landmine'] = 0,
+		['laser'] = 0,
 		['melee'] = 0, -- only affects alien melee
 		['rocket'] = 0,
 		['shotgun-shell'] = 2,
@@ -726,6 +727,7 @@ function Public.player_gun_speed_modifiers()
 		['flamethrower'] = 0,
 		['grenade'] = -0.25,
 		['landmine'] = 0,
+		['laser'] = 0,
 		['melee'] = 0, -- only affects alien melee
 		['rocket'] = 0,
 		['shotgun-shell'] = 0,
