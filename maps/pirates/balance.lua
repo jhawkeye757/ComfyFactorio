@@ -710,8 +710,6 @@ end
 function Public.player_turret_attack_modifiers()
 	local data = {
 		['gun-turret'] = 0,
-		['artillery-turret'] = 0,
-		['laser-turret'] = 0,
 		['flamethrower-turret'] = -0.5,
 	}
 	return data

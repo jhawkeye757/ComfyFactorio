@@ -1696,7 +1696,7 @@ local function event_on_research_finished(event)
 				force.set_gun_speed_modifier(category, current_m + factor * m)
 			end
 		elseif t == 'turret-attack' then
-			local category = e.ammo_category
+			local category = e.turret_id
 			local factor = Balance.player_turret_attack_modifiers()[category]
 
 			if factor then
