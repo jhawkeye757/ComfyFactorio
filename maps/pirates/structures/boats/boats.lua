@@ -1043,6 +1043,8 @@ local function process_entity_on_boat_unteleportable(
 			-- end
 			boat.deck_whitebelts[#boat.deck_whitebelts + 1] = ee
 		end
+
+		return ee
 	end
 end
 
@@ -1214,6 +1216,8 @@ local function process_entity_on_boat_teleportable(
 			end
 		end
 	end
+
+	return ee
 end
 
 local function process_entity_on_boat(
@@ -1233,6 +1237,15 @@ local function process_entity_on_boat(
 		unique_entities_list[#unique_entities_list + 1] = e
 		local name = e.name
 
+		local players_with_gui_open = {}
+		for _, player in pairs(game.connected_players) do
+			if player.opened == e then
+				table.insert(players_with_gui_open, player)
+			end
+		end
+
+		local ee
+
 		-- NOTE: This sometimes causes items on belts to be sent to cabin, which maybe could be fixed?
 		if name == 'item-on-ground' then
 			Common.give_items_to_crew({ { name = e.stack.name, count = e.stack.count } })
@@ -1249,7 +1262,7 @@ local function process_entity_on_boat(
 				Utils.contains(CoreData.unteleportable_names, name)
 				or (name == 'entity-ghost' and Utils.contains(CoreData.unteleportable_names, e.ghost_name))
 			then
-				process_entity_on_boat_unteleportable(
+				ee = process_entity_on_boat_unteleportable(
 					memory,
 					boat,
 					newsurface,
@@ -1261,7 +1274,7 @@ local function process_entity_on_boat(
 					name
 				)
 			else
-				process_entity_on_boat_teleportable(
+				ee = process_entity_on_boat_teleportable(
 					memory,
 					boat,
 					newsurface,
@@ -1272,6 +1285,12 @@ local function process_entity_on_boat(
 					wire_connections_matrix,
 					e
 				)
+			end
+		end
+
+		if ee and ee.valid then
+			for _, player in ipairs(players_with_gui_open) do
+				player.opened = ee
 			end
 		end
 	end
