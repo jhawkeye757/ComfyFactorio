@@ -703,7 +703,7 @@ function Public.player_ammo_damage_modifiers() -- modifiers are fractional. bull
 		['laser'] = 0,
 		['melee'] = 0, -- only affects alien melee
 		['rocket'] = 0,
-		['shotgun-shell'] = 2,
+		['shotgun-shell'] = 0.875,
 	}
 	return data
 end
