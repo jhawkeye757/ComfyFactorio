@@ -85,6 +85,10 @@ function Public.class_update_auxiliary_data(tick_interval)
 			local data = class_auxiliary_data[player_index]
 			processed_players[player_index] = true
 
+			if not data.shaman_charge then
+				data.shaman_charge = 0
+			end
+
 			if data.shaman_charge < Balance.shaman_max_charge then
 				-- charge from accumulators
 				local power_need = Balance.shaman_max_charge - data.shaman_charge
