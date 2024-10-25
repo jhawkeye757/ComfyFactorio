@@ -372,7 +372,6 @@ local player_force_enabled_recipes = {
     'cargo-wagon',
     'constant-combinator',
     'engine-unit',
-    'green-wire',
     'locomotive',
     'rail',
     'train-stop',

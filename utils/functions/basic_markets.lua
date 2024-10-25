@@ -99,7 +99,7 @@ market.logistic = {
     ['inserter'] = { value = 8, rarity = 1 },
     ['long-handed-inserter'] = { value = 12, rarity = 2 },
     ['fast-inserter'] = { value = 16, rarity = 4 },
-    ['stack-inserter'] = { value = 96, rarity = 6 },
+    ['bulk-inserter'] = { value = 96, rarity = 6 },
     ['bulk-inserter'] = { value = 128, rarity = 7 },
     ['small-electric-pole'] = { value = 2, rarity = 1 },
     ['medium-electric-pole'] = { value = 12, rarity = 4 },
@@ -133,8 +133,6 @@ market.vehicles = {
 
 market.wire = {
     ['small-lamp'] = { value = 4, rarity = 1 },
-    ['red-wire'] = { value = 4, rarity = 1 },
-    ['green-wire'] = { value = 4, rarity = 1 },
     ['arithmetic-combinator'] = { value = 16, rarity = 1 },
     ['decider-combinator'] = { value = 16, rarity = 1 },
     ['constant-combinator'] = { value = 16, rarity = 1 },

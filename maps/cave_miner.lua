@@ -86,7 +86,7 @@ local function create_cave_miner_button(player)
     if player.gui.top['caver_miner_stats_toggle_button'] then
         player.gui.top['caver_miner_stats_toggle_button'].destroy()
     end
-    local b = player.gui.top.add({ type = 'sprite-button', name = 'caver_miner_stats_toggle_button', sprite = 'item/dummy-steel-axe' })
+    local b = player.gui.top.add({ type = 'sprite-button', name = 'caver_miner_stats_toggle_button', sprite = 'utility/lua_snippet_tool_icon' })
     b.style.minimal_height = 38
     b.style.minimal_width = 38
     b.style.padding = 1
@@ -294,7 +294,6 @@ local function treasure_chest(position, distance_to_center)
         { { name = 'long-handed-inserter', count = math_random(8, 16) },            weight = 3,  evolution_min = 0.0, evolution_max = 0.4 },
         { { name = 'fast-inserter', count = math_random(8, 16) },                   weight = 3,  evolution_min = 0.1, evolution_max = 1 },
         { { name = 'bulk-inserter', count = math_random(4, 8) },                    weight = 1,  evolution_min = 0.4, evolution_max = 1 },
-        { { name = 'stack-inserter', count = math_random(4, 8) },                   weight = 3,  evolution_min = 0.3, evolution_max = 1 },
         { { name = 'small-electric-pole', count = math_random(16, 24) },            weight = 3,  evolution_min = 0.0, evolution_max = 0.3 },
         { { name = 'medium-electric-pole', count = math_random(8, 16) },            weight = 3,  evolution_min = 0.2, evolution_max = 1 },
         { { name = 'big-electric-pole', count = math_random(4, 8) },                weight = 3,  evolution_min = 0.3, evolution_max = 1 },
@@ -322,8 +321,6 @@ local function treasure_chest(position, distance_to_center)
         { { name = 'decider-combinator', count = math_random(8, 16) },              weight = 1,  evolution_min = 0.1, evolution_max = 1 },
         { { name = 'power-switch', count = math_random(1, 2) },                     weight = 1,  evolution_min = 0.1, evolution_max = 1 },
         { { name = 'programmable-speaker', count = math_random(4, 8) },             weight = 1,  evolution_min = 0.1, evolution_max = 1 },
-        { { name = 'green-wire', count = math_random(50, 99) },                     weight = 1,  evolution_min = 0.1, evolution_max = 1 },
-        { { name = 'red-wire', count = math_random(50, 99) },                       weight = 1,  evolution_min = 0.1, evolution_max = 1 },
         { { name = 'chemical-plant', count = math_random(1, 3) },                   weight = 3,  evolution_min = 0.3, evolution_max = 1 },
         { { name = 'burner-mining-drill', count = math_random(2, 4) },              weight = 3,  evolution_min = 0.0, evolution_max = 0.2 },
         { { name = 'electric-mining-drill', count = math_random(2, 4) },            weight = 3,  evolution_min = 0.2, evolution_max = 0.6 },

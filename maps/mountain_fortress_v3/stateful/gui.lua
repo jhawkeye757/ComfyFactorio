@@ -1141,7 +1141,7 @@ local function update_raw()
                 notify_won_to_discord(buff)
                 local locomotive = Public.get('locomotive')
                 if locomotive and locomotive.valid then
-                    locomotive.surface.spill_item_stack(locomotive.position, { name = 'coin', count = 512 }, false)
+                    locomotive.surface.spill_item_stack({ position = locomotive.position, stack = { name = 'coin', count = 512, quality = 'normal' } })
                 end
                 Public.set('game_reset_tick', 5400)
                 return
@@ -1203,7 +1203,7 @@ local function update_raw()
             notify_won_to_discord(buff)
             local locomotive = Public.get('locomotive')
             if locomotive and locomotive.valid then
-                locomotive.surface.spill_item_stack(locomotive.position, { name = 'coin', count = 512 }, false)
+                locomotive.surface.spill_item_stack({ position = locomotive.position, stack = { name = 'coin', count = 512, quality = 'normal' } })
             end
             Public.set('game_reset_tick', 5400)
             return

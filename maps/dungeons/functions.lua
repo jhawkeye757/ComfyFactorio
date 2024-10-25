@@ -235,8 +235,6 @@ function Public.market(surface, position)
         { price = { { 'modular-armor', 1 } },            offer = { type = 'give-item', item = 'advanced-circuit', count = math_random(15, 20) } },
         { price = { { 'night-vision-equipment', 1 } },   offer = { type = 'give-item', item = 'steel-plate', count = math_random(3, 4) } },
         { price = { { 'solar-panel-equipment', 1 } },    offer = { type = 'give-item', item = 'copper-plate', count = math_random(15, 25) } },
-        { price = { { 'red-wire', 100 } },               offer = { type = 'give-item', item = 'copper-cable', count = math_random(75, 100) } },
-        { price = { { 'green-wire', 100 } },             offer = { type = 'give-item', item = 'copper-cable', count = math_random(75, 100) } },
         { price = { { 'barrel', 10 } },                  offer = { type = 'give-item', item = 'steel-plate', count = math_random(6, 8) } },
         { price = { { 'arithmetic-combinator', 10 } },   offer = { type = 'give-item', item = 'electronic-circuit', count = math_random(15, 25) } },
         { price = { { 'decider-combinator', 10 } },      offer = { type = 'give-item', item = 'electronic-circuit', count = math_random(15, 25) } },

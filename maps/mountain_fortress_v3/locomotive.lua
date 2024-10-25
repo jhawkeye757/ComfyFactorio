@@ -113,8 +113,6 @@ local function death_effects(player)
             {
                 position = p,
                 text = '☠️',
-                time_to_live = 300,
-                speed = 100
             }
         )
     end
@@ -286,8 +284,6 @@ local function give_passive_xp(data)
                         text = '+' .. '',
                         position = { x = pos.x, y = pos.y - 2 },
                         color = xp_floating_text_color,
-                        time_to_live = 60,
-                        speed = 3
                     }
                     rpg[player.index].xp_since_last_floaty_text = 0
                     rpg[player.index].last_floaty_text = game.tick + visuals_delay

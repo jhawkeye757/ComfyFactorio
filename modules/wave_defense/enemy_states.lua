@@ -1,8 +1,7 @@
 -- track state of units by Gerkiz
 local Event = require 'utils.event'
 local Global = require 'utils.global'
-local Task = require 'utils.task'
-local Token = require 'utils.token'
+local Task = require 'utils.task_token'
 local Public = require 'modules.wave_defense.table'
 local Difficulty = require 'modules.difficulty_vote_by_amount'
 local Beams = require 'modules.render_beam'
@@ -21,7 +20,7 @@ local this = {
         frenzy_burst_length = 160,
         update_rate = 120,
         enabled = true,
-        track_bosses_only = true,
+        track_bosses_only = false,
         wave_number = 0,
         unit_limit = 300,
     },
@@ -87,31 +86,31 @@ local commands = {
 --- A token to register tasks that entities are given
 local work_token
 work_token =
-    Token.register(
+    Task.register(
         function (event)
             if not event then
                 return
             end
 
-            local state = Public.get_unit(event.unit_number)
+            local self = Public.get_unit(event.unit_number)
             local tick = game.tick
-            if not state then
+            if not self then
                 return
             end
 
-            if state:validate() then
-                state:work(tick)
-                state.command = commands[state.command]
-                set_timeout_in_ticks(state:get_update_rate(), work_token, event)
+            if self:validate() then
+                self:work(tick)
+                self.command = commands[self.command]
+                set_timeout_in_ticks(self:get_update_rate(), work_token, event)
             else
-                state:remove()
+                self:remove()
             end
         end
     )
 
 --- Restores a given entity to their original force
 local restore_force_token =
-    Token.register(
+    Task.register(
         function (event)
             if not event then
                 return
@@ -126,6 +125,40 @@ local restore_force_token =
                 state:set_force()
                 state.frenzied = false
             end
+        end
+    )
+
+local function create_forces()
+    local aggressors = game.forces.aggressors
+    local aggressors_frenzy = game.forces.aggressors_frenzy
+    local enemy = game.forces.enemy
+    if not aggressors then
+        aggressors = game.create_force('aggressors')
+    end
+    if not aggressors_frenzy then
+        aggressors_frenzy = game.create_force('aggressors_frenzy')
+    end
+
+    aggressors.set_friend('aggressors_frenzy', true)
+    aggressors.set_cease_fire('aggressors_frenzy', true)
+    aggressors.set_friend('enemy', true)
+    aggressors.set_cease_fire('enemy', true)
+
+    aggressors_frenzy.set_friend('aggressors', true)
+    aggressors_frenzy.set_cease_fire('aggressors', true)
+    aggressors_frenzy.set_friend('enemy', true)
+    aggressors_frenzy.set_cease_fire('enemy', true)
+
+    enemy.set_friend('aggressors', true)
+    enemy.set_cease_fire('aggressors', true)
+    enemy.set_friend('aggressors_frenzy', true)
+    enemy.set_cease_fire('aggressors_frenzy', true)
+end
+
+local create_forces_token =
+    Task.register(
+        function ()
+            create_forces()
         end
     )
 
@@ -289,33 +322,6 @@ local function shoot_laser(surface, source, enemy)
     enemy.damage(20 * (1 + force.get_ammo_damage_modifier('laser') + force.get_gun_speed_modifier('laser')), force, 'laser', source)
 end
 
-local function set_forces()
-    local aggressors = game.forces.aggressors
-    local aggressors_frenzy = game.forces.aggressors_frenzy
-    local enemy = game.forces.enemy
-    if not aggressors then
-        aggressors = game.create_force('aggressors')
-    end
-    if not aggressors_frenzy then
-        aggressors_frenzy = game.create_force('aggressors_frenzy')
-    end
-
-    aggressors.set_friend('aggressors_frenzy', true)
-    aggressors.set_cease_fire('aggressors_frenzy', true)
-    aggressors.set_friend('enemy', true)
-    aggressors.set_cease_fire('enemy', true)
-
-    aggressors_frenzy.set_friend('aggressors', true)
-    aggressors_frenzy.set_cease_fire('aggressors', true)
-    aggressors_frenzy.set_friend('enemy', true)
-    aggressors_frenzy.set_cease_fire('enemy', true)
-
-    enemy.set_friend('aggressors', true)
-    enemy.set_cease_fire('aggressors', true)
-    enemy.set_friend('aggressors_frenzy', true)
-    enemy.set_cease_fire('aggressors_frenzy', true)
-end
-
 local function on_init()
     this.states = {}
     this.settings.spawned_units = 0
@@ -324,7 +330,8 @@ local function on_init()
     this.settings.update_rate = 120
     this.target_settings = {}
     this.settings.final_battle = false
-    set_forces()
+    create_forces()
+    Task.set_timeout_in_ticks(30, create_forces_token)
 end
 
 local function on_wave_created(event)
@@ -368,7 +375,7 @@ local function on_unit_group_created(event)
     for _, entity in pairs(unit_group.members) do
         if not Public.get_unit(entity.unit_number) then
             local data = {
-                entity = entity
+                entity = entity,
             }
             local state = Public.new(data)
             if not state then
@@ -531,6 +538,7 @@ function Public.new(data)
     state.id = state.entity.unit_number
     state.update_rate = this.settings.update_rate + (10 * state.uid)
     state.ttl = data.ttl or tick + (5 * 3600) -- 5 minutes duration
+    state:check_unit_group()
     state:validate()
 
     set_timeout_in_ticks(state.update_rate, work_token, { unit_number = state.unit_number })
@@ -712,20 +720,6 @@ function Public._esp:spawn_children()
     end
 end
 
--- Sets unit_group for the given unit if any
-function Public._esp:unit_group(unit_group)
-    local entity = self.entity
-    if not entity or not entity.valid then
-        return
-    end
-
-    if not unit_group then
-        return
-    end
-
-    self.unit_group = unit_group
-end
-
 --- Creates a beam.
 function Public._esp:beam()
     local entity = self.entity
@@ -866,7 +860,7 @@ function Public._esp:find_targets()
                 self.commands[#self.commands + 1] = {
                     type = defines.command.attack,
                     target = obstacles[ii],
-                    distraction = defines.distraction.by_anything
+                    distraction = defines.distraction.none
                 }
             end
         end
@@ -905,6 +899,26 @@ function Public._esp:switch_position()
     end
 
     return position
+end
+
+--- Validates if this unit has a unit_group.
+---@return boolean|integer
+function Public._esp:check_unit_group()
+    if not self:validate() then return false end
+
+    if not self.group or not self.group.valid then
+        local surface = self.surface_id and game.get_surface(self.surface_id) and game.get_surface(self.surface_id).valid and game.get_surface(self.surface_id)
+        local unit_group = surface.create_unit_group({ position = self.entity.position, force = self.force })
+        self.group = unit_group
+    end
+
+    if not self.group or not self.group.valid then
+        log('EnemyStates::CheckUnitGroup - Unit group is invalid')
+        return false
+    end
+
+    self.group.add_member(self.entity)
+    return true
 end
 
 --- Validates if a state is valid.
@@ -965,17 +979,15 @@ function Public._esp:go_to_location_command()
         return
     end
 
-    local entity = self.entity
-
-    if not entity or not entity.valid then
-        return
+    if not self.group or not self.group.valid then
+        self:check_unit_group()
     end
 
-    pcall(entity.set_command, {
+    self.group.set_command {
         type = defines.command.go_to_location,
         destination_entity = unit,
         radius = 3
-    })
+    }
 end
 
 function Public._esp:attack_command()
@@ -984,16 +996,14 @@ function Public._esp:attack_command()
         return
     end
 
-    local entity = self.entity
-
-    if not entity or not entity.valid then
-        return
+    if not self.group or not self.group.valid then
+        self:check_unit_group()
     end
 
-    pcall(entity.set_command, {
+    self.group.set_command {
         type = defines.command.attack,
         target = unit
-    })
+    }
 end
 
 function Public._esp:attack_area_command()
@@ -1002,18 +1012,16 @@ function Public._esp:attack_area_command()
         return
     end
 
-    local entity = self.entity
-
-    if not entity or not entity.valid then
-        return
+    if not self.group or not self.group.valid then
+        self:check_unit_group()
     end
 
-    pcall(entity.set_command, {
+    self.group.set_command {
         type = defines.command.attack_area,
         destination = { x = unit.position.x, y = unit.position.y },
-        radius = 15,
-        distraction = defines.distraction.by_anything
-    })
+        radius = 30,
+        distraction = defines.distraction.none
+    }
 end
 
 function Public._esp:flee_command()
@@ -1022,16 +1030,14 @@ function Public._esp:flee_command()
         return
     end
 
-    local entity = self.entity
-
-    if not entity or not entity.valid then
-        return
+    if not self.group or not self.group.valid then
+        self:check_unit_group()
     end
 
-    pcall(entity.set_command, {
+    self.group.set_command {
         type = defines.command.flee,
         from = unit,
-    })
+    }
 end
 
 function Public._esp:work(tick)

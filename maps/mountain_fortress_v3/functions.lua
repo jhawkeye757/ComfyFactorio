@@ -962,6 +962,16 @@ local function on_wave_created(event)
     end
 end
 
+local function on_primary_target_missing()
+    local locomotive = Public.get('locomotive')
+    if not locomotive or not locomotive.valid then
+        return
+    end
+
+    WD.set('target', locomotive)
+    WD.set_main_target(locomotive)
+end
+
 local function on_player_cursor_stack_changed(event)
     local player = game.get_player(event.player_index)
     if not player or not player.valid then
@@ -2002,5 +2012,6 @@ Event.add(de.on_pre_player_toggled_map_editor, on_pre_player_toggled_map_editor)
 Event.add(de.on_player_cursor_stack_changed, on_player_cursor_stack_changed)
 Event.on_nth_tick(10, tick)
 Event.add(WD.events.on_wave_created, on_wave_created)
+Event.add(WD.events.on_primary_target_missing, on_primary_target_missing)
 
 return Public

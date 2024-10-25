@@ -457,7 +457,7 @@ local function treasure_chest(position, distance_to_center)
             evolution_min = 0.4,
             evolution_max = 1
         },
-        { { name = 'stack-inserter', count = math.random(4, 8) }, weight = 3, evolution_min = 0.3, evolution_max = 1 },
+        { { name = 'bulk-inserter', count = math.random(4, 8) },  weight = 3, evolution_min = 0.3, evolution_max = 1 },
         {
             { name = 'small-electric-pole', count = math.random(16, 24) },
             weight = 3,
@@ -510,8 +510,6 @@ local function treasure_chest(position, distance_to_center)
         { { name = 'decider-combinator', count = math.random(8, 16) },  weight = 1, evolution_min = 0.1, evolution_max = 1 },
         { { name = 'power-switch', count = math.random(1, 2) },         weight = 1, evolution_min = 0.1, evolution_max = 1 },
         { { name = 'programmable-speaker', count = math.random(4, 8) }, weight = 1, evolution_min = 0.1, evolution_max = 1 },
-        { { name = 'green-wire', count = math.random(50, 99) },         weight = 1, evolution_min = 0.1, evolution_max = 1 },
-        { { name = 'red-wire', count = math.random(50, 99) },           weight = 1, evolution_min = 0.1, evolution_max = 1 },
         { { name = 'chemical-plant', count = math.random(1, 3) },       weight = 3, evolution_min = 0.3, evolution_max = 1 },
         {
             { name = 'burner-mining-drill', count = math.random(2, 4) },

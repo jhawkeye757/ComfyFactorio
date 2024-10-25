@@ -247,9 +247,9 @@ local function set_boss_healthbar(health, max_health, healthbar_id)
     if m < 0 then
         return
     end
-    local x_scale = rendering.get_y_scale(healthbar_id) * 15
-    rendering.set_x_scale(healthbar_id, x_scale * m)
-    rendering.set_color(healthbar_id, { floor(255 - 255 * m), floor(200 * m), 0 })
+    local x_scale = healthbar_id.y_scale * 15
+    healthbar_id.x_scale = x_scale * m
+    healthbar_id.color = { floor(255 - 255 * m), floor(200 * m), 0 }
 end
 
 local function extra_projectiles(cause, target)

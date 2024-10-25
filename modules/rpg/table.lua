@@ -123,8 +123,6 @@ function Public.reset_table(migrate)
     this.rpg_extra.enable_aoe_punch_globally = false
     this.rpg_extra.disable_get_heal_modifier_from_using_fish = false
     this.rpg_extra.tweaked_crafting_items = {
-        ['red-wire'] = true,
-        ['green-wire'] = true,
         ['stone-furnace'] = true,
         ['wooden-chest'] = true,
         ['copper-cable'] = true,

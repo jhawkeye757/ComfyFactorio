@@ -18,9 +18,9 @@
 end ]]
 local function set_healthbar(boss_unit)
     local m = boss_unit.health / boss_unit.max_health
-    local x_scale = rendering.get_y_scale(boss_unit.healthbar_id) * 15
-    rendering.set_x_scale(boss_unit.healthbar_id, x_scale * m)
-    rendering.set_color(boss_unit.healthbar_id, { math.floor(255 - 255 * m), math.floor(200 * m), 0 })
+    local x_scale = boss_unit.healthbar_id.y_scale * 15
+    boss_unit.healthbar_id.x_scale = x_scale * m
+    boss_unit.healthbar_id.color = { math.floor(255 - 255 * m), math.floor(200 * m), 0 }
 end
 
 --[[ local function add_boss_unit(entity, health_factor, size)

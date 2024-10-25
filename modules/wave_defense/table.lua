@@ -14,6 +14,7 @@ Public.events = {
     on_evolution_factor_changed = Event.generate_event_name('on_evolution_factor_changed'),
     on_game_reset = Event.generate_event_name('on_game_reset'),
     on_target_aquired = Event.generate_event_name('on_target_aquired'),
+    on_primary_target_missing = Event.generate_event_name('on_primary_target_missing'),
     on_entity_created = Event.generate_event_name('on_entity_created'),
     on_biters_evolved = Event.generate_event_name('on_biters_evolved'),
     on_spawn_unit_group = Event.generate_event_name('on_spawn_unit_group'),
@@ -421,6 +422,12 @@ end
 -- @param <int> in ticks
 function Public.set_pause_wave_in_ticks(int)
     this.pause_wave_in_ticks = int or 18000
+end
+
+--- Sets the main target.
+-- @param <target_type> userdata
+function Public.set_main_target(target)
+    this.target = target
 end
 
 --- Pauses the wave defense module

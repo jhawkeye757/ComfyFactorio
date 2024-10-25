@@ -133,7 +133,6 @@ local function notify_season_over_to_discord()
             inline = 'false'
         }
     }
-    log(serpent.block(text))
     if server_name_matches then
         Server.to_discord_named_parsed_embed(send_ping_to_channel, text)
     else

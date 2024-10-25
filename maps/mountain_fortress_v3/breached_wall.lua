@@ -188,7 +188,7 @@ local check_distance_between_player_and_locomotive = function (player)
             player.teleport({ position.x, (t_y + gap_between_locomotive.neg_gap - 4) * -1 }, surface)
         end
 
-        player.print(({ 'breached_wall.hinder' }), Color.warning)
+        player.print(({ 'breached_wall.hinder' }), { color = Color.warning })
         if player.driving then
             player.driving = false
         end
@@ -289,8 +289,6 @@ local compare_player_and_train = function (player, entity)
                 position = position,
                 text = msg,
                 color = color,
-                time_to_live = 300,
-                speed = 100
             }
         )
         player.print(msg, color)
@@ -301,8 +299,6 @@ local compare_player_and_train = function (player, entity)
                 position = position,
                 text = msg,
                 color = color,
-                time_to_live = 300,
-                speed = 100
             }
         )
         player.print(msg, color)
@@ -328,6 +324,8 @@ local function distance(player)
     local breached_wall = Public.get('breached_wall')
     local bonus_xp_on_join = Public.get('bonus_xp_on_join')
     local enable_arties = Public.get('enable_arties')
+    local final_battle = Public.get('final_battle')
+
 
     local p = player.physical_position
 
@@ -423,7 +421,7 @@ local function distance(player)
             end
         end
 
-        if not Collapse.has_collapse_started() then
+        if not Collapse.has_collapse_started() or not final_battle then
             clear_breach_text_and_render()
             Public.set('collapse_started', true)
             Collapse.start_now(true)

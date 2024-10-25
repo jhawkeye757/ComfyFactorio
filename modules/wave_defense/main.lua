@@ -29,7 +29,7 @@ local function normalize_spawn_position()
         Public.set_spawn_position(new_pos)
         return new_pos
     else
-        local new_pos = { x = 0, y = collapse_spawn_position.y - 40 }
+        local new_pos = { x = 0, y = collapse_spawn_position.y }
         Public.set_spawn_position(new_pos)
         return new_pos
     end
@@ -163,11 +163,10 @@ local function get_spawn_pos()
     local inverted = Public.get('inverted')
     if inverted then
         if initial_position.y - target.position.y < -10 then
-            initial_position = { x = initial_position.x, y = initial_position.y }
+            initial_position = { x = initial_position.x, y = initial_position.y + 50 }
         end
-    else
         if initial_position.y - target.position.y > 10 then
-            initial_position = { x = initial_position.x, y = initial_position.y }
+            initial_position = { x = initial_position.x, y = initial_position.y - 10 }
         end
     end
 
@@ -1106,6 +1105,7 @@ local function spawn_unit_group(fs, only_bosses)
     local target = Public.get('target')
     if not valid(target) then
         Public.debug_print('spawn_unit_group - Target was not valid?')
+        Event.raise(Public.events.on_primary_target_missing)
         return
     end
 
@@ -1261,6 +1261,7 @@ local function spawn_unit_group_simple(fs)
     local target = Public.get('target')
     if not valid(target) then
         Public.debug_print('spawn_unit_group_simple - Target was not valid?')
+        Event.raise(Public.events.on_primary_target_missing)
         return
     end
 

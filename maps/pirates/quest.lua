@@ -489,7 +489,6 @@ Public.resourcecount_quest_data_raw = {
 	{ 0.5, 0, 1, false, 'electronic-circuit', 1400 },
 	{ 1.1, 0, 1, false, 'transport-belt', 1600 },
 	{ 0.8, 0, 1, false, 'repair-pack', 350 },
-	-- {0.1, 0, 1, false, 'red-wire', 500},
 	{ 0.4, 0, 1, false, 'barrel', 200 },
 	{ 0.7, 0, 0.5, false, 'underground-belt', 200 },
 	{ 0.7, 0, 0.5, false, 'splitter', 150 },

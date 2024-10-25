@@ -44,6 +44,9 @@ function Public.init_player_table(player, reset)
     if not player then
         return
     end
+    if not this.score_table then return end
+    if not this.score_table[player.force.name] then return end
+    if not this.score_table[player.force.name].players then return end
     if reset then
         this.score_table[player.force.name].players[player.name] = {
             built_entities = 0,
