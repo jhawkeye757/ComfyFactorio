@@ -969,6 +969,8 @@ local function on_primary_target_missing()
     end
 
     WD.set('target', locomotive)
+    local target_settings = WD.get_es('target_settings')
+    target_settings.main_target = locomotive
     WD.set_main_target(locomotive)
 end
 
@@ -1552,7 +1554,6 @@ function Public.is_creativity_mode_on()
     local creative_enabled = Misc.get('creative_enabled')
     if creative_enabled then
         WD.set('next_wave', 1000)
-        Collapse.start_now(true)
         Public.set_difficulty()
     end
 end
@@ -1746,7 +1747,7 @@ function Public.on_research_finished(event)
     local research_name = research.name
     local force = research.force
 
-    if event.tick > 100 then
+    if event.tick > 2000 then
         if Public.get('print_tech_to_discord') and force.name == 'player' then
             Server.to_discord_embed_raw('<a:Modded:835932131036364810> ' .. research_name:gsub('^%l', string.upper) .. ' has been researched!')
         end
@@ -1756,7 +1757,7 @@ function Public.on_research_finished(event)
         Public.set('toolbelt_researched_count', 10)
     end
 
-    if script.feature_flags.quality then
+    if script.active_mods.quality then
         local quality_list = Public.get('quality_list')
         if research.name == 'quality-module' then
             quality_list[#quality_list + 1] = 'uncommon'

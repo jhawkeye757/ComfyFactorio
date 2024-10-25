@@ -177,7 +177,7 @@ local function damage_player(player, kill, print_to_all)
             'Just a fleshwound.',
             'Better keep those hands to yourself or you might loose them.'
         }
-        player.print(messages[random(1, #messages)], Color.yellow)
+        player.print(messages[random(1, #messages)], { color = Color.yellow })
         if player.character.health <= 0 then
             player.character.die('enemy')
             game.print(player.name .. msg, Color.yellow)
@@ -235,7 +235,7 @@ local function on_marked_for_deconstruction(event)
     end
     if playtime < this.required_playtime then
         event.entity.cancel_deconstruction(game.get_player(event.player_index).force.name)
-        player.print('You have not grown accustomed to this technology yet.', { r = 0.22, g = 0.99, b = 0.99 })
+        player.print('You have not grown accustomed to this technology yet.', { color = { r = 0.22, g = 0.99, b = 0.99 } })
     end
 end
 
@@ -350,7 +350,7 @@ local function on_built_entity(event)
 
         if playtime < this.required_playtime then
             created_entity.destroy()
-            player.print('You have not grown accustomed to this technology yet.', { r = 0.22, g = 0.99, b = 0.99 })
+            player.print('You have not grown accustomed to this technology yet.', { color = { r = 0.22, g = 0.99, b = 0.99 } })
         end
     end
 end

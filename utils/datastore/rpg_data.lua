@@ -16,9 +16,9 @@ local set_timeout_in_ticks = Task.set_timeout_in_ticks
 local this = {
     settings = {
         enabled = false,
-        reset_after = 7, -- 7 days
+        reset_after = 7,                 -- 7 days
         required_level_to_progress = 99, -- higher than 99 to be able to save
-        limit = 39600, -- level 100
+        limit = 39600,                   -- level 100
         dataset = 'rpg_v2_dataset',
         reset_key = 'reset_by_this_date'
     },
@@ -33,7 +33,7 @@ local round = math.round
 
 Global.register(
     this,
-    function(tbl)
+    function (tbl)
         this = tbl
     end
 )
@@ -48,7 +48,7 @@ local function eligible(player)
         if player_level <= this.settings.required_level_to_progress then
             return false
         else
-            player.print('[RPG] Prestige system resets after 7 days.', Color.warning)
+            player.print('[RPG] Prestige system resets after 7 days.', { color = Color.warning })
             return true
         end
     end
@@ -67,102 +67,102 @@ end
 
 local clear_all_data_token =
     Token.register(
-    function(data)
-        local entries = data.entries
-        if not entries then
-            return
-        end
+        function (data)
+            local entries = data.entries
+            if not entries then
+                return
+            end
 
-        for key, _ in pairs(entries) do
-            if key ~= this.settings.reset_key then
-                this.data[key] = nil
-                set_data(this.settings.dataset, key, nil)
+            for key, _ in pairs(entries) do
+                if key ~= this.settings.reset_key then
+                    this.data[key] = nil
+                    set_data(this.settings.dataset, key, nil)
+                end
             end
         end
-    end
-)
+    )
 
 local try_download_amount_of_resets_token =
     Token.register(
-    function(data)
-        local old_value = data.value
-        if old_value then
-            old_value = tonumber(old_value)
-            local new_value = Server.get_current_date()
-            local time_to_reset = (new_value - old_value)
-            if not time_to_reset then
-                return
-            end
+        function (data)
+            local old_value = data.value
+            if old_value then
+                old_value = tonumber(old_value)
+                local new_value = Server.get_current_date()
+                local time_to_reset = (new_value - old_value)
+                if not time_to_reset then
+                    return
+                end
 
-            if time_to_reset < this.settings.reset_after then
-                this.data[this.settings.reset_key] = new_value
+                if time_to_reset < this.settings.reset_after then
+                    this.data[this.settings.reset_key] = new_value
+                else
+                    this.data[this.settings.reset_key] = 0
+                    set_data(this.settings.dataset, this.settings.reset_key, tonumber(new_value))
+                    try_get_all_data(this.settings.dataset, clear_all_data_token)
+                end
             else
-                this.data[this.settings.reset_key] = 0
-                set_data(this.settings.dataset, this.settings.reset_key, tonumber(new_value))
-                try_get_all_data(this.settings.dataset, clear_all_data_token)
-            end
-        else
-            local new_value = Server.get_current_date()
+                local new_value = Server.get_current_date()
 
-            if new_value then
-                set_data(this.settings.dataset, this.settings.reset_key, tonumber(new_value))
-            else
-                set_data(this.settings.dataset, this.settings.reset_key, 0)
+                if new_value then
+                    set_data(this.settings.dataset, this.settings.reset_key, tonumber(new_value))
+                else
+                    set_data(this.settings.dataset, this.settings.reset_key, 0)
+                end
             end
         end
-    end
-)
+    )
 
 local try_download_data_token =
     Token.register(
-    function(data)
-        local key = data.key
-        local value = data.value
-        local player = game.get_player(key)
-        if not player or not player.valid then
-            return
-        end
+        function (data)
+            local key = data.key
+            local value = data.value
+            local player = game.get_player(key)
+            if not player or not player.valid then
+                return
+            end
 
-        if value then
-            if value < this.settings.limit then
-                this.data[player.name] = value
-                RPG.set_value_to_player(player.index, 'xp', value)
-            else
-                set_data(this.settings.dataset, key, nil)
+            if value then
+                if value < this.settings.limit then
+                    this.data[player.name] = value
+                    RPG.set_value_to_player(player.index, 'xp', value)
+                else
+                    set_data(this.settings.dataset, key, nil)
+                end
             end
         end
-    end
-)
+    )
 
 local try_upload_data_token =
     Token.register(
-    function(data)
-        local key = data.key
-        local value = data.value
-        local player = game.get_player(key)
+        function (data)
+            local key = data.key
+            local value = data.value
+            local player = game.get_player(key)
 
-        if value then
-            if not eligible(player) then
-                return
-            end
-            local old_xp = value
+            if value then
+                if not eligible(player) then
+                    return
+                end
+                local old_xp = value
 
-            local new_xp = old_xp + get_progression(player)
-            if new_xp <= 0 then
-                return
-            end
+                local new_xp = old_xp + get_progression(player)
+                if new_xp <= 0 then
+                    return
+                end
 
-            new_xp = round(new_xp, 0)
+                new_xp = round(new_xp, 0)
 
-            set_data(this.settings.dataset, key, new_xp)
-            this.data[key] = new_xp
-        else
-            if eligible(player) then
-                set_data(this.settings.dataset, key, get_progression(player))
+                set_data(this.settings.dataset, key, new_xp)
+                this.data[key] = new_xp
+            else
+                if eligible(player) then
+                    set_data(this.settings.dataset, key, get_progression(player))
+                end
             end
         end
-    end
-)
+    )
 
 --- Tries to update amount of resets, if the threshold is reached nil the bonuses.
 function Public.try_dl_resets()
@@ -258,7 +258,7 @@ end
 
 Event.add(
     defines.events.on_player_joined_game,
-    function(event)
+    function (event)
         if not this.settings.enabled then
             return
         end
@@ -274,7 +274,7 @@ Event.add(
 
 Event.add(
     defines.events.on_player_left_game,
-    function(event)
+    function (event)
         if not this.settings.enabled then
             return
         end
@@ -290,14 +290,14 @@ Event.add(
 
 local nth_tick_token =
     Token.register(
-    function(data)
-        local index = data.index
-        local player = game.get_player(index)
-        if player and player.valid then
-            Public.try_ul_data(player.name)
+        function (data)
+            local index = data.index
+            local player = game.get_player(index)
+            if player and player.valid then
+                Public.try_ul_data(player.name)
+            end
         end
-    end
-)
+    )
 
 --- Saves all eligible players to the web-panel
 function Public.save_all_players()
@@ -312,7 +312,7 @@ function Public.save_all_players()
             if eligible(player) then
                 local count = 0
                 count = count + 10
-                set_timeout_in_ticks(count, nth_tick_token, {index = player.index})
+                set_timeout_in_ticks(count, nth_tick_token, { index = player.index })
             end
         end
     end
@@ -329,7 +329,7 @@ function Public.restore_xp_on_reset()
         local player = game.get_player(key)
         if player and player.valid then
             RPG.set_value_to_player(player.index, 'xp', value)
-            player.print('[RPG] Prestige system has been applied.', Color.success)
+            player.print('[RPG] Prestige system has been applied.', { color = Color.success })
         end
     end
 end
@@ -348,7 +348,7 @@ end
 
 Event.add(
     Server.events.on_server_started,
-    function()
+    function ()
         Public.try_dl_resets()
     end
 )

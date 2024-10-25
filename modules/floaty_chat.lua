@@ -27,7 +27,7 @@ local function on_console_chat(event)
     local y_offset = -4
 
     if this.player_floaty_chat[player.index] then
-        rendering.get_object_by_id(this.player_floaty_chat[player.index]).destroy()
+        this.player_floaty_chat[player.index].destroy()
         this.player_floaty_chat[player.index] = nil
     end
 

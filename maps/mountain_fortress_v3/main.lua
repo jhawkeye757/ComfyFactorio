@@ -277,7 +277,7 @@ function Public.reset_map()
     wave_defense_table.game_lost = false
     wave_defense_table.spawn_position = { x = 0, y = 84 }
     WD.alert_boss_wave(true)
-    WD.enable_side_target(true)
+    WD.enable_side_target(false)
     WD.remove_entities(true)
     WD.enable_threat_log(false) -- creates waaaay to many entries in the global table
     WD.check_collapse_position(true)
@@ -668,9 +668,9 @@ Event.add(
 
 Event.on_init(function ()
     local nauvis = game.surfaces.nauvis
-    -- nauvis.clear(true)
-    -- nauvis.request_to_generate_chunks({ 0, 0 }, 3)
-    -- nauvis.force_generate_chunk_requests()
+    nauvis.clear(true)
+    nauvis.request_to_generate_chunks({ 0, 0 }, 3)
+    nauvis.force_generate_chunk_requests()
 end)
 
 return Public

@@ -11,7 +11,7 @@ local this = {
 
 Global.register(
     this,
-    function(tbl)
+    function (tbl)
         this = tbl
     end
 )
@@ -19,14 +19,14 @@ Global.register(
 local Public = {}
 
 local brain = {
-    [1] = {'Our Discord server is at: https://getcomfy.eu/discord'},
+    [1] = { 'Our Discord server is at: https://getcomfy.eu/discord' },
     [2] = {
         'Need an admin? Join our discord at: https://getcomfy.eu/discord,',
         'and report it in #i-need-halp',
         'If you have played for more than 5h in our maps then,',
         'you are eligible to run the command /jail and /free'
     },
-    [3] = {'Scenario repository for download:', 'https://github.com/ComfyFactory/ComfyFactorio'},
+    [3] = { 'Scenario repository for download:', 'https://github.com/ComfyFactory/ComfyFactorio' },
     [4] = {
         'If you feel like the server is lagging, run the following command:',
         '/server-ups',
@@ -65,12 +65,12 @@ local links = {
 local function on_player_created(event)
     local player = game.get_player(event.player_index)
     if this.settings.enable_classic_print then
-        player.print('[font=default-game]' .. 'Join the comfy discord >> getcomfy.eu/discord <<' .. '[/font]', {r = 150, g = 100, b = 255, a = 255})
+        player.print('[font=default-game]' .. 'Join the comfy discord >> getcomfy.eu/discord <<' .. '[/font]', { color = { r = 150, g = 100, b = 255, a = 255 } })
     else
         player.print(
             '[font=heading-1]' ..
-                '[color=#E99696]J[/color][color=#E9A296]o[/color][color=#E9AF96]i[/color][color=#E9BB96]n[/color] [color=#E9C896]t[/color][color=#E9D496]h[/color][color=#E9E096]e[/color] ☕[color=#E5E996]c[/color][color=#D8E996]o[/color][color=#CCE996]m[/color][color=#BFE996]f[/color][color=#B3E996]y[/color] [color=#A6E996]d[/color][color=#9AE996]i[/color][color=#96E99E]s[/color][color=#96E9AB]c[/color][color=#96E9B7]o[/color][color=#96E9C3]r[/color][color=#96E9D0]d[/color] [color=#96E9DC]>[/color][color=#96E9E9]>[/color] [color=#96DCE9]g[/color][color=#96D0E9]e[/color][color=#96C3E9]t[/color][color=#96B7E9]c[/color][color=#96ABE9]o[/color][color=#969EE9]m[/color][color=#9A96E9]f[/color][color=#A696E9]y[/color][color=#B396E9].[/color][color=#BF96E9]e[/color][color=#CC96E9]u[/color][color=#D896E9]/[/color][color=#E596E9]d[/color][color=#E996E0]i[/color][color=#E996D4]s[/color][color=#E996C8]c[/color][color=#E996BB]o[/color][color=#E996AF]r[/color][color=#E996A2]d[/color]' ..
-                    '[/font]'
+            '[color=#E99696]J[/color][color=#E9A296]o[/color][color=#E9AF96]i[/color][color=#E9BB96]n[/color] [color=#E9C896]t[/color][color=#E9D496]h[/color][color=#E9E096]e[/color] ☕[color=#E5E996]c[/color][color=#D8E996]o[/color][color=#CCE996]m[/color][color=#BFE996]f[/color][color=#B3E996]y[/color] [color=#A6E996]d[/color][color=#9AE996]i[/color][color=#96E99E]s[/color][color=#96E9AB]c[/color][color=#96E9B7]o[/color][color=#96E9C3]r[/color][color=#96E9D0]d[/color] [color=#96E9DC]>[/color][color=#96E9E9]>[/color] [color=#96DCE9]g[/color][color=#96D0E9]e[/color][color=#96C3E9]t[/color][color=#96B7E9]c[/color][color=#96ABE9]o[/color][color=#969EE9]m[/color][color=#9A96E9]f[/color][color=#A696E9]y[/color][color=#B396E9].[/color][color=#BF96E9]e[/color][color=#CC96E9]u[/color][color=#D896E9]/[/color][color=#E596E9]d[/color][color=#E996E0]i[/color][color=#E996D4]s[/color][color=#E996C8]c[/color][color=#E996BB]o[/color][color=#E996AF]r[/color][color=#E996A2]d[/color]' ..
+            '[/font]'
         )
     end
 end
@@ -85,7 +85,7 @@ local function process_bot_answers(event)
     for word in string.gmatch(message, '%g+') do
         if links[word] then
             for _, bot_answer in pairs(links[word]) do
-                player.print('[font=heading-1]' .. bot_answer .. '[/font]', Color.warning)
+                player.print('[font=heading-1]' .. bot_answer .. '[/font]', { color = Color.warning })
             end
             return
         end

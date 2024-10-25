@@ -12,7 +12,7 @@ local this = {
 }
 Global.register(
     this,
-    function(tbl)
+    function (tbl)
         this = tbl
     end
 )
@@ -25,7 +25,7 @@ local direction_reverse = {
 }
 
 local directions = {
-    ['north'] = function(position, reverse)
+    ['north'] = function (position, reverse)
         local surface_index = this.surface_index
         if not surface_index then
             return
@@ -45,14 +45,14 @@ local directions = {
         local a = width * 0.5 + 4
 
         if not reverse then
-            this.vector = {0, -1}
-            this.area = {{position.x - a, position.y - 1}, {position.x + a, position.y}}
+            this.vector = { 0, -1 }
+            this.area = { { position.x - a, position.y - 1 }, { position.x + a, position.y } }
         else
-            this.reverse_vector = {0, -1}
-            this.reverse_area = {{position.x - a, position.y - 1}, {position.x + a, position.y}}
+            this.reverse_vector = { 0, -1 }
+            this.reverse_area = { { position.x - a, position.y - 1 }, { position.x + a, position.y } }
         end
     end,
-    ['south'] = function(position, reverse)
+    ['south'] = function (position, reverse)
         local surface_index = this.surface_index
         if not surface_index then
             return
@@ -71,14 +71,14 @@ local directions = {
         end
         local a = width * 0.5
         if not reverse then
-            this.vector = {0, 1}
-            this.area = {{position.x - a, position.y}, {position.x + a, position.y + 1}}
+            this.vector = { 0, 1 }
+            this.area = { { position.x - a, position.y }, { position.x + a, position.y + 1 } }
         else
-            this.reverse_vector = {0, 1}
-            this.reverse_area = {{position.x - a, position.y}, {position.x + a, position.y + 1}}
+            this.reverse_vector = { 0, 1 }
+            this.reverse_area = { { position.x - a, position.y }, { position.x + a, position.y + 1 } }
         end
     end,
-    ['west'] = function(position, reverse)
+    ['west'] = function (position, reverse)
         local surface_index = this.surface_index
         if not surface_index then
             return
@@ -97,14 +97,14 @@ local directions = {
         end
         local a = width * 0.5 + 1
         if not reverse then
-            this.vector = {-1, 0}
-            this.area = {{position.x - 1, position.y - a}, {position.x, position.y + a}}
+            this.vector = { -1, 0 }
+            this.area = { { position.x - 1, position.y - a }, { position.x, position.y + a } }
         else
-            this.reverse_vector = {-1, 0}
-            this.reverse_area = {{position.x - 1, position.y - a}, {position.x, position.y + a}}
+            this.reverse_vector = { -1, 0 }
+            this.reverse_area = { { position.x - 1, position.y - a }, { position.x, position.y + a } }
         end
     end,
-    ['east'] = function(position, reverse)
+    ['east'] = function (position, reverse)
         local surface_index = this.surface_index
         if not surface_index then
             return
@@ -123,11 +123,11 @@ local directions = {
         end
         local a = width * 0.5 + 1
         if not reverse then
-            this.vector = {1, 0}
-            this.area = {{position.x, position.y - a}, {position.x + 1, position.y + a}}
+            this.vector = { 1, 0 }
+            this.area = { { position.x, position.y - a }, { position.x + 1, position.y + a } }
         else
-            this.reverse_vector = {1, 0}
-            this.reverse_area = {{position.x, position.y - a}, {position.x + 1, position.y + a}}
+            this.reverse_vector = { 1, 0 }
+            this.reverse_area = { { position.x, position.y - a }, { position.x + 1, position.y + a } }
         end
     end
 }
@@ -144,7 +144,7 @@ local function set_collapse_tiles(surface)
         print_debug(45)
     end
     game.forces.player.chart(surface, this.area)
-    this.tiles = surface.find_tiles_filtered({area = this.area, name = 'out-of-map', invert = true})
+    this.tiles = surface.find_tiles_filtered({ area = this.area, name = 'out-of-map', invert = true })
 
     if not this.tiles then
         return
@@ -153,11 +153,11 @@ local function set_collapse_tiles(surface)
     if this.size_of_tiles > 0 then
         table_shuffle_table(this.tiles)
     end
-    this.position = {x = this.position.x + this.vector[1], y = this.position.y + this.vector[2]}
+    this.position = { x = this.position.x + this.vector[1], y = this.position.y + this.vector[2] }
     local v = this.vector
     local area = this.area
-    this.area = {{area[1][1] + v[1], area[1][2] + v[2]}, {area[2][1] + v[1], area[2][2] + v[2]}}
-    local chart_area = {{area[1][1] + v[1] - 4, area[1][2] + v[2] - 4}, {area[2][1] + v[1] + 4, area[2][2] + v[2] + 4}}
+    this.area = { { area[1][1] + v[1], area[1][2] + v[2] }, { area[2][1] + v[1], area[2][2] + v[2] } }
+    local chart_area = { { area[1][1] + v[1] - 4, area[1][2] + v[2] - 4 }, { area[2][1] + v[1] + 4, area[2][2] + v[2] + 4 } }
     game.forces.player.chart(surface, chart_area)
 end
 
@@ -166,7 +166,7 @@ local function set_reverse_collapse_tiles(surface)
     if not surface or surface.valid then
         print_debug(45)
     end
-    this.reverse_tiles = surface.find_tiles_filtered({area = this.reverse_area, name = 'out-of-map', invert = true})
+    this.reverse_tiles = surface.find_tiles_filtered({ area = this.reverse_area, name = 'out-of-map', invert = true })
 
     if not this.reverse_tiles then
         return
@@ -175,11 +175,11 @@ local function set_reverse_collapse_tiles(surface)
     if this.reverse_size_of_tiles > 0 then
         table_shuffle_table(this.reverse_tiles)
     end
-    this.reverse_position = {x = this.reverse_position.x + this.reverse_vector[1], y = this.reverse_position.y + this.reverse_vector[2]}
+    this.reverse_position = { x = this.reverse_position.x + this.reverse_vector[1], y = this.reverse_position.y + this.reverse_vector[2] }
     local v = this.reverse_vector
     local area = this.reverse_area
-    this.reverse_area = {{area[1][1] + v[1], area[1][2] + v[2]}, {area[2][1] + v[1], area[2][2] + v[2]}}
-    local chart_area = {{area[1][1] + v[1] - 4, area[1][2] + v[2] - 10}, {area[2][1] + v[1] + 4, area[2][2] + v[2] + 10}}
+    this.reverse_area = { { area[1][1] + v[1], area[1][2] + v[2] }, { area[2][1] + v[1], area[2][2] + v[2] } }
+    local chart_area = { { area[1][1] + v[1] - 4, area[1][2] + v[2] - 10 }, { area[2][1] + v[1] + 4, area[2][2] + v[2] + 10 } }
     local force = game.forces.player
 
     force.chart(surface, chart_area)
@@ -221,9 +221,9 @@ local function progress()
             return
         end
         if this.specific_entities.enabled then
-            local position = {tile.position.x + 0.5, tile.position.y + 0.5}
+            local position = { tile.position.x + 0.5, tile.position.y + 0.5 }
             local entities = this.specific_entities.entities
-            for _, e in pairs(surface.find_entities_filtered({area = {{position[1] - 4, position[2] - 2}, {position[1] + 4, position[2] + 2}}})) do
+            for _, e in pairs(surface.find_entities_filtered({ area = { { position[1] - 4, position[2] - 2 }, { position[1] + 4, position[2] + 2 } } })) do
                 if entities[e.name] and e.valid and e.health then
                     e.die()
                 elseif e.valid then
@@ -232,14 +232,14 @@ local function progress()
             end
         end
         if this.kill then
-            local position = {tile.position.x + 0.5, tile.position.y + 0.5}
-            for _, e in pairs(surface.find_entities_filtered({area = {{position[1] - 4, position[2] - 2}, {position[1] + 4, position[2] + 2}}})) do
+            local position = { tile.position.x + 0.5, tile.position.y + 0.5 }
+            for _, e in pairs(surface.find_entities_filtered({ area = { { position[1] - 4, position[2] - 2 }, { position[1] + 4, position[2] + 2 } } })) do
                 if e.valid and e.health then
                     e.die()
                 end
             end
         end
-        surface.set_tiles({{name = 'out-of-map', position = tile.position}}, true)
+        surface.set_tiles({ { name = 'out-of-map', position = tile.position } }, true)
     end
 end
 
@@ -278,9 +278,9 @@ local function progress_reverse()
             return
         end
         if this.specific_entities.enabled then
-            local position = {tile.position.x + 0.5, tile.position.y + 0.5}
+            local position = { tile.position.x + 0.5, tile.position.y + 0.5 }
             local entities = this.specific_entities.entities
-            for _, e in pairs(surface.find_entities_filtered({area = {{position[1] - 4, position[2] - 2}, {position[1] + 4, position[2] + 2}}})) do
+            for _, e in pairs(surface.find_entities_filtered({ area = { { position[1] - 4, position[2] - 2 }, { position[1] + 4, position[2] + 2 } } })) do
                 if entities[e.name] and e.valid and e.health then
                     e.die()
                 elseif e.valid then
@@ -289,14 +289,14 @@ local function progress_reverse()
             end
         end
         if this.kill then
-            local position = {tile.position.x + 0.5, tile.position.y + 0.5}
-            for _, e in pairs(surface.find_entities_filtered({area = {{position[1] - 4, position[2] - 2}, {position[1] + 4, position[2] + 2}}})) do
+            local position = { tile.position.x + 0.5, tile.position.y + 0.5 }
+            for _, e in pairs(surface.find_entities_filtered({ area = { { position[1] - 4, position[2] - 2 }, { position[1] + 4, position[2] + 2 } } })) do
                 if e.valid and e.health then
                     e.die()
                 end
             end
         end
-        surface.set_tiles({{name = 'out-of-map', position = tile.position}}, true)
+        surface.set_tiles({ { name = 'out-of-map', position = tile.position } }, true)
     end
 end
 
@@ -351,7 +351,7 @@ function Public.set_reverse_position(position)
     if position.y then
         y = position.y
     end
-    this.reverse_position = {x = x, y = y}
+    this.reverse_position = { x = x, y = y }
 end
 
 function Public.set_reverse_direction()
@@ -419,7 +419,7 @@ function Public.set_position(position)
     if position.y then
         y = position.y
     end
-    this.position = {x = x, y = y}
+    this.position = { x = x, y = y }
 end
 
 function Public.get_position()
@@ -504,7 +504,7 @@ end
 
 local function on_init()
     Public.set_surface_index(game.surfaces.nauvis.index)
-    Public.set_position({0, 32})
+    Public.set_position({ 0, 32 })
     Public.set_max_line_size(256)
     Public.set_direction('north')
     Public.set_kill_entities(true)

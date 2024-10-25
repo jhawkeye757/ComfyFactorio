@@ -20,6 +20,7 @@ local Difficulty = require 'modules.difficulty_vote_by_amount'
 local this = {
     enabled = false,
     rounds_survived = 0,
+    current_streak = 0,
     season = 1,
     buffs = {},
     reset_after = 60,
@@ -1407,6 +1408,8 @@ end
 function Public.save_settings()
     local granted_buff = grant_non_limit_reached_buff()
     this.buffs[#this.buffs + 1] = granted_buff
+
+    this.current_streak = this.current_streak + 1
 
     local settings = {
         objectives_time_spent = this.objectives_time_spent,

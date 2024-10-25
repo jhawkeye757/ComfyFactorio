@@ -291,7 +291,7 @@ local compare_player_and_train = function (player, entity)
                 color = color,
             }
         )
-        player.print(msg, color)
+        player.print(msg, { color = color })
     elseif locomotive_distance_too_far then
         local msg = 'Warning! You are too far away from the train! TURN BACK!'
         player.create_local_flying_text(
@@ -301,7 +301,7 @@ local compare_player_and_train = function (player, entity)
                 color = color,
             }
         )
-        player.print(msg, color)
+        player.print(msg, { color = color })
         if entity.health then
             if car and car.health_pool and car.health_pool.health then
                 car.health_pool.health = car.health_pool.health - 500

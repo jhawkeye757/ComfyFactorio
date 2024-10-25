@@ -173,10 +173,12 @@ local function get_spawn_pos()
     local located_position = find_initial_spot(surface, initial_position)
     local valid_position = surface.find_non_colliding_position('stone-furnace', located_position, 32, 1)
     local debug = Public.get('debug')
-    if valid_position then
-        local x = valid_position.x
-        local y = valid_position.y
-        game.print('[gps=' .. x .. ',' .. y .. ',' .. surface.name .. ']')
+    if debug then
+        if valid_position then
+            local x = valid_position.x
+            local y = valid_position.y
+            game.print('[gps=' .. x .. ',' .. y .. ',' .. surface.name .. ']')
+        end
     end
 
     if not valid_position then
@@ -330,7 +332,6 @@ local function set_main_target()
     local target = Public.get('target')
     if target then
         if target.valid then
-            raise(Public.events.on_target_aquired, { target = target })
             return
         end
     end
@@ -346,7 +347,6 @@ local function set_main_target()
         sec_target = get_random_character()
     end
     if not sec_target then
-        raise(Public.events.on_target_aquired, { target = target })
         return
     end
 
@@ -893,6 +893,7 @@ local function get_main_command(group)
 
     local target = Public.get('target')
     if not valid(target) then
+        Event.raise(Public.events.on_primary_target_missing)
         return
     end
 
@@ -1058,6 +1059,7 @@ local function give_side_commands_to_group()
 
     local target = Public.get('target')
     if not valid(target) then
+        Event.raise(Public.events.on_primary_target_missing)
         return
     end
 
@@ -1076,8 +1078,12 @@ end
 local function give_main_command_to_group()
     local target = Public.get('target')
     if not valid(target) then
+        Event.raise(Public.events.on_primary_target_missing)
         return
     end
+
+    -- This is called even if the target is valid
+    Event.raise(Public.events.on_primary_target_missing)
 
     local generated_units = Public.get('generated_units')
     for _, group in pairs(generated_units.unit_groups) do
@@ -1337,6 +1343,7 @@ local function check_group_positions()
     local generated_units = Public.get('generated_units')
     local target = Public.get('target')
     if not valid(target) then
+        Event.raise(Public.events.on_primary_target_missing)
         return
     end
 
@@ -1436,9 +1443,6 @@ Event.on_nth_tick(
         if final_battle then
             return
         end
-
-        -- local generated_units = Public.get('generated_units')
-        -- game.print(serpent.block(generated_units.unit_groups))
 
         local paused = Public.get('paused')
         if paused then

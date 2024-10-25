@@ -51,10 +51,10 @@ local function build_group_gui(data)
     local t = frame.add({ type = 'table', column_count = 5 })
 
     local headings = {
-        { { 'gui.title' },     group_name_width },
+        { { 'gui.title' },       group_name_width },
         { { 'gui.description' }, description_width },
-        { { 'gui.members' },   members_width * member_columns },
-        { '',                  actions_width }
+        { { 'gui.members' },     members_width * member_columns },
+        { '',                    actions_width }
     }
     for _, h in pairs(headings) do
         local l = t.add({ type = 'label', caption = h[1] })
@@ -283,23 +283,23 @@ local function on_gui_click(event)
         if new_group_name ~= '' and new_group_name ~= 'Name' and new_group_description ~= 'Description' then
             if this.alphanumeric then
                 if alphanumeric(new_group_name) then
-                    player.print('Group name is not valid.', { r = 0.90, g = 0.0, b = 0.0 })
+                    player.print('Group name is not valid.', { color = { r = 0.90, g = 0.0, b = 0.0 } })
                     return
                 end
 
                 if alphanumeric(new_group_description) then
-                    player.print('Group description is not valid.', { r = 0.90, g = 0.0, b = 0.0 })
+                    player.print('Group description is not valid.', { color = { r = 0.90, g = 0.0, b = 0.0 } })
                     return
                 end
             end
 
             if string.len(new_group_name) > 64 then
-                player.print('Group name is too long. 64 characters maximum.', { r = 0.90, g = 0.0, b = 0.0 })
+                player.print('Group name is too long. 64 characters maximum.', { color = { r = 0.90, g = 0.0, b = 0.0 } })
                 return
             end
 
             if string.len(new_group_description) > 128 then
-                player.print('Description is too long. 128 characters maximum.', { r = 0.90, g = 0.0, b = 0.0 })
+                player.print('Description is too long. 128 characters maximum.', { color = { r = 0.90, g = 0.0, b = 0.0 } })
                 return
             end
 
@@ -360,7 +360,7 @@ local function on_gui_click(event)
 
             if element.type == 'button' and caption == 'gui.delete' then
                 if this.tag_groups[element.parent.name] and this.tag_groups[element.parent.name].static then
-                    player.print('Static groups cannot be deleted.', Color.warning)
+                    player.print('Static groups cannot be deleted.', { color = Color.warning })
                     return
                 end
                 for _, players in pairs(game.players) do

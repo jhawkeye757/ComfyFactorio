@@ -72,16 +72,25 @@ Event.add(defines.events.on_console_command, on_console_command)
 
 Event.add(
     defines.events.on_player_promoted,
-    function(event)
+    function (event)
+        local admins = Server.get_admins_data()
         local player = game.get_player(event.player_index)
         local server_name = Server.get_server_name() or 'CommandHandler'
         Discord.send_notification_raw(server_name, player.name .. ' was promoted.')
+        if not game.is_multiplayer() then
+            return
+        end
+
+        if not admins[player.name] then
+            player.admin = false
+            return
+        end
     end
 )
 
 Event.add(
     defines.events.on_player_demoted,
-    function(event)
+    function (event)
         local player = game.get_player(event.player_index)
         local server_name = Server.get_server_name() or 'CommandHandler'
         Discord.send_notification_raw(server_name, player.name .. ' was demoted.')
@@ -90,7 +99,7 @@ Event.add(
 
 Event.add(
     defines.events.on_player_kicked,
-    function(event)
+    function (event)
         local player = game.get_player(event.player_index)
         local server_name = Server.get_server_name() or 'CommandHandler'
         Discord.send_notification_raw(server_name, player.name .. ' was kicked.')

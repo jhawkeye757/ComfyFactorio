@@ -264,6 +264,7 @@ local function set_train_final_health(final_damage_amount, repair)
         locomotive.destructible = false
         locomotive.health = 1
         Public.set('game_lost', true)
+        Public.set_stateful('current_streak', 0)
         Public.loco_died()
     end
 

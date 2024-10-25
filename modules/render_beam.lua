@@ -57,7 +57,7 @@ function Public:new_render()
     end
 
     if self.render_id then
-        rendering.destroy(self.render_id)
+        self.render_id.destroy()
     end
 
     self.render_id = rendering.draw_sprite { target = self.position, sprite = self.sprite, surface = surface }
@@ -107,16 +107,9 @@ function Public:set_render_scalar_size()
         return self:validate()
     end
 
-    rendering.set_y_scale(self.render_id, 3.5) -- 1.5
-    rendering.set_x_scale(self.render_id, 7)   -- 2
-    rendering.set_color(
-        self.render_id,
-        {
-            r = 1,
-            g = 0.7,
-            b = 0.7
-        }
-    )
+    self.render_id.y_scale = 3.5 -- 1.5
+    self.render_id.x_scale = 7   -- 2
+    self.render_id.color = { r = 1, g = 0.7, b = 0.7 }
 end
 
 --- Gets a random position.
@@ -227,7 +220,7 @@ function Public:set_new_position()
     end
 
     if self:validate() then
-        rendering.set_target(self.render_id, self.position)
+        self.render_id.target = self.position
         self:set_render_scalar_size()
     end
 end
@@ -290,7 +283,7 @@ function Public:validate()
         self:new_render()
         return false
     end
-    if rendering.is_valid(self.render_id) then
+    if self.render_id.valid then
         return true
     end
     return false
@@ -298,8 +291,8 @@ end
 
 --- Destroys a render.
 function Public:destroy_render()
-    if rendering.is_valid(self.render_id) then
-        rendering.destroy(self.render_id)
+    if self.render_id and self.render_id.valid then
+        self.render_id.destroy()
     end
     return self
 end

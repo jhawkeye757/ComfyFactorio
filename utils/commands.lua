@@ -498,6 +498,19 @@ function Public:add_parameter(name, optional, as_type)
     return self
 end
 
+--- Adds an alias to the command.
+---@param name string
+---@return MetaCommand
+function Public:add_alias(name)
+    if self.aliases[name] then
+        error('Alias: ' .. name .. ' already exists for command: ' .. self.name, 2)
+    end
+
+    self.aliases[name] = name
+
+    return self
+end
+
 --- Sets the command as default if marking paramaters as optional.
 ---@param defaults any
 ---@return MetaCommand
@@ -553,6 +566,7 @@ end
 
 Public.new('get', 'Hover over an object to get its name.')
     :require_admin()
+    :add_alias('entity')
     :callback(
         function (player)
             local entity = player.selected

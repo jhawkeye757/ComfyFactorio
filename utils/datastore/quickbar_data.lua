@@ -1,6 +1,6 @@
 -- created by Gerkiz for ComfyFactorio
 
-local Token = require 'utils.token'
+local Task = require 'utils.task_token'
 local Color = require 'utils.color_presets'
 local Server = require 'utils.server'
 local Event = require 'utils.event'
@@ -36,20 +36,79 @@ Global.register(
 
 local Public = {}
 
-local function apply_stash(player)
-    local stash = this.logistics[player.name]
-    if stash then
-        for i, slot in pairs(stash) do
-            if slot and slot.name then
-                player.set_personal_logistic_slot(i, { name = slot.name, min = slot.min, max = slot.max })
+local function check_if_item_exists(item)
+    if not prototypes.item[item] then
+        return false
+    end
+    return true
+end
+
+local function apply_logistic_network(player, saved_data)
+    if not saved_data then
+        return
+    end
+    if player.get_requester_point() then
+        if saved_data[1] and saved_data[1].name then
+            local old_section = player.get_requester_point().get_section(1)
+            if old_section then
+                old_section.group = 'Migrated from old format'
+                old_section.active = true
+                for i, slot in pairs(saved_data) do
+                    if slot and slot.name and check_if_item_exists(slot.name) then
+                        local item_stack = { min = slot.min, max = slot.max, value = { comparator = "=", name = slot.name, quality = "normal", type = slot.type or nil } }
+                        old_section.set_slot(i, item_stack)
+                    end
+                end
             end
+            return true
+        else
+            for index, section in pairs(saved_data) do
+                local new_section = player.get_requester_point().get_section(index) or player.get_requester_point().add_section()
+
+                if section and new_section then
+                    local slots = section.slots
+                    new_section.group = section.group
+                    new_section.active = section.active
+                    if slots and type(slots) == 'table' then
+                        for i, slot in pairs(slots) do
+                            if slot and slot.name and check_if_item_exists(slot.name) then
+                                local item_stack = { min = slot.min, max = slot.max, value = { comparator = "=", name = slot.name, quality = "normal", type = slot.type or nil } }
+                                new_section.set_slot(i, item_stack)
+                            end
+                        end
+                    end
+                end
+            end
+            return true
         end
-        this.logistics[player.name] = nil
+    else
+        if this.logistics[player.name] and this.logistics[player.name] == 1 then
+            return false
+        end
+
+        this.logistics[player.name] = saved_data
     end
 end
 
+local function apply_stash(player)
+    local saved_data = this.logistics[player.name]
+    apply_logistic_network(player, saved_data)
+    this.logistics[player.name] = nil
+end
+
+local post_apply_token =
+    Task.register(
+        function ()
+            Core.iter_connected_players(
+                function (player)
+                    apply_stash(player)
+                end
+            )
+        end
+    )
+
 local fetch_quickbar =
-    Token.register(
+    Task.register(
         function (data)
             local key = data.key
             local value = data.value
@@ -68,28 +127,16 @@ local fetch_quickbar =
     )
 
 local fetch_logistics =
-    Token.register(
+    Task.register(
         function (data)
             local key = data.key
-            local value = data.value
-            local player = game.players[key]
+            local saved_data = data.value
+            local player = game.get_player(key)
             if not player or not player.valid then
                 return
             end
-            local tech = player.force.technologies['logistic-robotics'].researched
-            if value then
-                for i, slot in pairs(value) do
-                    if slot and slot.name then
-                        if tech then
-                            player.set_personal_logistic_slot(i, { name = slot.name, min = slot.min, max = slot.max })
-                        else
-                            if not this.logistics[player.name] then
-                                this.logistics[player.name] = {}
-                            end
-                            this.logistics[player.name][i] = { name = slot.name, min = slot.min, max = slot.max }
-                        end
-                    end
-                end
+            if saved_data then
+                apply_logistic_network(player, saved_data)
             end
         end
     )
@@ -138,7 +185,7 @@ function Public.save_quickbar(player)
     end
     if next(slots) then
         set_data(dataset, player.name, slots)
-        player.print('Your quickbar has been saved.', Color.success)
+        player.print('Your quickbar has been saved.', { color = Color.success })
     end
 end
 
@@ -147,22 +194,45 @@ end
 function Public.save_logistics(player)
     local dataset = logistics_dataset
 
+    if not player.get_requester_point() then
+        return false
+    end
+
     local game_has_mods = is_game_modded()
     if game_has_mods then
         dataset = logistics_dataset_modded
     end
 
-    local slots = {}
+    local sections = {}
 
-    for i = 1, 400 do
-        local slot = player.get_personal_logistic_slot(i)
-        if slot and slot.name then
-            slots[i] = { name = slot.name, min = slot.min, max = slot.max }
+
+    for sec = 1, 4 do
+        local section = player.get_requester_point().get_section(sec)
+        if section then
+            if not sections[section.index] then
+                sections[section.index] = {}
+            end
+            local slots = {}
+            for i = 1, 100 do
+                local slot = section.get_slot(i)
+                if slot and next(slot) then
+                    slots[i] = { name = slot.value.name, min = slot.min, max = slot.max, quality = slot.value.quality, type = slot.value.type, comparator = slot.value.comparator }
+                end
+            end
+            if next(slots) then
+                sections[section.index].group = section.group
+                sections[section.index].active = section.active
+                sections[section.index].slots = slots
+            end
         end
     end
-    if next(slots) then
-        set_data(dataset, player.name, slots)
-        player.print('Your personal logistics has been saved.', Color.success)
+
+    if next(sections) then
+        set_data(dataset, player.name, sections)
+        player.print('Your personal logistics has been saved.', { color = Color.success })
+        return true
+    else
+        return false
     end
 end
 
@@ -177,7 +247,7 @@ function Public.remove_quickbar(player)
     end
 
     set_data(dataset, player.name, nil)
-    player.print('Your quickbar has been removed.', Color.success)
+    player.print('Your quickbar has been removed.', { color = Color.success })
 end
 
 --- Removes the logistics key from the webpanel.
@@ -191,7 +261,7 @@ function Public.remove_logistics(player)
     end
 
     set_data(dataset, player.name, nil)
-    player.print('Your personal logistics has been removed.', Color.success)
+    player.print('Your personal logistics has been removed.', { color = Color.success })
 end
 
 local fetch_quickbar_on_join = Public.fetch_quickbar
@@ -214,12 +284,12 @@ Commands.new('save-logistics', 'Save your personal logistics preset so it´s alw
     :require_backend()
     :callback(
         function (player)
-            local success, _ = pcall(save_logistics, player)
-            player.print('Notice: only the first 400 slots are saved.', Color.warning)
+            local success = save_logistics(player)
             if not success then
-                player.print('An error occured while trying to save your logistics slots.', Color.warning)
+                player.print('An error occured while trying to save your logistics slots.', { color = { color = Color.warning } })
                 return false
             end
+            player.print('Notice: only the first 400 slots are saved.', { color = { color = Color.warning } })
             player.print('Logistics saved.')
         end
     )
@@ -266,11 +336,7 @@ Event.add(
     function (event)
         local research = event.research
         if research.name == 'logistic-robotics' then
-            Core.iter_connected_players(
-                function (player)
-                    apply_stash(player)
-                end
-            )
+            Task.set_timeout_in_ticks(10, post_apply_token)
         end
     end
 )

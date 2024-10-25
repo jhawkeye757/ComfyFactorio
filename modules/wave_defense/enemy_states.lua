@@ -77,10 +77,19 @@ local tier_damage = {
 }
 
 local commands = {
-    ['flee'] = 'goto',
+    ['flee'] = 'attack',
     ['goto'] = 'attack_area',
-    ['attack'] = 'attack',
-    ['attack_area'] = 'attack_area',
+    ['attack'] = 'flee',
+    ['attack_area'] = 'goto',
+}
+
+local pf_flags = {
+    allow_destroy_friendly_entities = true,
+    allow_paths_through_own_entities = true,
+    cache = true,
+    prefer_straight_paths = false,
+    low_priority = false,
+    no_break = false,
 }
 
 --- A token to register tasks that entities are given
@@ -502,7 +511,7 @@ local function on_entity_damaged(event)
         state:spawn_children()
     end
 
-    if random(1, 128) == 1 then
+    if random(1, 64) == 1 then
         state:flee_command()
     end
 
@@ -514,7 +523,7 @@ local function on_entity_damaged(event)
     end
 end
 
---- Creates a new state for a boss unit.
+
 ---@param data table
 ---@return table|nil
 function Public.new(data)
@@ -535,6 +544,7 @@ function Public.new(data)
     state.teleported = 0
     state.uid = uid
     state.command = 'goto'
+    state.last_command = 0
     state.id = state.entity.unit_number
     state.update_rate = this.settings.update_rate + (10 * state.uid)
     state.ttl = data.ttl or tick + (5 * 3600) -- 5 minutes duration
@@ -860,7 +870,7 @@ function Public._esp:find_targets()
                 self.commands[#self.commands + 1] = {
                     type = defines.command.attack,
                     target = obstacles[ii],
-                    distraction = defines.distraction.none
+                    distraction = defines.distraction.by_anything
                 }
             end
         end
@@ -983,11 +993,26 @@ function Public._esp:go_to_location_command()
         self:check_unit_group()
     end
 
-    self.group.set_command {
+    local group_commands = {}
+
+    group_commands[#group_commands + 1] = {
         type = defines.command.go_to_location,
-        destination_entity = unit,
-        radius = 3
+        pathfind_flags = pf_flags,
+        destination = unit.position,
+        distraction = defines.distraction.by_enemy
     }
+
+    if not self.command_added then
+        self.command_added = true
+
+        self.group.set_command(
+            {
+                type = defines.command.compound,
+                structure_type = defines.compound_command.return_last,
+                commands = group_commands
+            }
+        )
+    end
 end
 
 function Public._esp:attack_command()
@@ -1000,10 +1025,27 @@ function Public._esp:attack_command()
         self:check_unit_group()
     end
 
-    self.group.set_command {
+    local group_commands = {}
+
+    group_commands[#group_commands + 1] = {
+        type = defines.command.go_to_location,
+        pathfind_flags = pf_flags,
+        destination = unit.position,
+        distraction = defines.distraction.by_enemy
+    }
+
+    group_commands[#group_commands + 1] = {
         type = defines.command.attack,
         target = unit
     }
+
+    self.group.set_command(
+        {
+            type = defines.command.compound,
+            structure_type = defines.compound_command.return_last,
+            commands = group_commands
+        }
+    )
 end
 
 function Public._esp:attack_area_command()
@@ -1016,12 +1058,29 @@ function Public._esp:attack_area_command()
         self:check_unit_group()
     end
 
-    self.group.set_command {
+    local group_commands = {}
+
+    group_commands[#group_commands + 1] = {
+        type = defines.command.go_to_location,
+        pathfind_flags = pf_flags,
+        destination = unit.position,
+        distraction = defines.distraction.by_enemy
+    }
+
+    group_commands[#group_commands + 1] = {
         type = defines.command.attack_area,
         destination = { x = unit.position.x, y = unit.position.y },
         radius = 30,
-        distraction = defines.distraction.none
+        distraction = defines.distraction.by_anything
     }
+
+    self.group.set_command(
+        {
+            type = defines.command.compound,
+            structure_type = defines.compound_command.return_last,
+            commands = group_commands
+        }
+    )
 end
 
 function Public._esp:flee_command()
@@ -1034,10 +1093,25 @@ function Public._esp:flee_command()
         self:check_unit_group()
     end
 
-    self.group.set_command {
+    local group_commands = {}
+
+    group_commands[#group_commands + 1] = {
         type = defines.command.flee,
         from = unit,
     }
+
+    group_commands[#group_commands + 1] = {
+        type = defines.command.flee,
+        from = unit,
+    }
+
+    self.group.set_command(
+        {
+            type = defines.command.compound,
+            structure_type = defines.compound_command.return_last,
+            commands = group_commands
+        }
+    )
 end
 
 function Public._esp:work(tick)
@@ -1045,12 +1119,21 @@ function Public._esp:work(tick)
         self:set_frenzy()
     end
 
-    if self.command == 'goto' then
-        self:go_to_location_command()
-    elseif self.command == 'attack' then
-        self:attack_command()
-    elseif self.command == 'attack_area' then
-        self:attack_area_command()
+    if self.last_command < tick then
+        if self.command == 'goto' then
+            self:go_to_location_command()
+        elseif self.command == 'attack' then
+            -- self:attack_command()
+            -- self:go_to_location_command()
+        elseif self.command == 'attack_area' then
+            self:attack_area_command()
+            -- self:go_to_location_command()
+        end
+        self.last_command = tick + 500
+
+        if this.target_settings.main_target and this.target_settings.main_target.valid and this.target_settings.main_target.name == 'character' then
+            Event.raise(Public.events.on_primary_target_missing)
+        end
     end
 
     if self.go_havoc and self.clear_go_havoc > tick then

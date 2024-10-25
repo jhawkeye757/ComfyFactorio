@@ -122,7 +122,7 @@ local function validate_action(player, action)
     if not admin_button_validation[action][player.name] then
         admin_button_validation[action][player.name] = true
         Task.set_timeout_in_ticks(200, clear_validation_token, { player_name = player.name, action = action })
-        player.print('Please run this again if you are certain that you want to run this action[' .. action .. '].', Color.warning)
+        player.print('Please run this again if you are certain that you want to run this action[' .. action .. '].', { color = Color.warning })
         return true
     end
     return false
@@ -131,7 +131,7 @@ end
 local function admin_only_message(str)
     for _, player in pairs(game.connected_players) do
         if player.admin == true then
-            player.print('Admins-only-message: ' .. str, { r = 0.88, g = 0.88, b = 0.88 })
+            player.print('Admins-only-message: ' .. str, { color = { r = 0.88, g = 0.88, b = 0.88 } })
         end
     end
 end
@@ -142,7 +142,7 @@ local function jail(player, source_player)
     end
 
     if player.name == source_player.name then
-        player.print("You can't select yourself!", { r = 1, g = 0.5, b = 0.1 })
+        player.print("You can't select yourself!", { color = { r = 1, g = 0.5, b = 0.1 } })
         clear_validation_action(source_player.name, 'jail')
         return
     end
@@ -166,7 +166,7 @@ local function clear_biters(player)
         end
     end
 
-    player.print('Cleared: ' .. count .. ' biters.', Color.warning)
+    player.print('Cleared: ' .. count .. ' biters.', { color = Color.warning })
 
     clear_validation_action(player.name, 'clear_biters')
 end
@@ -177,7 +177,7 @@ local function mute(player, source_player)
     end
 
     if player.name == source_player.name then
-        player.print("You can't select yourself!", { r = 1, g = 0.5, b = 0.1 })
+        player.print("You can't select yourself!", { color = { r = 1, g = 0.5, b = 0.1 } })
         clear_validation_action(source_player.name, 'mute')
         return
     end
@@ -194,7 +194,7 @@ local function free(player, source_player)
     end
 
     if player.name == source_player.name then
-        player.print("You can't select yourself!", { r = 1, g = 0.5, b = 0.1 })
+        player.print("You can't select yourself!", { color = { r = 1, g = 0.5, b = 0.1 } })
         clear_validation_action(source_player.name, 'free')
         return
     end
@@ -214,12 +214,12 @@ local function bring_player(player, source_player)
     end
 
     if player.name == source_player.name then
-        player.print("You can't select yourself!", { r = 1, g = 0.5, b = 0.1 })
+        player.print("You can't select yourself!", { color = { r = 1, g = 0.5, b = 0.1 } })
         clear_validation_action(source_player.name, 'bring_player')
         return
     end
     if player.driving == true then
-        source_player.print('Target player is in a vehicle, teleport not available.', { r = 0.88, g = 0.88, b = 0.88 })
+        source_player.print('Target player is in a vehicle, teleport not available.', { color = { r = 0.88, g = 0.88, b = 0.88 } })
         clear_validation_action(source_player.name, 'bring_player')
         return
     end
@@ -241,7 +241,7 @@ local function go_to_player(player, source_player)
     end
 
     if player.name == source_player.name then
-        player.print("You can't select yourself!", { r = 1, g = 0.5, b = 0.1 })
+        player.print("You can't select yourself!", { color = { r = 1, g = 0.5, b = 0.1 } })
         clear_validation_action(source_player.name, 'go_to_player')
         return
     end
@@ -255,7 +255,7 @@ end
 
 local function spank(player, source_player)
     if player.name == source_player.name then
-        return player.print("You can't select yourself!", { r = 1, g = 0.5, b = 0.1 })
+        return player.print("You can't select yourself!", { color = { r = 1, g = 0.5, b = 0.1 } })
     end
     if player.character then
         if player.character.health > 1 then
@@ -273,7 +273,7 @@ local damage_messages = {
 }
 local function damage(player, source_player)
     if player.name == source_player.name then
-        return player.print("You can't select yourself!", { r = 1, g = 0.5, b = 0.1 })
+        return player.print("You can't select yourself!", { color = { r = 1, g = 0.5, b = 0.1 } })
     end
     if player.character then
         if player.character.health > 1 then
@@ -297,7 +297,7 @@ local function kill(player, source_player)
         return
     end
     if player.name == source_player.name then
-        player.print("You can't select yourself!", { r = 1, g = 0.5, b = 0.1 })
+        player.print("You can't select yourself!", { color = { r = 1, g = 0.5, b = 0.1 } })
         clear_validation_action(source_player.name, 'kill')
         return
     end
@@ -319,7 +319,7 @@ local function enemy(player, source_player)
     end
 
     if player.name == source_player.name then
-        player.print("You can't select yourself!", { r = 1, g = 0.5, b = 0.1 })
+        player.print("You can't select yourself!", { color = { r = 1, g = 0.5, b = 0.1 } })
         clear_validation_action(source_player.name, 'enemy')
         return
     end
@@ -338,7 +338,7 @@ local function ally(player, source_player)
     end
 
     if player.name == source_player.name then
-        player.print("You can't select yourself!", { r = 1, g = 0.5, b = 0.1 })
+        player.print("You can't select yourself!", { color = { r = 1, g = 0.5, b = 0.1 } })
         clear_validation_action(source_player.name, 'ally')
         return
     end
@@ -439,10 +439,10 @@ local function clear_items_on_ground(player)
         end
     end
     if i == 0 then
-        return player.print('No items to clear!', Color.warning)
+        return player.print('No items to clear!', { color = Color.warning })
     end
 
-    player.print('Cleared: ' .. i .. ' items.', Color.success)
+    player.print('Cleared: ' .. i .. ' items.', { color = Color.success })
     clear_validation_action(player.name, 'clear_items_on_ground')
 end
 
@@ -1115,7 +1115,7 @@ local function on_gui_click(event)
             return
         end
         if target_player_name == 'Select Player' then
-            player.print('[AdminGui] No target player selected.', { r = 0.88, g = 0.88, b = 0.88 })
+            player.print('[AdminGui] No target player selected.', { color = { r = 0.88, g = 0.88, b = 0.88 } })
             return
         end
         local target_player = game.players[target_player_name]
@@ -1306,7 +1306,7 @@ Gui.on_click(
         if current_page == 1 then
             current_page = 1
             player_data.current_page = current_page
-            player.print('[Admin] There are no more pages beyond this point.', Color.warning)
+            player.print('[Admin] There are no more pages beyond this point.', { color = Color.warning })
             return
         end
 
@@ -1359,7 +1359,7 @@ Gui.on_click(
         if current_page == last_page then
             current_page = last_page
             player_data.current_page = current_page
-            player.print('[Admin] There are no more pages beyond this point.', Color.warning)
+            player.print('[Admin] There are no more pages beyond this point.', { color = Color.warning })
             return
         end
 
