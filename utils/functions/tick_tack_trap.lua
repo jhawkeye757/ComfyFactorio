@@ -9,27 +9,27 @@ local traps = {}
 
 Global.register(
     traps,
-    function(t)
+    function (t)
         traps = t
     end
 )
 
-local tick_tacks = {'*tick*', '*tick*', '*tack*', '*tak*', '*tik*', '*tok*'}
+local tick_tacks = { '*tick*', '*tick*', '*tack*', '*tak*', '*tik*', '*tok*' }
 
 local kaboom_weights = {
-    {name = 'grenade', chance = 7},
-    {name = 'cluster-grenade', chance = 1},
-    {name = 'destroyer-capsule', chance = 1},
-    {name = 'defender-capsule', chance = 4},
-    {name = 'distractor-capsule', chance = 3},
-    {name = 'poison-capsule', chance = 2},
-    {name = 'explosive-uranium-cannon-projectile', chance = 3},
-    {name = 'explosive-cannon-projectile', chance = 5}
+    { name = 'grenade',                             chance = 7 },
+    { name = 'cluster-grenade',                     chance = 1 },
+    { name = 'destroyer-capsule',                   chance = 1 },
+    { name = 'defender-capsule',                    chance = 4 },
+    { name = 'distractor-capsule',                  chance = 3 },
+    { name = 'poison-capsule',                      chance = 2 },
+    { name = 'explosive-uranium-cannon-projectile', chance = 3 },
+    { name = 'explosive-cannon-projectile',         chance = 5 }
 }
 
 local colors = {
-    trap = {r = 0.75, g = 0.75, b = 0.75},
-    sentries = {r = 0.8, g = 0.0, b = 0.0},
+    trap = { r = 0.75, g = 0.75, b = 0.75 },
+    sentries = { r = 0.8, g = 0.0, b = 0.0 },
 }
 
 local kabooms = {}
@@ -47,7 +47,7 @@ local function create_flying_text(surface, position, text)
     if text == '...' then
         return
     end
-    surface.play_sound({path = 'utility/armor_insert', position = position, volume_modifier = 0.75})
+    surface.play_sound({ path = 'utility/armor_insert', position = position, volume_modifier = 0.75 })
 end
 
 ---Creates actual final effect
@@ -63,7 +63,7 @@ local function create_kaboom(surface, position, name, force)
     local speed = 0.5
     if name == 'defender-capsule' or name == 'destroyer-capsule' or name == 'distractor-capsule' then
         FT.flying_text(nil, surface, position, '(((Sentries Engaging Target)))', colors.sentries)
-        local nearest_player_unit = surface.find_nearest_enemy({position = position, max_distance = 128, force = force})
+        local nearest_player_unit = surface.find_nearest_enemy({ position = position, max_distance = 128, force = force })
         if nearest_player_unit then
             target = nearest_player_unit.position
         end
@@ -81,7 +81,7 @@ local function create_kaboom(surface, position, name, force)
 end
 
 ---Create Tick Tack Trap
----@param surface LuaSurface 
+---@param surface LuaSurface
 ---@param position MapPosition
 ---@param force LuaForce|nil #optional, if nil, uses enemy force
 local function tick_tack_trap(surface, position, force)
@@ -113,18 +113,18 @@ local function tick_tack_trap(surface, position, force)
         if t < tick_tack_count * 60 then
             traps[tick][#traps[tick] + 1] = {
                 callback = 'create_flying_text',
-                params = {surface, {x = position.x, y = position.y}, tick_tacks[math.random(1, #tick_tacks)]}
+                params = { surface, { x = position.x, y = position.y }, tick_tacks[math.random(1, #tick_tacks)] }
             }
         else
             if math.random(1, 10) == 1 then
                 traps[tick][#traps[tick] + 1] = {
                     callback = 'create_flying_text',
-                    params = {surface, {x = position.x, y = position.y}, '...'}
+                    params = { surface, { x = position.x, y = position.y }, '...' }
                 }
             else
                 traps[tick][#traps[tick] + 1] = {
                     callback = 'create_kaboom',
-                    params = {surface, {x = position.x, y = position.y}, kabooms[math.random(1, #kabooms)], force}
+                    params = { surface, { x = position.x, y = position.y }, kabooms[math.random(1, #kabooms)], force }
                 }
             end
         end

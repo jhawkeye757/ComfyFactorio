@@ -17,12 +17,10 @@ require 'utils.chatbot'
 require 'utils.common_commands'
 require 'utils.antigrief'
 require 'utils.debug.command'
-require 'modules.corpse_markers'
 require 'modules.floaty_chat'
 require 'modules.show_inventory'
 require 'modules.inserter_drops_pickup'
 require 'modules.autostash'
-require 'modules.blueprint_requesting'
 
 require 'utils.gui.init'
 require 'utils.freeplay'
@@ -84,7 +82,7 @@ require 'utils.remote_chunks'
 --require 'maps.biter_battles.biter_battles'
 
 --![[Guide a Train through rough terrain, while defending it from the biters]]--
---require 'maps.mountain_fortress_v3.main'
+require 'maps.mountain_fortress_v3.main'
 --require 'maps.mountain_fortress_v2.main'
 --require 'maps.mountain_fortress'
 

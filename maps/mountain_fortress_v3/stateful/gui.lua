@@ -113,26 +113,31 @@ local function notify_won_to_discord(buff)
             inline = 'false'
         },
         field3 = {
+            text1 = 'Current winning streak:',
+            text2 = stateful.current_streak,
+            inline = 'false'
+        },
+        field4 = {
             text1 = 'Wave:',
             text2 = format_number(wave, true),
             inline = 'false'
         },
-        field4 = {
+        field5 = {
             text1 = 'Total connected players:',
             text2 = total_players,
             inline = 'false'
         },
-        field5 = {
+        field6 = {
             text1 = 'Pickaxe Upgrade:',
             text2 = pick_tier .. ' (' .. upgrades.pickaxe_tier .. ')',
             inline = 'false'
         },
-        field6 = {
+        field7 = {
             text1 = 'Connected players:',
             text2 = total_connected_players,
             inline = 'false'
         },
-        field7 = {
+        field8 = {
             text1 = 'Buff granted:',
             text2 = buff.discord,
             inline = 'false'
@@ -547,6 +552,22 @@ local function boss_frame(player, alert)
     data.rounds_survived_label = rounds_survived_right_flow.add({ type = 'label', caption = stateful.rounds_survived })
     spacer(frame)
 
+    local current_streak_tbl = frame.add { type = 'table', column_count = 2 }
+    current_streak_tbl.style.horizontally_stretchable = true
+
+    local current_streak_flow = current_streak_tbl.add({ type = 'flow' })
+    current_streak_flow.style.horizontal_align = 'left'
+    current_streak_flow.style.horizontally_stretchable = true
+
+    current_streak_flow.add({ type = 'label', caption = { 'stateful.current_streak' }, tooltip = { 'stateful.current_streak_tooltip' } })
+    frame.add({ type = 'line', direction = 'vertical' })
+    local current_streak_right_flow = current_streak_tbl.add({ type = 'flow' })
+    current_streak_right_flow.style.horizontal_align = 'right'
+    current_streak_right_flow.style.horizontally_stretchable = true
+
+    data.current_streak_label = current_streak_right_flow.add({ type = 'label', caption = stateful.current_streak })
+    spacer(frame)
+
     frame.add({ type = 'line' })
 
     spacer(frame)
@@ -664,6 +685,22 @@ main_frame = function (player)
     data.rounds_survived_label = rounds_survived_right_flow.add({ type = 'label', caption = stateful.rounds_survived })
     spacer(frame)
 
+    local current_streak_tbl = frame.add { type = 'table', column_count = 2 }
+    current_streak_tbl.style.horizontally_stretchable = true
+
+    local current_streak_flow = current_streak_tbl.add({ type = 'flow' })
+    current_streak_flow.style.horizontal_align = 'left'
+    current_streak_flow.style.horizontally_stretchable = true
+
+    current_streak_flow.add({ type = 'label', caption = { 'stateful.current_streak' }, tooltip = { 'stateful.current_streak_tooltip' } })
+    frame.add({ type = 'line', direction = 'vertical' })
+    local current_streak_right_flow = current_streak_tbl.add({ type = 'flow' })
+    current_streak_right_flow.style.horizontal_align = 'right'
+    current_streak_right_flow.style.horizontally_stretchable = true
+
+    data.current_streak_label = current_streak_right_flow.add({ type = 'label', caption = stateful.current_streak })
+    spacer(frame)
+
     frame.add({ type = 'line' })
 
     spacer(frame)
@@ -775,18 +812,6 @@ main_frame = function (player)
     spacer(frame)
     frame.add({ type = 'line' })
     spacer(frame)
-    -- if not stateful.collection.final_arena_disabled then
-    --     local final_label = frame.add({type = 'label', caption = {'stateful.tooltip_final'}})
-    --     final_label.style.single_line = false
-    -- else
-    --     local final_label_disabled = frame.add({type = 'label', caption = {'stateful.tooltip_final_disabled'}})
-    --     final_label_disabled.style.single_line = false
-    --     local reason_label = frame.add({type = 'label', caption = {'stateful.tooltip_completing'}})
-    --     reason_label.style.single_line = false
-    -- end
-    -- spacer(frame)
-    -- frame.add({type = 'line'})
-    spacer(frame)
 
     local close = frame.add({ type = 'button', name = close_button, caption = 'Close' })
     close.style.horizontally_stretchable = true
@@ -818,6 +843,10 @@ local function update_data()
             end
             if data.rounds_survived_label and data.rounds_survived_label.valid then
                 data.rounds_survived_label.caption = stateful.rounds_survived
+            end
+
+            if data.current_streak_label and data.current_streak_label.valid then
+                data.current_streak_label.caption = stateful.current_streak
             end
             if data.randomized_zone_label and data.randomized_zone_label.valid and stateful.objectives.randomized_zone then
                 if breached_wall >= stateful.objectives.randomized_zone then
@@ -936,6 +965,10 @@ local function update_data()
             end
             if data_boss.rounds_survived_label and data_boss.rounds_survived_label.valid then
                 data_boss.rounds_survived_label.caption = stateful.rounds_survived
+            end
+
+            if data_boss.current_streak_label and data_boss.current_streak_label.valid then
+                data_boss.current_streak_label.caption = stateful.current_streak
             end
 
             if collection.survive_for and data_boss.survive_for and data_boss.survive_for.valid then
@@ -1141,7 +1174,7 @@ local function update_raw()
                 notify_won_to_discord(buff)
                 local locomotive = Public.get('locomotive')
                 if locomotive and locomotive.valid then
-                    locomotive.surface.spill_item_stack(locomotive.position, { name = 'coin', count = 512 }, false)
+                    locomotive.surface.spill_item_stack({ position = locomotive.position, stack = { name = 'coin', count = 512, quality = 'normal' } })
                 end
                 Public.set('game_reset_tick', 5400)
                 return
@@ -1172,42 +1205,6 @@ local function update_raw()
         Server.to_discord_embed('All objectives has been completed! Take your time to prepare for the final push!')
         Alert.alert_all_players(300, 'All objectives has been completed!')
         Alert.alert_all_players(300, 'Take your time to prepare for the final push!')
-
-        if stateful.collection.final_arena_disabled then
-            game.print('[color=yellow][Mtn v3][/color] Game won!')
-            game.print('[color=yellow][Mtn v3][/color] Final battle arena is currently being tweaked.')
-            collection.game_won = true
-            stateful.collection.gather_time = 0
-            stateful.collection.gather_time_timer = 0
-            collection.survive_for = 0
-            collection.survive_for_timer = 0
-            refresh_frames()
-
-            local reversed = Public.get_stateful_settings('reversed')
-            if reversed then
-                Public.set_stateful_settings('reversed', false)
-            else
-                Public.set_stateful_settings('reversed', true)
-            end
-
-            collection.game_won_notified = true
-            refresh_boss_frame()
-            play_game_won()
-            WD.disable_spawning_biters(true)
-            Collapse.start_now(false)
-            WD.nuke_wave_gui()
-            Server.to_discord_embed('Game won!')
-            stateful.rounds_survived = stateful.rounds_survived + 1
-            stateful.selected_objectives = nil
-            local buff = Stateful.save_settings()
-            notify_won_to_discord(buff)
-            local locomotive = Public.get('locomotive')
-            if locomotive and locomotive.valid then
-                locomotive.surface.spill_item_stack(locomotive.position, { name = 'coin', count = 512 }, false)
-            end
-            Public.set('game_reset_tick', 5400)
-            return
-        end
 
         stateful.collection.gather_time = tick + (10 * 3600)
         stateful.collection.gather_time_timer = tick + (10 * 3600)

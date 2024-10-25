@@ -9,7 +9,7 @@ local Vacants = require 'modules.clear_vacant_players'
 local Math = require 'utils.math.math'
 
 local Public = {}
-local mixed_ores = { 'copper-ore', 'iron-ore', 'stone', 'coal' }
+-- local mixed_ores = { 'copper-ore', 'iron-ore', 'stone', 'coal' }
 
 local function clear_selectors(journey)
     for k, world_selector in pairs(journey.world_selectors) do
@@ -59,7 +59,7 @@ local function place_teleporter(journey, surface, position, build_beacon)
     surface.create_entity({ name = 'electric-beam-no-sound', position = position, source = { x = position.x - 1.5, y = position.y + 7.5 }, target = { x = position.x - 1.5, y = position.y - 1.0 } })
     surface.destroy_decoratives({ area = { { position.x - 5, position.y - 5 }, { position.x + 5, position.y + 5 } } })
     if build_beacon then
-        local beacon = surface.create_entity({ name = 'cargo-landing-pad', position = { x = position.x + 3 , y = position.y + 2}, force = 'player' })
+        local beacon = surface.create_entity({ name = 'cargo-landing-pad', position = { x = position.x + 3, y = position.y + 2 }, force = 'player' })
         journey.beacon_objective_health = 10000
         beacon.operable = true
         beacon.minable = false
@@ -69,7 +69,7 @@ local function place_teleporter(journey, surface, position, build_beacon)
             surface = surface,
             target = {
                 entity = beacon,
-                offset = {0, -1.5},
+                offset = { 0, -1.5 },
                 position = beacon.position
             },
             color = { 0, 1, 0 },
@@ -84,7 +84,7 @@ local function place_teleporter(journey, surface, position, build_beacon)
                 surface = surface,
                 target = {
                     entity = beacon,
-                    offset = {0, -1.0},
+                    offset = { 0, -1.0 },
                     position = beacon.position
                 },
                 color = { 0, 1, 0 },
@@ -98,7 +98,7 @@ local function place_teleporter(journey, surface, position, build_beacon)
     end
 end
 
-local function destroy_teleporter(journey, surface, position)
+local function destroy_teleporter(_, surface, position)
     local tiles = {}
     for x = -2, 7, 1 do
         for y = -2, 7, 1 do
@@ -123,7 +123,7 @@ local function drop_player_items(journey, player)
 
     player.clear_cursor()
 
-    for i = 1, player.crafting_queue_size, 1 do
+    for _ = 1, player.crafting_queue_size, 1 do
         if player.crafting_queue_size > 0 then
             player.cancel_crafting { index = 1, count = 99999999 }
         end
@@ -138,7 +138,7 @@ local function drop_player_items(journey, player)
             for i = 1, #inventory, 1 do
                 local slot = inventory[i]
                 if slot.valid and slot.valid_for_read then
-                    surface.spill_item_stack({position = player.position, stack = slot, enable_looted = true, allow_belts = false})
+                    surface.spill_item_stack({ position = player.position, stack = slot, enable_looted = true, allow_belts = false })
                 end
             end
             inventory.clear()
@@ -252,7 +252,7 @@ local function delete_nauvis_chunks(journey)
         return
     end
 
-    for c = 1, 12, 1 do
+    for _ = 1, 12, 1 do
         local chunk_position = journey.nauvis_chunk_positions[journey.size_of_nauvis_chunk_positions]
         if chunk_position then
             surface.delete_chunk(chunk_position)
@@ -327,11 +327,14 @@ local function cargo_gui(name, itemname, tooltip, value, hidden)
             sprite.style.padding = 0
             local progressbar = frame.add({ type = 'progressbar', name = name .. '_progressbar', value = 0 })
             progressbar.style = 'achievement_progressbar'
-            progressbar.style.minimal_width = 100
-            progressbar.style.maximal_width = 100
-            progressbar.style.top_margin = 2
-            progressbar.style.right_margin = 6
-            progressbar.style.height = 20
+            local progressbar_style = progressbar.style --[[@as LuaGuiElementStyle]]
+            progressbar_style.minimal_width = 100
+            progressbar_style.maximal_width = 100
+            ---@diagnostic disable-next-line: inject-field
+            progressbar_style.top_margin = 2
+            ---@diagnostic disable-next-line: inject-field
+            progressbar_style.right_margin = 6
+            progressbar_style.height = 20
         end
         local frame = player.gui.top[name]
         frame.tooltip = tooltip
@@ -373,8 +376,6 @@ function Public.update_tooltips(journey)
 end
 
 function Public.draw_gui(journey)
-    local surface = game.surfaces.nauvis
-    local mgs = surface.map_gen_settings
     local caption = { 'journey.world', journey.world_number, Constants.unique_world_traits[journey.world_trait].name }
     local tooltip = { 'journey.world_tooltip', Constants.unique_world_traits[journey.world_trait].desc, journey.tooltip_modifiers, journey.tooltip_capsules }
 
@@ -444,7 +445,6 @@ end
 function Public.on_mothership_chunk_generated(event)
     local left_top = event.area.left_top
     local surface = event.surface
-    local seed = surface.map_gen_settings.seed
     local tiles = {}
     for x = 0, 31, 1 do
         for y = 0, 31, 1 do
@@ -555,7 +555,7 @@ function Public.hard_reset(journey)
     surface.daytime = Math.random(1, 100) * 0.01
 
     if journey.world_selectors and journey.world_selectors[1].border then
-        for k, world_selector in pairs(journey.world_selectors) do
+        for _, world_selector in pairs(journey.world_selectors) do
             for _, ID in pairs(world_selector.rectangles) do
                 ID.destroy()
             end
@@ -696,7 +696,7 @@ function Public.draw_mothership(journey)
             only_in_alt_mode = false
         }
 
-    for k, item_name in pairs({ 'arithmetic-combinator', 'constant-combinator', 'decider-combinator', 'programmable-speaker', 'red-wire', 'green-wire', 'small-lamp', 'substation', 'pipe', 'gate', 'stone-wall', 'transport-belt' }) do
+    for k, item_name in pairs({ 'arithmetic-combinator', 'constant-combinator', 'decider-combinator', 'programmable-speaker', 'small-lamp', 'substation', 'pipe', 'gate', 'stone-wall', 'transport-belt' }) do
         local chest = surface.create_entity({ name = 'infinity-chest', position = { -7 + k, Constants.mothership_radius - 3 }, force = 'player' })
         if not chest or not chest.valid then break end
         chest.set_infinity_container_filter(1, { name = item_name, count = prototypes.item[item_name].stack_size, index = 1 })
@@ -729,7 +729,7 @@ function Public.draw_mothership(journey)
         local chest = surface.create_entity({ name = 'infinity-chest', position = { (x - 2) * m, y }, force = 'player' })
         if not chest or not chest.valid then break end
         chest.set_infinity_container_filter(1, { name = 'solid-fuel', count = 50, index = 1 })
-        chest.set_infinity_container_filter(2, { name = 'artillery-shell', count = 1 , index = 2})
+        chest.set_infinity_container_filter(2, { name = 'artillery-shell', count = 1, index = 2 })
         protect(chest, false)
     end
 
@@ -749,7 +749,7 @@ function Public.teleport_players_to_mothership(journey)
     for _, player in pairs(game.connected_players) do
         if player.surface.name ~= 'mothership' then
             Public.clear_player(player)
-            player.teleport(surface.find_non_colliding_position('character', { 0, 0 }, 32, 0.5) or {0,0}, surface)
+            player.teleport(surface.find_non_colliding_position('character', { 0, 0 }, 32, 0.5) or { 0, 0 }, surface)
             journey.characters_in_mothership = journey.characters_in_mothership + 1
             table.insert(journey.mothership_messages, 'Welcome home ' .. player.name .. '!')
             return
@@ -815,19 +815,19 @@ local function draw_background(journey, surface)
         return
     end
     local speed = journey.mothership_speed
-    for c = 1, 16 * speed, 1 do
+    for _ = 1, 16 * speed, 1 do
         local position = Constants.particle_spawn_vectors[Math.random(1, Constants.size_of_particle_spawn_vectors)]
         surface.create_entity({ name = 'shotgun-pellet', position = position, target = { position[1], position[2] + Constants.mothership_radius * 2 }, speed = speed })
     end
-    for c = 1, 16 * speed, 1 do
+    for _ = 1, 16 * speed, 1 do
         local position = Constants.particle_spawn_vectors[Math.random(1, Constants.size_of_particle_spawn_vectors)]
         surface.create_entity({ name = 'piercing-shotgun-pellet', position = position, target = { position[1], position[2] + Constants.mothership_radius * 2 }, speed = speed })
     end
-    for c = 1, 2 * speed, 1 do
+    for _ = 1, 2 * speed, 1 do
         local position = Constants.particle_spawn_vectors[Math.random(1, Constants.size_of_particle_spawn_vectors)]
         surface.create_entity({ name = 'cannon-projectile', position = position, target = { position[1], position[2] + Constants.mothership_radius * 2 }, speed = speed })
     end
-    for c = 1, 1 * speed, 1 do
+    for _ = 1, 1 * speed, 1 do
         local position = Constants.particle_spawn_vectors[Math.random(1, Constants.size_of_particle_spawn_vectors)]
         surface.create_entity({ name = 'uranium-cannon-projectile', position = position, target = { position[1], position[2] + Constants.mothership_radius * 2 }, speed = speed })
     end
@@ -848,7 +848,7 @@ local function draw_background(journey, surface)
     end
 end
 
-local function roll_bonus_goods(journey, trait, amount)
+local function roll_bonus_goods(_, trait, amount)
     local loot = Constants.unique_world_traits[trait].loot
     local bonus_goods = {}
     while #bonus_goods < (amount or 3) do
@@ -976,7 +976,7 @@ function Public.set_world_selectors(journey)
             }
         )
 
-        for k2, modifier in pairs(modifiers) do
+        for _, modifier in pairs(modifiers) do
             y_modifier = y_modifier + 0.8
             local text = ''
             if modifier.value > 0 then
@@ -1033,7 +1033,7 @@ function Public.set_world_selectors(journey)
         y_modifier = y_modifier + 1.1
         local x_modifier = -0.5
 
-        for k2, good in pairs(world_selector.bonus_goods) do
+        for _, good in pairs(world_selector.bonus_goods) do
             local render_id =
                 rendering.draw_text {
                     text = '+' .. good[2],
@@ -1055,13 +1055,13 @@ function Public.set_world_selectors(journey)
                 x_modifier = x_modifier + 0.18
             end
 
-            local render_id =
+            local another_render_id =
                 rendering.draw_sprite {
                     sprite = 'item/' .. good[1],
                     surface = surface,
                     target = { position.x + x_modifier, position.y + 0.5 + y_modifier }
                 }
-            table.insert(texts, render_id)
+            table.insert(texts, another_render_id)
 
             x_modifier = x_modifier + 1.70
         end
@@ -1445,7 +1445,7 @@ function Public.dispatch_goods(journey)
 
     if journey.dispatch_beacon_position then
         local good = goods_to_dispatch[journey.dispatch_key]
-        surface.spill_item_stack({position = journey.dispatch_beacon_position, stack = { name = good[1], count = good[2] }, enable_looted = true, allow_belts = false})
+        surface.spill_item_stack({ position = journey.dispatch_beacon_position, stack = { name = good[1], count = good[2] }, enable_looted = true, allow_belts = false })
         table.remove(journey.goods_to_dispatch, journey.dispatch_key)
         journey.dispatch_beacon = nil
         journey.dispatch_beacon_position = nil
@@ -1648,7 +1648,7 @@ function Public.lure_biters(journey, position)
     --return (#biters or 0)
 end
 
-function Public.lure_far_biters(journey)
+function Public.lure_far_biters(_)
     -- if journey.game_state ~= 'world' or not journey.beacon_objective.valid then return end
     -- if journey.beacon_timer < journey.world_modifiers['beacon_irritation'] then
     -- 	journey.beacon_timer = journey.beacon_timer + 10

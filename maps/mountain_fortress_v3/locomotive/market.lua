@@ -666,7 +666,7 @@ local function redraw_market_items(gui, player, search_text)
         gui.clear()
     end
 
-    local player_item_count = 0
+    local player_item_count
 
     if not (gui and gui.valid) then
         return
@@ -1028,7 +1028,7 @@ local function gui_opened(event)
         }
     )
 
-    if script.feature_flags.quality then
+    if script.active_mods.quality then
         if game.forces.player.technologies['quality-module'].researched then
             local quality_list = Public.get('quality_list')
             local bg_right = bottom_grid.add({ type = 'label', caption = ({ 'locomotive.quality_text' }) })

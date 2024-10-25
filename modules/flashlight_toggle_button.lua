@@ -18,6 +18,13 @@ local function on_gui_click(event)
         return
     end
     local player = game.players[event.player_index]
+    if not player or not player.valid then
+        return
+    end
+
+    if player.character == nil then
+        return
+    end
 
     if storage.flashlight_enabled[player.name] == true then
         player.character.disable_flashlight()
@@ -36,6 +43,14 @@ end
 
 local function on_player_respawned(event)
     local player = game.players[event.player_index]
+    if not player or not player.valid then
+        return
+    end
+
+    if player.character == nil then
+        return
+    end
+
     if storage.flashlight_enabled[player.name] == false then
         player.character.disable_flashlight()
         return
@@ -51,6 +66,7 @@ local function on_player_joined_game(event)
         storage.flashlight_enabled = {}
     end
     local player = game.players[event.player_index]
+
     storage.flashlight_enabled[player.name] = true
     if player.gui.top['flashlight_toggle'] then
         return

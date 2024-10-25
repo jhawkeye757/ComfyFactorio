@@ -43,7 +43,11 @@ local function teleport_players()
 
     for _, player in pairs(game.connected_players) do
         local pos = surface.find_non_colliding_position('character', position, 3, 0)
-        player.teleport({ x = pos.x, y = pos.y }, surface)
+        if pos then
+            player.teleport({ x = pos.x, y = pos.y }, surface)
+        else
+            player.teleport({ x = position.x, y = position.y }, surface)
+        end
     end
 end
 
@@ -134,8 +138,8 @@ function Public.soft_reset_map(old_surface)
 
     local nauvis = game.surfaces.nauvis
     nauvis.clear(true)
-    nauvis.request_to_generate_chunks({ 0, 0 }, 1)
-    nauvis.force_generate_chunk_requests()
+    -- nauvis.request_to_generate_chunks({ 0, 0 }, 1)
+    -- nauvis.force_generate_chunk_requests()
 
     local radius = 512
     local area = { { x = -radius, y = -radius }, { x = radius, y = radius } }

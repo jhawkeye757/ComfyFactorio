@@ -301,15 +301,15 @@ local function clear_corpses(cmd)
         end
     end
     if param == nil then
-        player.print('[ERROR] Must specify radius!', Color.fail)
+        player.print('[ERROR] Must specify radius!', { color = Color.fail })
         return
     end
     if param < 0 then
-        player.print('[ERROR] Value is too low.', Color.fail)
+        player.print('[ERROR] Value is too low.', { color = Color.fail })
         return
     end
     if param > 500 then
-        player.print('[ERROR] Value is too big.', Color.fail)
+        player.print('[ERROR] Value is too big.', { color = Color.fail })
         return
     end
     local pos = player.position
@@ -330,9 +330,9 @@ local function clear_corpses(cmd)
         corpse = 'corpses'
     end
     if i == 0 then
-        player.print('[color=blue][Cleaner][/color] No corpses to clear!', Color.warning)
+        player.print('[color=blue][Cleaner][/color] No corpses to clear!', { color = Color.warning })
     else
-        player.print('[color=blue][Cleaner][/color] Cleared ' .. i .. ' ' .. corpse .. '!', Color.success)
+        player.print('[color=blue][Cleaner][/color] Cleared ' .. i .. ' ' .. corpse .. '!', { color = Color.success })
     end
 end
 
@@ -391,7 +391,7 @@ function Public.insert_all_items(player)
                 if _k and _v.type ~= 'mining-tool' then
                     player.character_inventory_slots_bonus = Modifiers.get_single_modifier(player, 'character_inventory_slots_bonus', 'creative')
                     player.insert { name = _k, count = _v.stack_size, quality = quality }
-                    player.print('[CREATIVE] Inserted all base items.', Color.success)
+                    player.print('[CREATIVE] Inserted all base items.', { color = Color.success })
                 end
             end
         end

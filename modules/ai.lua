@@ -167,8 +167,8 @@ remove_character = function (unit_number)
             if data.entity and data.entity.valid then
                 data.entity.destroy()
             end
-            if rendering.is_valid(data.render_id) then
-                rendering.destroy(data.render_id)
+            if data.render_id then
+                data.render_id.destroy()
             end
             remove(this.characters, index)
         end

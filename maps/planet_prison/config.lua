@@ -397,7 +397,7 @@ Public.technologies = {
     ['refined-flammables-7'] = false,
     ['rocketry'] = false,
     ['solar-panel-equipment'] = false,
-    ['stack-inserter'] = false,
+    ['bulk-inserter'] = false,
     ['stronger-explosives-2'] = false,
     ['stronger-explosives-3'] = false,
     ['stronger-explosives-4'] = false,
@@ -758,7 +758,7 @@ Public.merchant_offer = {
         },
         offer = {
             type = 'unlock-recipe',
-            recipe = 'stack-inserter'
+            recipe = 'bulk-inserter'
         }
     },
     {

@@ -173,7 +173,7 @@ local all_research = {
    { name = "electric-energy-distribution-1",   min = 1,  max = 5 },
    { name = "battery",                          min = 1,  max = 5 },
    { name = "electric-energy-accumulators",     min = 1,  max = 5 },
-   { name = "stack-inserter",                   min = 1,  max = 5 },
+   { name = "bulk-inserter",                    min = 1,  max = 5 },
    { name = "sulfur-processing",                min = 1,  max = 5 },
    { name = "advanced-electronics",             min = 1,  max = 5 },
    { name = "logistics-2",                      min = 1,  max = 5 },

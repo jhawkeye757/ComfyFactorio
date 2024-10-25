@@ -46,6 +46,19 @@ local restore_crafting_boost_token =
         end
     )
 
+local create_level_text_token =
+    Token.register(
+        function (event)
+            local player_index = event.player_index
+            local player = game.get_player(player_index)
+            if not player or not player.valid then
+                return
+            end
+
+            Public.draw_level_text(player)
+        end
+    )
+
 local function create_healthbar(player, size)
     return rendering.draw_sprite(
         {
@@ -709,8 +722,8 @@ function Public.update_tidal_wave()
                     local next_offset_y = cause_position.y + wave.direction[2] * (i + 1) - j * wave.direction[1]
                     local next_position = { next_offset_x, next_offset_y }
 
-                    surface.create_entity({ name = 'big-demolisher-fissure', position = position })
-                    -- surface.create_entity({ name = 'water-splash', position = position })
+                    -- surface.create_entity({ name = 'big-demolisher-fissure', position = position })
+                    surface.create_entity({ name = 'water-splash', position = position })
                     -- surface.create_trivial_smoke({name = 'poison-capsule-smoke', position = position})
                     local sound = 'utility/build_small'
                     wave_player.play_sound { path = sound, volume_modifier = 1 }
@@ -734,8 +747,8 @@ function Public.update_tidal_wave()
                     local next_offset_y = cause_position.y + wave.direction[2] * (i + 1) - j * wave.direction[1]
                     local next_position = { next_offset_x, next_offset_y }
                     -- surface.create_trivial_smoke({name = 'poison-capsule-smoke', position = position})
-                    -- surface.create_entity({ name = 'water-splash', position = position })
-                    surface.create_entity({ name = 'big-demolisher-fissure', position = position })
+                    surface.create_entity({ name = 'water-splash', position = position })
+                    -- surface.create_entity({ name = 'big-demolisher-fissure', position = position })
                     local sound = 'utility/build_small'
                     wave_player.play_sound { path = sound, volume_modifier = 1 }
 
@@ -828,8 +841,6 @@ function Public.level_up_effects(player)
             position = position,
             text = '+LVL',
             color = level_up_floating_text_color,
-            time_to_live = 300,
-            speed = 100
         }
     )
     local b = 0.75
@@ -843,8 +854,6 @@ function Public.level_up_effects(player)
                 position = p,
                 text = '✚',
                 color = { 255, random(0, 100), 0 },
-                time_to_live = 300,
-                speed = 100
             }
         )
     end
@@ -865,8 +874,6 @@ function Public.cast_spell(player, failed)
                     position = p,
                     text = '✔️',
                     color = { 255, random(0, 100), 0 },
-                    time_to_live = 300,
-                    speed = 100
                 }
             )
         end
@@ -882,8 +889,6 @@ function Public.cast_spell(player, failed)
                     position = p,
                     text = '✖',
                     color = { 255, random(0, 100), 0 },
-                    time_to_live = 300,
-                    speed = 100
                 }
             )
         end
@@ -898,8 +903,6 @@ function Public.xp_effects(player)
             position = position,
             text = '+XP',
             color = level_up_floating_text_color,
-            time_to_live = 300,
-            speed = 100
         }
     )
     local b = 0.75
@@ -913,7 +916,6 @@ function Public.xp_effects(player)
                 position = p,
                 text = '✚',
                 color = { 255, random(0, 100), 0 },
-                time_to_live = 300,
                 speed = 100
             }
         )
@@ -934,8 +936,6 @@ function Public.boost_effects(player)
                 position = p,
                 text = '♻️',
                 color = { random(0, 100), random(0, 100), 0 },
-                time_to_live = 300,
-                speed = 100
             }
         )
     end
@@ -1106,8 +1106,6 @@ function Public.get_heal_modifier_from_using_fish(player)
                 position = { position.x, position.y + 0.6 },
                 text = '+' .. rng,
                 color = color,
-                time_to_live = 300,
-                speed = 100
             }
         )
         char.health = char.health + rng
@@ -1484,6 +1482,7 @@ function Public.rpg_reset_player(player, one_time_reset)
 
     Public.draw_gui_char_button(player)
     Public.draw_level_text(player)
+    Task.set_timeout_in_ticks(5, create_level_text_token, { player_index = player.index })
     Public.update_char_button(player)
     Public.update_player_stats(player)
 end
@@ -1577,8 +1576,6 @@ function Public.gain_xp(player, amount, added_to_pool, text)
         text = text_to_draw,
         position = player.physical_position,
         color = xp_floating_text_color,
-        time_to_live = 340,
-        speed = 2
     }
 
     rpg_t.xp_since_last_floaty_text = 0

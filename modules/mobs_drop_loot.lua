@@ -25,7 +25,6 @@ local item_worths = {
     ['inserter'] = 4,
     ['long-handed-inserter'] = 8,
     ['fast-inserter'] = 16,
-    ['stack-inserter'] = 128,
     ['bulk-inserter'] = 160,
     ['small-electric-pole'] = 2,
     ['medium-electric-pole'] = 32,
@@ -53,8 +52,6 @@ local item_worths = {
     ['logistic-chest-requester'] = 512,
     ['roboport'] = 2048,
     ['small-lamp'] = 4,
-    ['red-wire'] = 4,
-    ['green-wire'] = 4,
     ['arithmetic-combinator'] = 16,
     ['decider-combinator'] = 16,
     ['constant-combinator'] = 8,
@@ -242,7 +239,7 @@ local function roll_item_stack(entity, wave)
         end
     end
 
-    entity.surface.spill_item_stack(entity.position, { name = item_name, count = random(1, item_count) }, true)
+    entity.surface.spill_item_stack({ position = entity.position, stack = { item_name = entity.name, count = random(1, item_count), quality = 'normal' } })
 
     return { name = item_name, count = item_count }
 end

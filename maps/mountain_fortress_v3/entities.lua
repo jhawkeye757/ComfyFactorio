@@ -264,6 +264,7 @@ local function set_train_final_health(final_damage_amount, repair)
         locomotive.destructible = false
         locomotive.health = 1
         Public.set('game_lost', true)
+        Public.set_stateful('current_streak', 0)
         Public.loco_died()
     end
 
@@ -1428,7 +1429,7 @@ function Public.loco_died(invalid_locomotive)
         }
     )
 
-    surface.spill_item_stack(this.locomotive.position, { name = 'coin', count = 512, quality = 'normal' }, false)
+    surface.spill_item_stack({ position = this.locomotive.position, stack = { name = 'coin', count = 512, quality = 'normal' } })
     this.game_reset_tick = 5400
     for _, player in pairs(game.connected_players) do
         player.play_sound { path = 'utility/game_lost', volume_modifier = 0.75 }
@@ -1490,12 +1491,11 @@ local function on_built_entity(event)
                     position = entity.position,
                     text = ({ 'entity.radar_limit' }),
                     color = { 255, 0, 0 },
-                    time_to_live = 300,
-                    speed = 100
                 }
             )
 
-            player.surface.spill_item_stack(position, { name = entity.name, count = 1, true, quality = 'normal' }, false)
+            player.surface.spill_item_stack({ position = position, stack = { name = entity.name, count = 1, quality = 'normal' } })
+
             entity.destroy()
             return
         end
@@ -1542,8 +1542,6 @@ local function on_built_entity(event)
                     position = entity.position,
                     text = upgrades[name].built .. ' / ' .. limit[entity.name] .. ' ' .. entity.name,
                     color = { r = 0.82, g = 0.11, b = 0.11 },
-                    time_to_live = 300,
-                    speed = 100
                 }
             )
         else
@@ -1553,8 +1551,6 @@ local function on_built_entity(event)
                         position = entity.position,
                         text = ({ 'entity.entity_limit_reached', entity.name }),
                         color = { r = 0.82, g = 0.11, b = 0.11 },
-                        time_to_live = 300,
-                        speed = 100
                     }
                 )
 
@@ -1590,7 +1586,7 @@ local function on_robot_built_entity(event)
                 }
             )
 
-            entity.surface.spill_item_stack(position, { name = entity.name, count = 1, true })
+            entity.surface.spill_item_stack({ position = entity.position, stack = { name = entity.name, count = 1 } })
             entity.destroy()
             return
         end

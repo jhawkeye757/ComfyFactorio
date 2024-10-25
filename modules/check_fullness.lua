@@ -8,7 +8,7 @@ local this = {
 
 Global.register(
     this,
-    function(t)
+    function (t)
         this = t
     end
 )
@@ -44,24 +44,23 @@ local function compute_fullness(player, position)
             local damage = ceil((warn_player.count / 2) * warn_player.count)
             if player.character.health >= damage then
                 player.character.damage(damage, 'player', 'explosion')
-                player.character.surface.create_entity({name = 'water-splash', position = player.position})
+                player.character.surface.create_entity({ name = 'water-splash', position = player.position })
                 local messages = {
                     'Ouch.. That hurt! Better be careful now.',
                     'Just a fleshwound.',
                     'Better keep those hands to yourself or you might loose them.'
                 }
-                player.surface.create_entity(
+                player.create_local_flying_text(
                     {
-                        name = 'flying-text',
-                        position = {position.x, position.y + 0.6},
+                        position = { position.x, position.y + 0.6 },
                         text = messages[random(1, #messages)],
-                        color = {r = 0.75, g = 0.0, b = 0.0}
+                        color = { r = 0.75, g = 0.0, b = 0.0 }
                     }
                 )
             else
                 player.character.die('enemy')
                 is_player_warned(player, true)
-                game.print(player.name .. ' should have emptied their pockets.', {r = 0.75, g = 0.0, b = 0.0})
+                game.print(player.name .. ' should have emptied their pockets.', { r = 0.75, g = 0.0, b = 0.0 })
                 return free_slots
             end
         end
@@ -70,12 +69,11 @@ local function compute_fullness(player, position)
     end
     if free_slots > 1 then
         if floor(inventory_size / free_slots) == 10 then -- When player has 10% free slots
-            player.surface.create_entity(
+            player.create_local_flying_text(
                 {
-                    name = 'flying-text',
-                    position = {position.x, position.y + 0.6},
+                    position = { position.x, position.y + 0.6 },
                     text = 'You are feeling heavy',
-                    color = {r = 1.0, g = 0.5, b = 0.0}
+                    color = { r = 1.0, g = 0.5, b = 0.0 }
                 }
             )
         end
@@ -113,7 +111,7 @@ local check_fullness = Public.check_fullness
 
 Event.add(
     defines.events.on_player_mined_entity,
-    function(event)
+    function (event)
         local entity = event.entity
         if not entity or not entity.valid then
             return

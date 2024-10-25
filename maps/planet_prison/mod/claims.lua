@@ -9,7 +9,7 @@ local random = math.random
 
 Global.register(
     this,
-    function(tbl)
+    function (tbl)
         this = tbl
     end
 )
@@ -19,9 +19,9 @@ init - Initialize claim system.
 @param names - Table of entity names that should be used as a marker.
 @param max_distance - Maximal distance allowed between markers
 --]]
-Public.init = function(names, max_distance)
+Public.init = function (names, max_distance)
     if type(names) ~= 'table' then
-        names = {names}
+        names = { names }
     end
 
     this._claims_info = {}
@@ -112,7 +112,7 @@ end
 on_build_entity - Event processing function.
 @param ent - Entity
 --]]
-Public.on_built_entity = function(ent)
+Public.on_built_entity = function (ent)
     if not claims_in_markers(ent.name) then
         return
     end
@@ -153,7 +153,7 @@ end
 on_entity_died - Event processing function.
 @param ent - Entity
 --]]
-Public.on_entity_died = function(ent)
+Public.on_entity_died = function (ent)
     if not claims_in_markers(ent.name) then
         return
     end
@@ -164,7 +164,7 @@ end
 on_player_mined_entity - Event processing function.
 @param ent - Entity
 --]]
-Public.on_player_mined_entity = function(ent)
+Public.on_player_mined_entity = function (ent)
     Public.on_entity_died(ent)
 end
 
@@ -172,18 +172,18 @@ end
 on_player_died - Event processing function
 @param player - Player
 --]]
-Public.on_player_died = function(player)
+Public.on_player_died = function (player)
     this._claims_info[player.name] = nil
 end
 
-Public.clear_player_base = function(player)
+Public.clear_player_base = function (player)
     if not player or not player.valid then
         return
     end
 
     local position = player.position
     local x, y = position.x, position.y
-    local entities = player.surface.find_entities_filtered {force = player.force, area = {{x - 50, y - 50}, {x + 50, y + 50}}}
+    local entities = player.surface.find_entities_filtered { force = player.force, area = { { x - 50, y - 50 }, { x + 50, y + 50 } } }
 
     for i = 1, #entities do
         local e = entities[i]
@@ -202,7 +202,7 @@ end
 get_claims - Get all claims data points for given force.
 @param f_name - Force name.
 --]]
-Public.get_claims = function(f_name)
+Public.get_claims = function (f_name)
     if this._claims_info[f_name] == nil then
         return {}
     end
@@ -236,7 +236,7 @@ end
 set_visibility_to - Specifies who can see the claims and redraws.
 @param name - Name of a player.
 --]]
-Public.set_visibility_to = function(name)
+Public.set_visibility_to = function (name)
     for _, p in pairs(this._claims_visible_to) do
         if p == name then
             return
@@ -251,7 +251,7 @@ end
 remove_visibility_from - Remove the claim visibility from the player.
 @param name - Name of a player.
 --]]
-Public.remove_visibility_from = function(name)
+Public.remove_visibility_from = function (name)
     for i = 1, #this._claims_visible_to do
         local p = this._claims_visible_to[i]
         if p == name then

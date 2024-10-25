@@ -914,7 +914,7 @@ remove_boost_movement_speed_on_respawn =
             Modifiers.update_single_modifier(player, 'character_running_speed_modifier', 'v3_move_boost')
             Modifiers.update_player_modifiers(player)
 
-            player.print('Movement speed bonus removed!', Color.info)
+            player.print('Movement speed bonus removed!', { color = Color.info })
             local rpg_t = RPG.get_value_from_player(player.index)
             rpg_t.has_boost_on_respawn = nil
         end
@@ -942,7 +942,7 @@ local boost_movement_speed_on_respawn =
             Modifiers.update_player_modifiers(player)
 
             Task.set_timeout_in_ticks(800, remove_boost_movement_speed_on_respawn, { player = player })
-            player.print('Movement speed bonus applied! Be quick and fetch your corpse!', Color.info)
+            player.print('Movement speed bonus applied! Be quick and fetch your corpse!', { color = Color.info })
         end
     )
 
@@ -960,6 +960,18 @@ local function on_wave_created(event)
             WD.set_pause_wave_in_ticks(random(18000, 54000))
         end
     end
+end
+
+local function on_primary_target_missing()
+    local locomotive = Public.get('locomotive')
+    if not locomotive or not locomotive.valid then
+        return
+    end
+
+    WD.set('target', locomotive)
+    local target_settings = WD.get_es('target_settings')
+    target_settings.main_target = locomotive
+    WD.set_main_target(locomotive)
 end
 
 local function on_player_cursor_stack_changed(event)
@@ -994,7 +1006,7 @@ local function on_player_cursor_stack_changed(event)
 
     if pm == 'Default' or pm == 'limited' or pm == 'jail' or pm == 'not_trusted' or pm == 'near_locomotive' or pm == 'main_surface' then
         if blacklisted_spawn_items[name] then
-            player.print('You are not allowed to use this item.', Color.warning)
+            player.print('You are not allowed to use this item.', { color = Color.warning })
             player.cursor_stack.clear()
             return
         end
@@ -1542,7 +1554,6 @@ function Public.is_creativity_mode_on()
     local creative_enabled = Misc.get('creative_enabled')
     if creative_enabled then
         WD.set('next_wave', 1000)
-        Collapse.start_now(true)
         Public.set_difficulty()
     end
 end
@@ -1736,7 +1747,7 @@ function Public.on_research_finished(event)
     local research_name = research.name
     local force = research.force
 
-    if event.tick > 100 then
+    if event.tick > 2000 then
         if Public.get('print_tech_to_discord') and force.name == 'player' then
             Server.to_discord_embed_raw('<a:Modded:835932131036364810> ' .. research_name:gsub('^%l', string.upper) .. ' has been researched!')
         end
@@ -1746,7 +1757,7 @@ function Public.on_research_finished(event)
         Public.set('toolbelt_researched_count', 10)
     end
 
-    if script.feature_flags.quality then
+    if script.active_mods.quality then
         local quality_list = Public.get('quality_list')
         if research.name == 'quality-module' then
             quality_list[#quality_list + 1] = 'uncommon'
@@ -1805,7 +1816,7 @@ function Public.set_player_to_god(player)
     end
 
     if not player.character and player.controller_type ~= defines.controllers.spectator then
-        player.print('[color=blue][Spectate][/color] It seems that you are not in the realm of the living.', Color.warning)
+        player.print('[color=blue][Spectate][/color] It seems that you are not in the realm of the living.', { color = Color.warning })
         return false
     end
 
@@ -1813,7 +1824,7 @@ function Public.set_player_to_god(player)
 
     if spectate[player.index] and spectate[player.index].delay and spectate[player.index].delay > game.tick then
         local cooldown = floor((spectate[player.index].delay - game.tick) / 60) + 1 .. ' seconds!'
-        player.print('[color=blue][Spectate][/color] Retry again in ' .. cooldown, Color.warning)
+        player.print('[color=blue][Spectate][/color] Retry again in ' .. cooldown, { color = Color.warning })
         return false
     end
 
@@ -1860,12 +1871,12 @@ end
 
 function Public.set_player_to_spectator(player)
     if player.in_combat then
-        player.print('[color=blue][Spectate][/color] You are in combat. Try again soon.', Color.warning)
+        player.print('[color=blue][Spectate][/color] You are in combat. Try again soon.', { color = Color.warning })
         return false
     end
 
     if player.driving then
-        return player.print('[color=blue][Spectate][/color] Please exit the vehicle before continuing', Color.warning)
+        return player.print('[color=blue][Spectate][/color] Please exit the vehicle before continuing', { color = Color.warning })
     end
 
     local spectate = Public.get('spectate')
@@ -1874,7 +1885,7 @@ function Public.set_player_to_spectator(player)
         spectate[player.index] = {
             verify = false
         }
-        player.print('[color=blue][Spectate][/color] Please click the spectate button again if you really want to this.', Color.warning)
+        player.print('[color=blue][Spectate][/color] Please click the spectate button again if you really want to this.', { color = Color.warning })
         return false
     end
 
@@ -2002,5 +2013,6 @@ Event.add(de.on_pre_player_toggled_map_editor, on_pre_player_toggled_map_editor)
 Event.add(de.on_player_cursor_stack_changed, on_player_cursor_stack_changed)
 Event.on_nth_tick(10, tick)
 Event.add(WD.events.on_wave_created, on_wave_created)
+Event.add(WD.events.on_primary_target_missing, on_primary_target_missing)
 
 return Public

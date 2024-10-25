@@ -41,6 +41,10 @@ local add_chests_to_wagon_token =
             local position3 = { cargo_wagon.left_top.x + 4, cargo_wagon.right_bottom.y - 2 }
             local position4 = { cargo_wagon.right_bottom.x - 5, cargo_wagon.right_bottom.y - 2 }
 
+            if not wagon.entity or not wagon.entity.valid then
+                return error('Entity was invalid, please check this out!')
+            end
+
             local left_1 = LinkedChests.add(surface, position1, 'player', 'wagon_' .. wagon.entity.unit_number .. '_1')
             if not left_1 then
                 return error('Surface was invalid, please check this out!')
@@ -671,7 +675,8 @@ function Public.create_wagon_room(icw, wagon)
     end
 
     if wagon.entity.type == 'cargo-wagon' then
-        Task.set_timeout_in_ticks(15, add_chests_to_wagon_token, { wagon = wagon, surface = surface })
+        local task = Task.get(add_chests_to_wagon_token)
+        task({ wagon = wagon, surface = surface })
     end
 end
 

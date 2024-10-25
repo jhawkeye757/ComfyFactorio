@@ -30,8 +30,6 @@ local mining_chance_weights = {
     { name = 'heavy-oil-barrel',               chance = 15 },
     { name = 'light-oil-barrel',               chance = 15 },
     { name = 'water-barrel',                   chance = 10 },
-    { name = 'green-wire',                     chance = 10 },
-    { name = 'red-wire',                       chance = 10 },
     { name = 'explosives',                     chance = 5 },
     { name = 'advanced-circuit',               chance = 5 },
     { name = 'nuclear-fuel',                   chance = 1 },
@@ -92,8 +90,6 @@ local scrap_yield_amounts = {
     ['rocket-fuel'] = 0.3,
     ['low-density-structure'] = 0.3,
     ['heat-pipe'] = 1,
-    ['green-wire'] = 8,
-    ['red-wire'] = 8,
     ['engine-unit'] = 2,
     ['electric-engine-unit'] = 2,
     ['logistic-robot'] = 0.3,
@@ -278,7 +274,8 @@ function Public.entity_died_randomness(data)
 
     local position = { x = entity.position.x, y = entity.position.y }
 
-    surface.spill_item_stack(position, { name = harvest, count = random(1, 5) }, true)
+    surface.spill_item_stack({ position = position, stack = { name = harvest, count = random(1, 5), quality = 'normal' } })
+
     local particle = particles[harvest]
     create_particles(surface, particle, position, 16, { x = entity.position.x, y = entity.position.y })
 end
@@ -307,8 +304,6 @@ local function randomness(data)
         {
             position = position,
             text = '+' .. harvest_amount .. '  [img=item/' .. harvest .. ']',
-            time_to_live = 300,
-            speed = 100
         }
     )
 
@@ -318,7 +313,7 @@ local function randomness(data)
 
     if harvest_amount > max_spill then
         if spill_items_to_surface then
-            player.surface.spill_item_stack(position, { name = harvest, count = max_spill }, true)
+            player.surface.spill_item_stack({ position = position, stack = { name = harvest, count = max_spill, quality = 'normal' } })
         else
             player.insert({ name = harvest, count = max_spill })
         end
@@ -327,14 +322,14 @@ local function randomness(data)
         harvest_amount = harvest_amount - inserted_count
         if harvest_amount > 0 then
             if spill_items_to_surface then
-                player.surface.spill_item_stack(position, { name = harvest, count = harvest_amount }, true)
+                player.surface.spill_item_stack({ position = position, stack = { name = harvest, count = harvest_amount, quality = 'normal' } })
             else
                 player.insert({ name = harvest, count = harvest_amount })
             end
         end
     else
         if spill_items_to_surface then
-            player.surface.spill_item_stack(position, { name = harvest, count = harvest_amount }, true)
+            player.surface.spill_item_stack({ position = position, stack = { name = harvest, count = harvest_amount, quality = 'normal' } })
         else
             player.insert({ name = harvest, count = harvest_amount })
         end
@@ -365,8 +360,6 @@ local function randomness_scrap(data)
         {
             position = position,
             text = '+' .. harvest_amount .. '  [img=item/' .. harvest .. ']',
-            time_to_live = 300,
-            speed = 100
         }
     )
 
@@ -376,7 +369,7 @@ local function randomness_scrap(data)
 
     if harvest_amount > max_spill then
         if spill_items_to_surface then
-            player.surface.spill_item_stack(position, { name = harvest, count = max_spill }, true)
+            player.surface.spill_item_stack({ position = position, stack = { name = harvest, count = max_spill, quality = 'normal' } })
         else
             player.insert({ name = harvest, count = max_spill })
         end
@@ -385,14 +378,14 @@ local function randomness_scrap(data)
         harvest_amount = harvest_amount - inserted_count
         if harvest_amount > 0 then
             if spill_items_to_surface then
-                player.surface.spill_item_stack(position, { name = harvest, count = harvest_amount }, true)
+                player.surface.spill_item_stack({ position = position, stack = { name = harvest, count = harvest_amount, quality = 'normal' } })
             else
                 player.insert({ name = harvest, count = harvest_amount })
             end
         end
     else
         if spill_items_to_surface then
-            player.surface.spill_item_stack(position, { name = harvest, count = harvest_amount }, true)
+            player.surface.spill_item_stack({ position = position, stack = { name = harvest, count = harvest_amount, quality = 'normal' } })
         else
             player.insert({ name = harvest, count = harvest_amount })
         end

@@ -44,6 +44,9 @@ function Public.init_player_table(player, reset)
     if not player then
         return
     end
+    if not this.score_table then return end
+    if not this.score_table[player.force.name] then return end
+    if not this.score_table[player.force.name].players then return end
     if reset then
         this.score_table[player.force.name].players[player.name] = {
             built_entities = 0,
@@ -61,6 +64,8 @@ function Public.init_player_table(player, reset)
     if not this.score_table[player.force.name].players then
         this.score_table[player.force.name].players = {}
     end
+
+    if not player.name then return end
 
     if not this.score_table[player.force.name].players[player.name] then
         this.score_table[player.force.name].players[player.name] = {
@@ -496,6 +501,10 @@ Gui.on_click(
         Gui.reload_active_tab(player)
     end
 )
+
+Event.on_init(function ()
+    Public.reset_tbl()
+end)
 
 Event.add(defines.events.on_player_mined_entity, on_player_mined_entity)
 Event.add(defines.events.on_player_crafted_item, on_player_crafted_item)

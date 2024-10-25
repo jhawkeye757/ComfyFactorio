@@ -7,8 +7,6 @@ items.spawn = {
     {price = {{'raw-fish', 10}}, offer = {type = 'give-item', item = 'train-stop'}},
     {price = {{'raw-fish', 94}}, offer = {type = 'give-item', item = 'locomotive'}},
     {price = {{'raw-fish', 35}}, offer = {type = 'give-item', item = 'cargo-wagon'}},
-    {price = {{'raw-fish', 1}}, offer = {type = 'give-item', item = 'red-wire', count = 1}},
-    {price = {{'raw-fish', 1}}, offer = {type = 'give-item', item = 'green-wire', count = 1}},
     {price = {{'raw-fish', 4}}, offer = {type = 'give-item', item = 'decider-combinator'}},
     {price = {{'raw-fish', 4}}, offer = {type = 'give-item', item = 'arithmetic-combinator'}},
     {price = {{'raw-fish', 2}}, offer = {type = 'give-item', item = 'constant-combinator'}},

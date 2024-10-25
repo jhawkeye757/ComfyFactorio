@@ -60,7 +60,7 @@ Commands.new('save-color', "Save your personal color preset so it's always the s
             local chat = player.chat_color
 
             set_data(color_data_set, player.name, { color = { color }, chat = { chat } })
-            player.print('Your personal color has been saved to the datastore.', Color.success)
+            player.print('Your personal color has been saved to the datastore.', { color = Color.success })
         end
     )
 
@@ -69,7 +69,7 @@ Commands.new('remove-color', 'Removes your saved color from the datastore.')
     :callback(
         function (player)
             set_data(color_data_set, player.name, nil)
-            player.print('Your personal color has been removed from the datastore.', Color.success)
+            player.print('Your personal color has been removed from the datastore.', { color = Color.success })
         end
     )
 

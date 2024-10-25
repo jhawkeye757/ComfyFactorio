@@ -6,7 +6,7 @@ local WD = require 'modules.wave_defense.table'
 local Discord = require 'utils.discord_handler'
 local Commands = require 'utils.commands'
 local mapkeeper = '[color=blue]Mapkeeper:[/color]'
-local scenario_name = Public.scenario_name
+local scenario_name = 'Mtn Fortress'
 
 local gather_time_token =
     Task.register(

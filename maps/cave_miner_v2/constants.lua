@@ -95,8 +95,6 @@ Public.spawn_market_items = {
     {price = {{'raw-fish', 8}}, offer = {type = 'give-item', item = 'train-stop'}},
     {price = {{'raw-fish', 50}}, offer = {type = 'give-item', item = 'locomotive'}},
     {price = {{'raw-fish', 20}}, offer = {type = 'give-item', item = 'cargo-wagon'}},
-    {price = {{'raw-fish', 1}}, offer = {type = 'give-item', item = 'red-wire', count = 2}},
-    {price = {{'raw-fish', 1}}, offer = {type = 'give-item', item = 'green-wire', count = 2}},
     {price = {{'raw-fish', 3}}, offer = {type = 'give-item', item = 'decider-combinator'}},
     {price = {{'raw-fish', 3}}, offer = {type = 'give-item', item = 'arithmetic-combinator'}},
     {price = {{'raw-fish', 2}}, offer = {type = 'give-item', item = 'constant-combinator'}},

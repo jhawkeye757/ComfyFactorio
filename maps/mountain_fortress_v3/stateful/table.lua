@@ -20,6 +20,7 @@ local Difficulty = require 'modules.difficulty_vote_by_amount'
 local this = {
     enabled = false,
     rounds_survived = 0,
+    current_streak = 0,
     season = 1,
     buffs = {},
     reset_after = 60,
@@ -133,7 +134,6 @@ local function notify_season_over_to_discord()
             inline = 'false'
         }
     }
-    log(serpent.block(text))
     if server_name_matches then
         Server.to_discord_named_parsed_embed(send_ping_to_channel, text)
     else
@@ -1408,6 +1408,8 @@ end
 function Public.save_settings()
     local granted_buff = grant_non_limit_reached_buff()
     this.buffs[#this.buffs + 1] = granted_buff
+
+    this.current_streak = this.current_streak + 1
 
     local settings = {
         objectives_time_spent = this.objectives_time_spent,

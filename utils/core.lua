@@ -5,7 +5,6 @@ local Server = require 'utils.server'
 
 -- localized functions
 local random = math.random
-local sqrt = math.sqrt
 local floor = math.floor
 local format = string.format
 local match = string.match

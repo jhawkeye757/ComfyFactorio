@@ -641,7 +641,7 @@ local function on_built_entity(event, mode, bypass)
         local final_battle = WPT.get('final_battle')
         if final_battle then
             entity.destroy()
-            player.print(module_name .. 'Game will reset shortly.', Color.warning)
+            player.print(module_name .. 'Game will reset shortly.', { color = Color.warning })
             return
         end
 
@@ -650,7 +650,7 @@ local function on_built_entity(event, mode, bypass)
                 player.insert({ name = 'linked-chest', count = 1 })
             end
             entity.destroy()
-            player.print(module_name .. 'Linked chests only work on the main surface.', Color.warning)
+            player.print(module_name .. 'Linked chests only work on the main surface.', { color = Color.warning })
             return
         end
 
@@ -659,7 +659,7 @@ local function on_built_entity(event, mode, bypass)
                 player.insert({ name = 'linked-chest', count = 1 })
             end
             entity.destroy()
-            player.print(module_name .. 'Linked chests only work inside the locomotive aura.', Color.warning)
+            player.print(module_name .. 'Linked chests only work inside the locomotive aura.', { color = Color.warning })
             return
         end
 
@@ -670,7 +670,7 @@ local function on_built_entity(event, mode, bypass)
                 player.insert({ name = 'linked-chest', count = 1 })
             end
             entity.destroy()
-            player.print('[Antigrief] You have not grown accustomed to this technology yet.', Color.warning)
+            player.print('[Antigrief] You have not grown accustomed to this technology yet.', { color = Color.warning })
             return
         end
     end
@@ -740,7 +740,7 @@ local function built_entity_robot(event)
                             player.insert({ name = 'linked-chest', count = 1 })
                         end
                         entity.destroy()
-                        player.print(module_name .. 'Linked chests only work on the main surface.', Color.warning)
+                        player.print(module_name .. 'Linked chests only work on the main surface.', { color = Color.warning })
                         return
                     end
 
@@ -749,7 +749,7 @@ local function built_entity_robot(event)
                             player.insert({ name = 'linked-chest', count = 1 })
                         end
                         entity.destroy()
-                        player.print(module_name .. 'Linked chests only work inside the locomotive aura.', Color.warning)
+                        player.print(module_name .. 'Linked chests only work inside the locomotive aura.', { color = Color.warning })
                         return
                     end
 
@@ -760,20 +760,20 @@ local function built_entity_robot(event)
                             player.insert({ name = 'linked-chest', count = 1 })
                         end
                         entity.destroy()
-                        player.print('[Antigrief] You have not grown accustomed to this technology yet.', Color.warning)
+                        player.print('[Antigrief] You have not grown accustomed to this technology yet.', { color = Color.warning })
                         return
                     end
 
                     if entity.link_id == 99999 then
                         if entity.type == 'entity-ghost' then
                             entity.destroy()
-                            player.print(module_name .. 'Blueprinted removed chests does not work.', Color.warning)
+                            player.print(module_name .. 'Blueprinted removed chests does not work.', { color = Color.warning })
                             return
                         end
                         if entity.type ~= 'entity-ghost' then
                             player.insert({ name = 'linked-chest', count = 1 })
                             entity.destroy()
-                            player.print(module_name .. 'Blueprinted removed chests does not work.', Color.warning)
+                            player.print(module_name .. 'Blueprinted removed chests does not work.', { color = Color.warning })
                             return
                         end
                     end
@@ -1032,7 +1032,7 @@ local function on_entity_settings_pasted(event)
     local destination_link_id = destination.link_id
 
     if source_link_id == 99999 or destination_link_id == 99999 then
-        player.print(module_name .. 'Chests with link id 99999 are disabled.', Color.warning)
+        player.print(module_name .. 'Chests with link id 99999 are disabled.', { color = Color.warning })
         return
     end
 
@@ -1040,7 +1040,7 @@ local function on_entity_settings_pasted(event)
     local destination_container = fetch_container(destination.unit_number)
 
     if not source_container then
-        player.print(module_name .. 'The source container was not found.', Color.warning)
+        player.print(module_name .. 'The source container was not found.', { color = Color.warning })
         return
     end
 
@@ -1051,49 +1051,49 @@ local function on_entity_settings_pasted(event)
     local source_share = source_container.share
 
     if content_mismatches(source_link_id, destination_link_id) then
-        player.print(module_name .. 'The destination chest that you are trying to paste to mismatches with the original chest.', Color.fail)
+        player.print(module_name .. 'The destination chest that you are trying to paste to mismatches with the original chest.', { color = Color.fail })
         destination_container.chest.link_id = destination_container.link_id
         return
     end
 
     if source_container.mode == 1 and destination_container.mode == 1 then
-        player.print(module_name .. 'Destination chest cannot be linked since source chest is of same mode.', Color.fail)
+        player.print(module_name .. 'Destination chest cannot be linked since source chest is of same mode.', { color = Color.fail })
         destination_container.chest.link_id = destination_container.link_id
         return
     end
 
     if source_container.linked_to and destination_container.linked_to then
-        player.print(module_name .. 'The destination chest is already linked.', Color.fail)
+        player.print(module_name .. 'The destination chest is already linked.', { color = Color.fail })
         destination_container.chest.link_id = destination_container.link_id
         return
     end
 
     if source_container.mode == 2 and not source_container.linked_to then
-        player.print(module_name .. 'The source chest is not linked to anything.', Color.fail)
+        player.print(module_name .. 'The source chest is not linked to anything.', { color = Color.fail })
         destination_container.chest.link_id = destination_container.link_id
         return
     end
 
     if source_container.share.name == '' and not source_container.linked_to then
-        player.print(module_name .. 'The source chest is not shared.', Color.fail)
+        player.print(module_name .. 'The source chest is not shared.', { color = Color.fail })
         destination_container.chest.link_id = destination_container.link_id
         return
     end
 
     if source_container.chest.unit_number == source_container.share.name and not source_container.linked_to then
-        player.print(module_name .. 'The source chest is not shared.', Color.fail)
+        player.print(module_name .. 'The source chest is not shared.', { color = Color.fail })
         destination_container.chest.link_id = destination_container.link_id
         return
     end
 
     if destination_container.linked_to then
-        player.print(module_name .. 'The destination chest is already linked.', Color.fail)
+        player.print(module_name .. 'The destination chest is already linked.', { color = Color.fail })
         destination_container.chest.link_id = destination_container.link_id
         return
     end
 
     if destination_container.mode == 1 then
-        player.print(module_name .. 'The destination chest cannot be linked.', Color.fail)
+        player.print(module_name .. 'The destination chest cannot be linked.', { color = Color.fail })
         destination_container.chest.link_id = destination_container.link_id
         return
     end
@@ -1111,7 +1111,7 @@ local function on_entity_settings_pasted(event)
         destination_container.chest.get_inventory(defines.inventory.chest).set_bar()
     end
 
-    player.print(module_name .. 'Successfully pasted settings.', Color.success)
+    player.print(module_name .. 'Successfully pasted settings.', { color = Color.success })
 end
 
 function Public.add(surface, position, force, name, mode)
@@ -1213,7 +1213,7 @@ Gui.on_click(
         local trusted_player = Session.get_trusted_player(player)
 
         if not trusted_player then
-            player.print('[Antigrief] You have not grown accustomed to this technology yet.', Color.warning)
+            player.print('[Antigrief] You have not grown accustomed to this technology yet.', { color = Color.warning })
             return
         end
 
@@ -1221,7 +1221,7 @@ Gui.on_click(
             local entity = Gui.get_data(event.element)
             if entity and entity.valid then
                 if not WPT.locomotive.is_around_train(entity) or active_surface_index ~= entity.surface.index then
-                    player.print(module_name .. 'The placed entity is not near the locomotive or is on the wrong surface.', Color.warning)
+                    player.print(module_name .. 'The placed entity is not near the locomotive or is on the wrong surface.', { color = Color.warning })
                     return
                 end
 
@@ -1238,7 +1238,7 @@ Gui.on_click(
                 on_built_entity(event, true)
             end
         else
-            player.print(module_name .. 'Not enough coins.', Color.warning)
+            player.print(module_name .. 'Not enough coins.', { color = Color.warning })
         end
     end
 )

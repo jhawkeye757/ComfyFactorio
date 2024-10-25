@@ -7,14 +7,13 @@ local concat = table.concat
 local inspect = table.inspect
 local pcall = pcall
 local loadstring = loadstring
-local rawset = rawset
 
 local Public = {}
 
-local luaObject = {'{', nil, ", name = '", nil, "'}"}
-local luaPlayer = {"{LuaPlayer, name = '", nil, "', index = ", nil, '}'}
-local luaEntity = {"{LuaEntity, name = '", nil, "', unit_number = ", nil, '}'}
-local luaGuiElement = {"{LuaGuiElement, name = '", nil, "'}"}
+local luaObject = { '{', nil, ", name = '", nil, "'}" }
+local luaPlayer = { "{LuaPlayer, name = '", nil, "', index = ", nil, '}' }
+local luaEntity = { "{LuaEntity, name = '", nil, "', unit_number = ", nil, '}' }
+local luaGuiElement = { "{LuaGuiElement, name = '", nil, "'}" }
 
 local function get(obj, prop)
     return obj[prop]
@@ -82,10 +81,11 @@ local function inspect_process(item)
     end
 end
 
-local inspect_options = {process = inspect_process}
+local inspect_options = { process = inspect_process }
 function Public.dump(data)
     return inspect(data, inspect_options)
 end
+
 local dump = Public.dump
 
 function Public.dump_ignore_builder(ignore)
@@ -97,14 +97,14 @@ function Public.dump_ignore_builder(ignore)
         return inspect_process(item)
     end
 
-    local options = {process = process}
-    return function(data)
+    local options = { process = process }
+    return function (data)
         return inspect(data, options)
     end
 end
 
 function Public.dump_function(func)
-    local res = {'upvalues:\n'}
+    local res = { 'upvalues:\n' }
 
     if debug.getupvalue == nil then
         return concat(res)

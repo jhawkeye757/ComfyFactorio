@@ -113,8 +113,6 @@ local function death_effects(player)
             {
                 position = p,
                 text = '☠️',
-                time_to_live = 300,
-                speed = 100
             }
         )
     end
@@ -286,8 +284,6 @@ local function give_passive_xp(data)
                         text = '+' .. '',
                         position = { x = pos.x, y = pos.y - 2 },
                         color = xp_floating_text_color,
-                        time_to_live = 60,
-                        speed = 3
                     }
                     rpg[player.index].xp_since_last_floaty_text = 0
                     rpg[player.index].last_floaty_text = game.tick + visuals_delay
@@ -630,7 +626,7 @@ local function on_gui_opened(event)
     local trusted_player = Session.get_trusted_player(player)
 
     if not trusted_player then
-        player.print('[Antigrief] You have not grown accustomed to this technology yet.', Color.warning)
+        player.print('[Antigrief] You have not grown accustomed to this technology yet.', { color = Color.warning })
         player.opened = nil
     end
 end

@@ -907,14 +907,14 @@ Gui.on_click(
         end
 
         if not Session.get_trusted_player(player) then
-            player.print({ 'rpg_settings.not_trusted' }, Color.fail)
+            player.print({ 'rpg_settings.not_trusted' }, { color = Color.fail })
             return player.play_sound({ path = 'utility/cannot_build', volume_modifier = 0.75 })
         end
 
         if frame and frame.valid then
             local rpg_t = Public.get_value_from_player(player.index)
             if not rpg_t.enable_entity_spawn then
-                player.print({ 'rpg_settings.cast_spell_enabled_label' }, Color.success)
+                player.print({ 'rpg_settings.cast_spell_enabled_label' }, { color = Color.success })
                 player.play_sound({ path = 'utility/armor_insert', volume_modifier = 0.75 })
                 if player.cursor_stack and player.cursor_stack.valid_for_read then
                     player.get_main_inventory().insert(player.cursor_stack)
@@ -932,7 +932,7 @@ Gui.on_click(
 
                     player.cursor_stack.clear()
                 end
-                player.print({ 'rpg_settings.cast_spell_disabled_label' }, Color.warning)
+                player.print({ 'rpg_settings.cast_spell_disabled_label' }, { color = Color.warning })
                 player.play_sound({ path = 'utility/cannot_build', volume_modifier = 0.75 })
                 rpg_t.enable_entity_spawn = false
             end

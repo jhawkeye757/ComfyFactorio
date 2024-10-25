@@ -292,9 +292,9 @@ local function is_valid_location(force_name, surface, position)
     for _, vector in pairs(town_wall_vectors) do
         local p = { x = math_floor(position.x + vector[1]), y = math_floor(position.y + vector[2]) }
         if Building.in_restricted_zone(surface, p) then
-            for _, p in pairs(game.connected_players) do
-                if p.surface == surface then
-                    p.create_local_flying_text({
+            for _, player in pairs(game.connected_players) do
+                if player.surface == surface then
+                    player.create_local_flying_text({
                         position = position,
                         text = 'Can not build in restricted zone!',
                         color = { r = 0.77, g = 0.0, b = 0.0 }

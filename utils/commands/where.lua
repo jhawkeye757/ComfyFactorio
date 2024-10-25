@@ -154,7 +154,7 @@ Commands.new('where', 'Locates a player')
                 create_mini_camera_gui(player, target)
             else
                 remove_player_data(player)
-                player.print('[Where] Please type a name of a player who is connected.', Color.warning)
+                player.print('[Where] Please type a name of a player who is connected.', { color = Color.warning })
             end
         end
     )
