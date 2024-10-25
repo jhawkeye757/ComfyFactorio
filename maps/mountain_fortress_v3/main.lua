@@ -46,7 +46,6 @@ local Beam = require 'modules.render_beam'
 -- Use these settings for live
 local send_ping_to_channel = Discord.channel_names.mtn_channel
 local role_to_mention = Discord.role_mentions.mtn_fortress
-local scenario_name = Public.scenario_name
 -- Use these settings for testing
 -- bot-lounge
 -- local send_ping_to_channel = Discord.channel_names.bot_quarters
@@ -117,7 +116,7 @@ end
 local announce_new_map =
     Task.register(
         function ()
-            local server_name = Server.check_server_name(scenario_name)
+            local server_name = Server.check_server_name(Public.discord_name)
             if server_name then
                 Server.to_discord_named_raw(send_ping_to_channel, role_to_mention .. ' ** Mtn Fortress was just reset! **')
             end
@@ -359,12 +358,13 @@ function Public.reset_map()
         WD.disable_spawning_biters(true)
     end
 
+    if not this.disable_startup_notification then
+        Task.set_timeout_in_ticks(25, announce_new_map)
+    end
+
     Public.equip_players(nil, false)
 
     Task.set_timeout_in_ticks(100, partial_reset_token, {})
-    if not this.disable_startup_notification then
-        Task.set_timeout_in_ticks(125, announce_new_map)
-    end
 end
 
 local is_locomotive_valid = function ()

@@ -1202,7 +1202,7 @@ local function show_mvps(player)
         miners_label_text.style.font_color = { r = 0.33, g = 0.66, b = 0.9 }
 
         local sent_to_discord = Public.get('sent_to_discord')
-        local server_name_matches = Server.check_server_name(scenario_name)
+        local server_name_matches = Server.check_server_name(Public.discord_name)
 
         if not sent_to_discord and server_name_matches then
             local message = {

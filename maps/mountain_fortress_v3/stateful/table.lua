@@ -73,7 +73,7 @@ local function upperCase(str)
 end
 
 local function notify_season_over_to_discord()
-    local server_name_matches = Server.check_server_name(scenario_name)
+    local server_name_matches = Server.check_server_name(Public.discord_name)
 
     local stateful = Public.get_stateful()
 
@@ -1261,7 +1261,7 @@ local function apply_startup_settings(settings)
 
     current_date = round(Utils.convert_date(current_date.year, current_date.month, current_date.day))
 
-    local server_name_matches = Server.check_server_name(scenario_name)
+    local server_name_matches = Server.check_server_name(Public.discord_name)
 
     settings = settings or {}
     local stored_date = this.current_date
@@ -1314,7 +1314,7 @@ end
 local apply_settings_token =
     Task.register(
         function (data)
-            local server_name_matches = Server.check_server_name(scenario_name)
+            local server_name_matches = Server.check_server_name(Public.discord_name)
             local settings = data and data.value or nil
             local current_time = Server.get_current_time()
             if not current_time then
@@ -1420,7 +1420,7 @@ function Public.save_settings()
         current_date = this.current_date
     }
 
-    local server_name_matches = Server.check_server_name(scenario_name)
+    local server_name_matches = Server.check_server_name(Public.discord_name)
     if server_name_matches then
         Server.set_data(dataset, dataset_key, settings)
     else
@@ -1439,7 +1439,7 @@ function Public.save_settings_before_reset()
         current_date = this.current_date
     }
 
-    local server_name_matches = Server.check_server_name(scenario_name)
+    local server_name_matches = Server.check_server_name(Public.discord_name)
     if server_name_matches then
         Server.set_data(dataset, dataset_key_previous, settings)
     else
@@ -1851,7 +1851,7 @@ function Public.stateful_on_server_started()
         return
     end
 
-    local server_name_matches = Server.check_server_name(scenario_name)
+    local server_name_matches = Server.check_server_name(Public.discord_name)
 
     this.settings_applied = true
 
@@ -1870,7 +1870,7 @@ Event.add(
             return
         end
 
-        local server_name_matches = Server.check_server_name(scenario_name)
+        local server_name_matches = Server.check_server_name(Public.discord_name)
 
         this.settings_applied = true
 

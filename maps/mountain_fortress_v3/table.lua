@@ -44,6 +44,8 @@ Public.events = {
 
 local scenario_name = 'nauvis'
 Public.scenario_name = scenario_name
+local discord_name = 'Mtn Fortress'
+Public.discord_name = discord_name
 
 Global.register(
     this,
@@ -412,7 +414,7 @@ function Public.remove(key, sub_key)
 end
 
 function Public.save_stateful_settings()
-    local server_name_matches = Server.check_server_name(scenario_name)
+    local server_name_matches = Server.check_server_name(Public.discord_name)
 
     if server_name_matches then
         Server.set_data(dataset, dataset_key, stateful_settings)
@@ -424,7 +426,7 @@ end
 local apply_settings_token =
     Task.register(
         function (data)
-            local server_name_matches = Server.check_server_name(scenario_name)
+            local server_name_matches = Server.check_server_name(Public.discord_name)
             local settings = data and data.value or nil
 
             if not settings then
@@ -449,7 +451,7 @@ Event.add(
         local start_data = Server.get_start_data()
 
         if not start_data.initialized then
-            local server_name_matches = Server.check_server_name(scenario_name)
+            local server_name_matches = Server.check_server_name(Public.discord_name)
 
             if server_name_matches then
                 Server.try_get_data(dataset, dataset_key, apply_settings_token)

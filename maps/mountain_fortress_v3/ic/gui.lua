@@ -33,7 +33,7 @@ local trust_player_name = Gui.uid_name()
 local drive_player_name = Gui.uid_name()
 local kick_player_name = Gui.uid_name()
 local destroy_surface_name = Gui.uid_name()
-local scenario_name = 'Mtn Fortress'
+local discord_name = 'Mtn Fortress'
 
 local add_toolbar
 local remove_toolbar
@@ -951,7 +951,7 @@ Gui.on_click(
                 local suc, count = Functions.kill_car_but_save_surface(entity)
                 if suc then
                     game.print('[IC] ' .. player.name .. ' has destroyed their surface!', Color.warning)
-                    Discord.send_notification_raw(scenario_name,
+                    Discord.send_notification_raw(discord_name,
                         player.name ..
                         ' deleted their vehicle surface at x = ' .. position.x .. ' y = ' .. position.y .. '.')
                 else

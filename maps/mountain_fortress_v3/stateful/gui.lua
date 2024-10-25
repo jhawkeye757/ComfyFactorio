@@ -83,7 +83,7 @@ local function notify_won_to_discord(buff)
     if not buff then
         return error('Buff is required when sending message to discord.', 2)
     end
-    local server_name_matches = Server.check_server_name(scenario_name)
+    local server_name_matches = Server.check_server_name(Public.discord_name)
 
     local stateful = Public.get_stateful()
 
