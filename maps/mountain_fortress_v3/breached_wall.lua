@@ -206,7 +206,7 @@ local check_distance_between_player_and_locomotive = function (player)
         --         player.teleport({position.x, (t_y + gap_between_locomotive.neg_gap_collapse - 4) * -1}, surface)
         --     end
 
-        --     player.print(({'breached_wall.hinder_collapse'}), Color.warning)
+        --     player.print(({'breached_wall.hinder_collapse'}), {color = Color.warning})
         --     if player.driving then
         --         player.driving = false
         --     end

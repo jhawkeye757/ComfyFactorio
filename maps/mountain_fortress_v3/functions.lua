@@ -914,7 +914,7 @@ remove_boost_movement_speed_on_respawn =
             Modifiers.update_single_modifier(player, 'character_running_speed_modifier', 'v3_move_boost')
             Modifiers.update_player_modifiers(player)
 
-            player.print('Movement speed bonus removed!', Color.info)
+            player.print('Movement speed bonus removed!', { color = Color.info })
             local rpg_t = RPG.get_value_from_player(player.index)
             rpg_t.has_boost_on_respawn = nil
         end
@@ -942,7 +942,7 @@ local boost_movement_speed_on_respawn =
             Modifiers.update_player_modifiers(player)
 
             Task.set_timeout_in_ticks(800, remove_boost_movement_speed_on_respawn, { player = player })
-            player.print('Movement speed bonus applied! Be quick and fetch your corpse!', Color.info)
+            player.print('Movement speed bonus applied! Be quick and fetch your corpse!', { color = Color.info })
         end
     )
 
@@ -1004,7 +1004,7 @@ local function on_player_cursor_stack_changed(event)
 
     if pm == 'Default' or pm == 'limited' or pm == 'jail' or pm == 'not_trusted' or pm == 'near_locomotive' or pm == 'main_surface' then
         if blacklisted_spawn_items[name] then
-            player.print('You are not allowed to use this item.', Color.warning)
+            player.print('You are not allowed to use this item.', { color = Color.warning })
             player.cursor_stack.clear()
             return
         end
@@ -1815,7 +1815,7 @@ function Public.set_player_to_god(player)
     end
 
     if not player.character and player.controller_type ~= defines.controllers.spectator then
-        player.print('[color=blue][Spectate][/color] It seems that you are not in the realm of the living.', Color.warning)
+        player.print('[color=blue][Spectate][/color] It seems that you are not in the realm of the living.', { color = Color.warning })
         return false
     end
 
@@ -1823,7 +1823,7 @@ function Public.set_player_to_god(player)
 
     if spectate[player.index] and spectate[player.index].delay and spectate[player.index].delay > game.tick then
         local cooldown = floor((spectate[player.index].delay - game.tick) / 60) + 1 .. ' seconds!'
-        player.print('[color=blue][Spectate][/color] Retry again in ' .. cooldown, Color.warning)
+        player.print('[color=blue][Spectate][/color] Retry again in ' .. cooldown, { color = Color.warning })
         return false
     end
 
@@ -1870,12 +1870,12 @@ end
 
 function Public.set_player_to_spectator(player)
     if player.in_combat then
-        player.print('[color=blue][Spectate][/color] You are in combat. Try again soon.', Color.warning)
+        player.print('[color=blue][Spectate][/color] You are in combat. Try again soon.', { color = Color.warning })
         return false
     end
 
     if player.driving then
-        return player.print('[color=blue][Spectate][/color] Please exit the vehicle before continuing', Color.warning)
+        return player.print('[color=blue][Spectate][/color] Please exit the vehicle before continuing', { color = Color.warning })
     end
 
     local spectate = Public.get('spectate')
@@ -1884,7 +1884,7 @@ function Public.set_player_to_spectator(player)
         spectate[player.index] = {
             verify = false
         }
-        player.print('[color=blue][Spectate][/color] Please click the spectate button again if you really want to this.', Color.warning)
+        player.print('[color=blue][Spectate][/color] Please click the spectate button again if you really want to this.', { color = Color.warning })
         return false
     end
 

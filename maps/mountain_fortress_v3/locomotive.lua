@@ -626,7 +626,7 @@ local function on_gui_opened(event)
     local trusted_player = Session.get_trusted_player(player)
 
     if not trusted_player then
-        player.print('[Antigrief] You have not grown accustomed to this technology yet.', Color.warning)
+        player.print('[Antigrief] You have not grown accustomed to this technology yet.', { color = Color.warning })
         player.opened = nil
     end
 end

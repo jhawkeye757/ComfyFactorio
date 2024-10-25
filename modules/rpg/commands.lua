@@ -103,7 +103,7 @@ Commands.new('stats', 'Check what stats a user has!')
                 player.play_sound { path = 'utility/scenario_message', volume_modifier = 1 }
                 player.print(msg)
             else
-                player.print('[Stats] Please type a name of a player who is connected.', Color.warning)
+                player.print('[Stats] Please type a name of a player who is connected.', { color = Color.warning })
                 return false
             end
         end
