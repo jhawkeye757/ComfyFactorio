@@ -666,7 +666,7 @@ local function redraw_market_items(gui, player, search_text)
         gui.clear()
     end
 
-    local player_item_count = 0
+    local player_item_count
 
     if not (gui and gui.valid) then
         return

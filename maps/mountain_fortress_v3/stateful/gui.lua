@@ -79,45 +79,6 @@ local function pretty_format(input)
     return result
 end
 
-local function final_arena_disabled()
-    if stateful.collection.final_arena_disabled then
-        game.print('[color=yellow][Mtn v3][/color] Game won!')
-        game.print('[color=yellow][Mtn v3][/color] Final battle arena is currently being tweaked.')
-        collection.game_won = true
-        stateful.collection.gather_time = 0
-        stateful.collection.gather_time_timer = 0
-        collection.survive_for = 0
-        collection.survive_for_timer = 0
-        refresh_frames()
-
-        local reversed = Public.get_stateful_settings('reversed')
-        if reversed then
-            Public.set_stateful_settings('reversed', false)
-        else
-            Public.set_stateful_settings('reversed', true)
-        end
-
-        collection.game_won_notified = true
-        refresh_boss_frame()
-        play_game_won()
-        WD.disable_spawning_biters(true)
-        Collapse.start_now(false)
-        WD.nuke_wave_gui()
-        Server.to_discord_embed('Game won!')
-        stateful.rounds_survived = stateful.rounds_survived + 1
-        stateful.selected_objectives = nil
-        local buff = Stateful.save_settings()
-        notify_won_to_discord(buff)
-        local locomotive = Public.get('locomotive')
-        if locomotive and locomotive.valid then
-            locomotive.surface.spill_item_stack({ position = locomotive.position, stack = { name = 'coin', count = 512, quality = 'normal' } })
-        end
-        Public.set('game_reset_tick', 5400)
-        return true
-    end
-    return false
-end
-
 local function notify_won_to_discord(buff)
     if not buff then
         return error('Buff is required when sending message to discord.', 2)
@@ -851,18 +812,6 @@ main_frame = function (player)
     spacer(frame)
     frame.add({ type = 'line' })
     spacer(frame)
-    -- if not stateful.collection.final_arena_disabled then
-    --     local final_label = frame.add({type = 'label', caption = {'stateful.tooltip_final'}})
-    --     final_label.style.single_line = false
-    -- else
-    --     local final_label_disabled = frame.add({type = 'label', caption = {'stateful.tooltip_final_disabled'}})
-    --     final_label_disabled.style.single_line = false
-    --     local reason_label = frame.add({type = 'label', caption = {'stateful.tooltip_completing'}})
-    --     reason_label.style.single_line = false
-    -- end
-    -- spacer(frame)
-    -- frame.add({type = 'line'})
-    spacer(frame)
 
     local close = frame.add({ type = 'button', name = close_button, caption = 'Close' })
     close.style.horizontally_stretchable = true
@@ -1256,10 +1205,6 @@ local function update_raw()
         Server.to_discord_embed('All objectives has been completed! Take your time to prepare for the final push!')
         Alert.alert_all_players(300, 'All objectives has been completed!')
         Alert.alert_all_players(300, 'Take your time to prepare for the final push!')
-
-        if final_arena_disabled() then
-            return
-        end
 
         stateful.collection.gather_time = tick + (10 * 3600)
         stateful.collection.gather_time_timer = tick + (10 * 3600)

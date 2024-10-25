@@ -1122,12 +1122,8 @@ function Public._esp:work(tick)
     if self.last_command < tick then
         if self.command == 'goto' then
             self:go_to_location_command()
-        elseif self.command == 'attack' then
-            -- self:attack_command()
-            -- self:go_to_location_command()
         elseif self.command == 'attack_area' then
             self:attack_area_command()
-            -- self:go_to_location_command()
         end
         self.last_command = tick + 500
 

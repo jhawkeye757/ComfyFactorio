@@ -29,7 +29,6 @@ local item_worths = {
     ['inserter'] = 8,
     ['long-handed-inserter'] = 16,
     ['fast-inserter'] = 32,
-    ['bulk-inserter'] = 128,
     ['bulk-inserter'] = 160,
     ['small-electric-pole'] = 4,
     ['medium-electric-pole'] = 32,

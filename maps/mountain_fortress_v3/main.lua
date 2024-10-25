@@ -300,16 +300,16 @@ function Public.reset_map()
 
     if this.adjusted_zones.reversed then
         if not surface.is_chunk_generated({ x = -20, y = -22 }) then
-            -- surface.request_to_generate_chunks({ x = -20, y = -22 }, 1)
-            -- surface.force_generate_chunk_requests()
+            surface.request_to_generate_chunks({ x = -20, y = -22 }, 1)
+            surface.force_generate_chunk_requests()
         end
         game.forces.player.set_spawn_position({ x = -27, y = -25 }, surface)
         WD.set_spawn_position({ x = -16, y = -80 })
         WD.enable_inverted(true)
     else
         if not surface.is_chunk_generated({ x = -20, y = 22 }) then
-            -- surface.request_to_generate_chunks({ x = -20, y = 22 }, 1)
-            -- surface.force_generate_chunk_requests()
+            surface.request_to_generate_chunks({ x = -20, y = 22 }, 1)
+            surface.force_generate_chunk_requests()
         end
         game.forces.player.set_spawn_position({ x = -27, y = 25 }, surface)
         WD.set_spawn_position({ x = -16, y = 80 })

@@ -14,13 +14,13 @@ local function protect(entity, operable)
     entity.destructible = false
     entity.operable = operable
 end
-
+--[[
 local function connect_entities(entity1, entity2, wire_type)
     local wireconnector1 = entity1.get_wire_connector(wire_type, true)
     local wireconnector2 = entity2.get_wire_connector(wire_type, true)
     wireconnector1.connect_to(wireconnector2)
 end
-
+ ]]
 
 function Public.create_wagon_room()
     local objective = Chrono_table.get_table()
@@ -33,12 +33,12 @@ function Public.create_wagon_room()
         ['height'] = height + 128,
         ['water'] = 0,
         ['starting_area'] = 1,
-        ['cliff_settings'] = {cliff_elevation_interval = 0, cliff_elevation_0 = 0},
+        ['cliff_settings'] = { cliff_elevation_interval = 0, cliff_elevation_0 = 0 },
         ['default_enable_all_autoplace_controls'] = true,
         ['autoplace_settings'] = {
-            ['entity'] = {treat_missing_as_default = false},
-            ['tile'] = {treat_missing_as_default = true},
-            ['decorative'] = {treat_missing_as_default = false}
+            ['entity'] = { treat_missing_as_default = false },
+            ['tile'] = { treat_missing_as_default = true },
+            ['decorative'] = { treat_missing_as_default = false }
         }
     }
     if not game.surfaces['cargo_wagon'] then
@@ -47,68 +47,68 @@ function Public.create_wagon_room()
     local surface = game.surfaces['cargo_wagon']
     surface.freeze_daytime = true
     surface.daytime = 0.1
-    surface.request_to_generate_chunks({0, 0}, 12)
+    surface.request_to_generate_chunks({ 0, 0 }, 12)
     surface.force_generate_chunk_requests()
     local tiles = {}
     local carfpos = {
-        [1] = {x = -33, y = -127},
-        [2] = {x = -33, y = -128},
-        [3] = {x = -33, y = -129},
-        [4] = {x = -33, y = -130},
-        [5] = {x = 32, y = -127},
-        [6] = {x = 32, y = -128},
-        [7] = {x = 32, y = -129},
-        [8] = {x = 32, y = -130},
-        [9] = {x = -33, y = -2},
-        [10] = {x = -33, y = -1},
-        [11] = {x = -33, y = 0},
-        [12] = {x = -33, y = 1},
-        [13] = {x = 32, y = -2},
-        [14] = {x = 32, y = -1},
-        [15] = {x = 32, y = 0},
-        [16] = {x = 32, y = 1},
-        [17] = {x = -33, y = 126},
-        [18] = {x = -33, y = 127},
-        [19] = {x = -33, y = 128},
-        [20] = {x = -33, y = 129},
-        [21] = {x = 32, y = 126},
-        [22] = {x = 32, y = 127},
-        [23] = {x = 32, y = 128},
-        [24] = {x = 32, y = 129}
+        [1] = { x = -33, y = -127 },
+        [2] = { x = -33, y = -128 },
+        [3] = { x = -33, y = -129 },
+        [4] = { x = -33, y = -130 },
+        [5] = { x = 32, y = -127 },
+        [6] = { x = 32, y = -128 },
+        [7] = { x = 32, y = -129 },
+        [8] = { x = 32, y = -130 },
+        [9] = { x = -33, y = -2 },
+        [10] = { x = -33, y = -1 },
+        [11] = { x = -33, y = 0 },
+        [12] = { x = -33, y = 1 },
+        [13] = { x = 32, y = -2 },
+        [14] = { x = 32, y = -1 },
+        [15] = { x = 32, y = 0 },
+        [16] = { x = 32, y = 1 },
+        [17] = { x = -33, y = 126 },
+        [18] = { x = -33, y = 127 },
+        [19] = { x = -33, y = 128 },
+        [20] = { x = -33, y = 129 },
+        [21] = { x = 32, y = 126 },
+        [22] = { x = 32, y = 127 },
+        [23] = { x = 32, y = 128 },
+        [24] = { x = 32, y = 129 }
     }
     for i = 1, 24, 1 do
-        tiles[#tiles + 1] = {name = 'tutorial-grid', position = {carfpos[i].x, carfpos[i].y}}
+        tiles[#tiles + 1] = { name = 'tutorial-grid', position = { carfpos[i].x, carfpos[i].y } }
     end
 
     for x = width * -0.5, width * 0.5 - 1, 1 do
         for y = height * 0.5, height * 0.7, 1 do
-            tiles[#tiles + 1] = {name = 'out-of-map', position = {x, y}}
+            tiles[#tiles + 1] = { name = 'out-of-map', position = { x, y } }
         end
         for y = height * -0.7, height * -0.5, 1 do
-            tiles[#tiles + 1] = {name = 'out-of-map', position = {x, y}}
+            tiles[#tiles + 1] = { name = 'out-of-map', position = { x, y } }
         end
         for y = height * -0.5 + 3, height * 0.5 - 4, 1 do
-            tiles[#tiles + 1] = {name = 'tutorial-grid', position = {x, y}}
+            tiles[#tiles + 1] = { name = 'tutorial-grid', position = { x, y } }
         end
         for y = height * -0.16 - 5, height * -0.16 + 0, 1 do
-            tiles[#tiles + 1] = {name = 'out-of-map', position = {x, y}}
+            tiles[#tiles + 1] = { name = 'out-of-map', position = { x, y } }
         end
         for y = height * 0.16 - 0, height * 0.16 + 5, 1 do
-            tiles[#tiles + 1] = {name = 'out-of-map', position = {x, y}}
+            tiles[#tiles + 1] = { name = 'out-of-map', position = { x, y } }
         end
         for y = height * -0.5, height * -0.5 + 2, 1 do
-            tiles[#tiles + 1] = {name = 'out-of-map', position = {x, y}}
+            tiles[#tiles + 1] = { name = 'out-of-map', position = { x, y } }
         end
         for y = height * 0.5 - 3, height * 0.5, 1 do
-            tiles[#tiles + 1] = {name = 'out-of-map', position = {x, y}}
+            tiles[#tiles + 1] = { name = 'out-of-map', position = { x, y } }
         end
     end
     for x = width * -0.2 + 1, width * 0.2 - 1, 1 do
         for y = height * -0.16 - 5, height * -0.16 + 0, 1 do
-            tiles[#tiles + 1] = {name = 'tutorial-grid', position = {x, y}}
+            tiles[#tiles + 1] = { name = 'tutorial-grid', position = { x, y } }
         end
         for y = height * 0.16 - 0, height * 0.16 + 5, 1 do
-            tiles[#tiles + 1] = {name = 'tutorial-grid', position = {x, y}}
+            tiles[#tiles + 1] = { name = 'tutorial-grid', position = { x, y } }
         end
         --for y = height * -0.5 -5, height * -0.5 + 3, 1 do
         --	tiles[#tiles + 1] = {name = "tutorial-grid", position = {x,y}}
@@ -117,13 +117,13 @@ function Public.create_wagon_room()
 
     for x = width * -0.5 + 5, width * 0.5 - 6, 1 do
         for y = height * -0.7 + 18, height * -0.5 - 5, 1 do
-            tiles[#tiles + 1] = {name = 'tutorial-grid', position = {x, y}}
+            tiles[#tiles + 1] = { name = 'tutorial-grid', position = { x, y } }
         end
     end
 
     for x = width * -0.5 - 6, width * -0.5 + 3, 1 do -- combinators
         for y = -251, -241, 1 do
-            tiles[#tiles + 1] = {name = 'tutorial-grid', position = {x, y}}
+            tiles[#tiles + 1] = { name = 'tutorial-grid', position = { x, y } }
         end
     end
     surface.set_tiles(tiles)
@@ -131,16 +131,16 @@ function Public.create_wagon_room()
 
     for x = width * -0.4 + 6, width * 0.4 - 6, 1 do
         for y = height * -0.5 + 7, height * -0.5 + 10, 1 do
-            water_tiles[#water_tiles + 1] = {name = 'water', position = {x, y}}
+            water_tiles[#water_tiles + 1] = { name = 'water', position = { x, y } }
             --surface.set_tiles({{name = "water", position = p}})
             if math_random(1, 3) == 1 and (x ~= width * -0.4 + 6) and (y ~= height * -0.5 + 7) then
-                surface.create_entity({name = 'fish', position = {x, y}})
+                surface.create_entity({ name = 'fish', position = { x, y } })
             end
         end
     end
     surface.set_tiles(water_tiles)
 
-    Functions.build_blueprint(surface, {-38, -251}, 1, "player")
+    Functions.build_blueprint(surface, { -38, -251 }, 1, "player")
     -- local combinators = {}
     -- for x = width * -0.5 - 6, width * -0.5 + 3, 1 do
     --     for y = -250, -244, 2 do
@@ -162,19 +162,19 @@ function Public.create_wagon_room()
     --     end
     -- end
     -- local checker = surface.create_entity({name = 'decider-combinator', position = {x = width * -0.5 - 6, y = -242}, force = 'player', create_build_effect_smoke = false})
-    -- if not checker or not checker.valid then return end 
+    -- if not checker or not checker.valid then return end
     -- local rules3 = checker.get_control_behavior()
     -- local dec_condition = {
     --     first_signal = {type = 'virtual', name = 'signal-A'},
     --     second_signal = {type = 'virtual', name = 'signal-B'},
     --     comparator = '>',
-        
+
     -- }
     -- local dec_output = {
     --     output_signal = {type = 'virtual', name = 'signal-C'},
     --     copy_count_from_input = false
     -- }
-    
+
     -- rules3.set_condition(1, dec_condition)
     -- rules3.set_output(1, dec_output)
     -- rules3.parameters = {
@@ -214,11 +214,11 @@ function Public.create_wagon_room()
     -- protect(speaker, false)
     -- protect(checker, false)
 
-    for k, x in pairs({-1, 0}) do
+    for _, x in pairs({ -1, 0 }) do
         for i = 1, 12, 1 do
             local step = math_floor((i - 1) / 4)
             local y = -131 + i + step * 128 - step * 4
-            local e = surface.create_entity({name = 'red-chest', position = {x, y}, force = 'player', create_build_effect_smoke = false})
+            local e = surface.create_entity({ name = 'red-chest', position = { x, y }, force = 'player', create_build_effect_smoke = false })
             protect(e, true)
             --e.link_id = 1000 + i + 12 * (k - 1)
             table.insert(objective.comfychests2, e)
@@ -237,32 +237,32 @@ function Public.create_wagon_room()
         -- protect(substation, true)
         for j = 1, 4, 1 do
             local xx = x - 2 * j
-            local acumulator = surface.create_entity({name = 'accumulator', position = {xx, y}, force = 'player', create_build_effect_smoke = false})
-            if i == 3 and j == 1 then
-                --acumulator.connect_neighbour({wire = defines.wire_type.green, target_entity = substation})
-            end
+            local acumulator = surface.create_entity({ name = 'accumulator', position = { xx, y }, force = 'player', create_build_effect_smoke = false })
+            -- if i == 3 and j == 1 then
+            --     --acumulator.connect_neighbour({wire = defines.wire_type.green, target_entity = substation})
+            -- end
             protect(acumulator, true)
             table.insert(objective.accumulators, acumulator)
         end
         for k = 1, 4, 1 do
             local xx = x + 2 * k
-            local acumulator = surface.create_entity({name = 'accumulator', position = {xx, y}, force = 'player', create_build_effect_smoke = false})
+            local acumulator = surface.create_entity({ name = 'accumulator', position = { xx, y }, force = 'player', create_build_effect_smoke = false })
             protect(acumulator, true)
             table.insert(objective.accumulators, acumulator)
         end
     end
 
-    local powerpole = surface.create_entity({name = 'big-electric-pole', position = {0, height * -0.5}, force = 'player', create_build_effect_smoke = false})
+    local powerpole = surface.create_entity({ name = 'big-electric-pole', position = { 0, height * -0.5 }, force = 'player', create_build_effect_smoke = false })
     protect(powerpole, false)
-    local laser_battery = surface.create_entity({name = 'accumulator', position = {-31, height * -0.5 + 4}, force = 'player', create_build_effect_smoke = false})
+    local laser_battery = surface.create_entity({ name = 'accumulator', position = { -31, height * -0.5 + 4 }, force = 'player', create_build_effect_smoke = false })
     protect(laser_battery, true)
     objective.laser_battery = laser_battery
     rendering.draw_text {
-        text = {'chronosphere.train_laser_battery'},
+        text = { 'chronosphere.train_laser_battery' },
         surface = surface,
         target = {
             entity = laser_battery,
-            offset = {0, -2.5},
+            offset = { 0, -2.5 },
             position = laser_battery and laser_battery.position
         },
         color = objective.locomotive.color,
@@ -272,20 +272,20 @@ function Public.create_wagon_room()
         scale_with_zoom = false
     }
 
-    local market = surface.create_entity({name = 'market', position = {-28, height * -0.5 + 4}, force = 'neutral', create_build_effect_smoke = false})
+    local market = surface.create_entity({ name = 'market', position = { -28, height * -0.5 + 4 }, force = 'neutral', create_build_effect_smoke = false })
     protect(market, true)
-    local repairchest = surface.create_entity({name = 'blue-chest', position = {-24, height * -0.5 + 3}, force = 'player'})
+    local repairchest = surface.create_entity({ name = 'blue-chest', position = { -24, height * -0.5 + 3 }, force = 'player' })
     protect(repairchest, true)
     objective.upgradechest[0] = repairchest
     rendering.draw_text {
-        text = {'chronosphere.train_repair_chest'},
+        text = { 'chronosphere.train_repair_chest' },
         surface = surface,
         target = {
             entity = repairchest,
-            offset = {0, -2.5},
+            offset = { 0, -2.5 },
             position = repairchest and repairchest.position
         },
-        target_offset = {0, -2.5},
+        target_offset = { 0, -2.5 },
         color = objective.locomotive.color,
         scale = 1.00,
         font = 'default-game',
@@ -294,7 +294,7 @@ function Public.create_wagon_room()
     }
     local upgrades = Upgrades.upgrades()
     for i = 1, #upgrades, 1 do
-        local e = surface.create_entity({name = 'blue-chest', position = {-21 + i, height * -0.5 + 3}, force = 'player'})
+        local e = surface.create_entity({ name = 'blue-chest', position = { -21 + i, height * -0.5 + 3 }, force = 'player' })
         protect(e, true)
         objective.upgradechest[i] = e
         rendering.draw_sprite {
@@ -302,7 +302,7 @@ function Public.create_wagon_room()
             surface = surface,
             target = {
                 entity = e,
-                offset = {0, -1.3},
+                offset = { 0, -1.3 },
                 position = e and e.position
             },
             font = 'default-game',
@@ -311,14 +311,14 @@ function Public.create_wagon_room()
     end
 
     rendering.draw_text {
-        text = {'chronosphere.train_market'},
+        text = { 'chronosphere.train_market' },
         surface = surface,
         target = {
             entity = market,
-            offset = {0, -3.5},
+            offset = { 0, -3.5 },
             position = market and market.position
         },
-        target_offset = {0, -3.5},
+        target_offset = { 0, -3.5 },
         color = objective.locomotive.color,
         scale = 1.00,
         font = 'default-game',
@@ -326,11 +326,11 @@ function Public.create_wagon_room()
         scale_with_zoom = false
     }
     rendering.draw_text {
-        text = {'chronosphere.train_upgrades'},
+        text = { 'chronosphere.train_upgrades' },
         surface = surface,
         target = {
             entity = objective.upgradechest[8],
-            offset = {0, -3.5},
+            offset = { 0, -3.5 },
             position = objective.upgradechest[8].position
         },
         color = objective.locomotive.color,
@@ -340,11 +340,11 @@ function Public.create_wagon_room()
         scale_with_zoom = false
     }
     rendering.draw_text {
-        text = {'chronosphere.train_upgrades_sub'},
+        text = { 'chronosphere.train_upgrades_sub' },
         surface = surface,
         target = {
             entity = objective.upgradechest[8],
-            offset = {0, -2.5},
+            offset = { 0, -2.5 },
             position = objective.upgradechest[8].position
         },
         color = objective.locomotive.color,
@@ -361,18 +361,18 @@ function Public.create_wagon_room()
 
     --generate cars--
     local car_pos = {
-        {x = width * -0.5 - 1.4, y = -128},
-        {x = width * -0.5 - 1.4, y = 0},
-        {x = width * -0.5 - 1.4, y = 128},
-        {x = width * 0.5 + 1.4, y = -128},
-        {x = width * 0.5 + 1.4, y = 0},
-        {x = width * 0.5 + 1.4, y = 128}
+        { x = width * -0.5 - 1.4, y = -128 },
+        { x = width * -0.5 - 1.4, y = 0 },
+        { x = width * -0.5 - 1.4, y = 128 },
+        { x = width * 0.5 + 1.4,  y = -128 },
+        { x = width * 0.5 + 1.4,  y = 0 },
+        { x = width * 0.5 + 1.4,  y = 128 }
     }
     objective.car_exits = {}
     for i = 1, 6, 1 do
-        local e = surface.create_entity({name = 'car', position = car_pos[i], force = 'player', create_build_effect_smoke = false})
+        local e = surface.create_entity({ name = 'car', position = car_pos[i], force = 'player', create_build_effect_smoke = false })
         if not e or not e.valid then break end
-        e.get_inventory(defines.inventory.fuel).insert({name = 'wood', count = 16})
+        e.get_inventory(defines.inventory.fuel).insert({ name = 'wood', count = 16 })
         protect(e, false)
         objective.car_exits[i] = e
     end
@@ -387,7 +387,7 @@ function Public.create_wagon_room()
             x = x + 1
         end
         for y = 68, height * 0.5 - 7, 1 do
-            positions[#positions + 1] = {x = x, y = y}
+            positions[#positions + 1] = { x = x, y = y }
         end
     end
     table.shuffle_table(positions)
@@ -399,11 +399,11 @@ function Public.create_wagon_room()
         if not positions[i] then
             break
         end
-        local e = surface.create_entity({name = 'wooden-chest', position = positions[i], force = 'player', create_build_effect_smoke = false})
+        local e = surface.create_entity({ name = 'wooden-chest', position = positions[i], force = 'player', create_build_effect_smoke = false })
         if not e or not e.valid then break end
         local inventory = e.get_inventory(defines.inventory.chest)
         if not inventory or not inventory.valid then break end
-        inventory.insert({name = 'raw-fish', count = math_random(2, 5)})
+        inventory.insert({ name = 'raw-fish', count = math_random(2, 5) })
         i = i + 1
     end
 
@@ -411,7 +411,7 @@ function Public.create_wagon_room()
         if not positions[i] then
             break
         end
-        surface.create_entity({name = 'wooden-chest', position = positions[i], force = 'player', create_build_effect_smoke = false})
+        surface.create_entity({ name = 'wooden-chest', position = positions[i], force = 'player', create_build_effect_smoke = false })
         i = i + 1
     end
 
@@ -420,7 +420,7 @@ function Public.create_wagon_room()
             log('ran out of cargo box positions')
             break
         end
-        local e = surface.create_entity({name = 'wooden-chest', position = positions[i], force = 'player', create_build_effect_smoke = false})
+        local e = surface.create_entity({ name = 'wooden-chest', position = positions[i], force = 'player', create_build_effect_smoke = false })
         if not e or not e.valid then break end
         local inventory = e.get_inventory(defines.inventory.chest)
         if not inventory or not inventory.valid then break end
@@ -434,8 +434,8 @@ function Public.create_wagon_room()
         else
             factory = 'assembling-machine-2'
         end
-        local position = {x = -32 + key * 3, y = height * 0.5 - 5}
-        local e = surface.create_entity({name = factory, force = 'player', position = position})
+        local position = { x = -32 + key * 3, y = height * 0.5 - 5 }
+        local e = surface.create_entity({ name = factory, force = 'player', position = position })
         e.active = false
         protect(e, false)
         e.rotatable = false

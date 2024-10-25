@@ -34,13 +34,13 @@ end
 local function reward_ores(amount, mined_loot, surface, player, entity)
     local a = 0
     if player then
-        a = player.insert {name = mined_loot, count = amount}
+        a = player.insert { name = mined_loot, count = amount }
     end
     amount = amount - a
     if amount > 0 then
         if amount >= 50 then
             for i = 1, math_floor(amount / 50), 1 do
-                local e = surface.create_entity {name = 'item-on-ground', position = entity.position, stack = {name = mined_loot, count = 50}}
+                local e = surface.create_entity { name = 'item-on-ground', position = entity.position, stack = { name = mined_loot, count = 50 } }
                 if e and e.valid then
                     e.to_be_looted = true
                 end
@@ -49,9 +49,9 @@ local function reward_ores(amount, mined_loot, surface, player, entity)
         end
         if amount > 0 then
             if amount < 5 then
-                surface.spill_item_stack(entity.position, {name = mined_loot, count = amount}, true)
+                surface.spill_item_stack(entity.position, { name = mined_loot, count = amount }, true)
             else
-                local e = surface.create_entity {name = 'item-on-ground', position = entity.position, stack = {name = mined_loot, count = amount}}
+                local e = surface.create_entity { name = 'item-on-ground', position = entity.position, stack = { name = mined_loot, count = amount } }
                 if e and e.valid then
                     e.to_be_looted = true
                 end
@@ -78,7 +78,7 @@ function Public.isprotected(entity)
         return true
     end
     local objective = Chrono_table.get_table()
-    local protected = {objective.locomotive, objective.locomotive_cargo[1], objective.locomotive_cargo[2], objective.locomotive_cargo[3]}
+    local protected = { objective.locomotive, objective.locomotive_cargo[1], objective.locomotive_cargo[2], objective.locomotive_cargo[3] }
     for i = 1, #protected do
         if protected[i] == entity then
             return true
@@ -95,7 +95,7 @@ end
 function Public.trap(entity, trap)
     if trap then
         tick_tack_trap(entity.surface, entity.position)
-        tick_tack_trap(entity.surface, {x = entity.position.x + math_random(-2, 2), y = entity.position.y + math_random(-2, 2)})
+        tick_tack_trap(entity.surface, { x = entity.position.x + math_random(-2, 2), y = entity.position.y + math_random(-2, 2) })
         return
     end
     if math_random(1, 256) == 1 then
@@ -123,7 +123,7 @@ function Public.lava_planet(event)
     if surface.name == 'cargo_wagon' then
         return
     end
-    local safe = {'stone-path', 'concrete', 'hazard-concrete-left', 'hazard-concrete-right', 'refined-concrete', 'refined-hazard-concrete-left', 'refined-hazard-concrete-right'}
+    local safe = { 'stone-path', 'concrete', 'hazard-concrete-left', 'hazard-concrete-right', 'refined-concrete', 'refined-hazard-concrete-left', 'refined-hazard-concrete-right' }
     local pavement = surface.get_tile(player.position.x, player.position.y)
     for i = 1, 7, 1 do
         if pavement.name == safe[i] then
@@ -137,10 +137,10 @@ function Public.lava_planet(event)
 
     local elements = #steps
 
-    steps[elements + 1] = {x = player.position.x, y = player.position.y}
+    steps[elements + 1] = { x = player.position.x, y = player.position.y }
 
     if elements > 10 then
-        surface.create_entity({name = 'fire-flame', position = steps[elements - 1]})
+        surface.create_entity({ name = 'fire-flame', position = steps[elements - 1] })
         for i = 1, elements, 1 do
             steps[i] = steps[i + 1]
         end
@@ -152,7 +152,7 @@ function Public.shred_simple_entities(entity)
     if game.forces.enemy.get_evolution_factor(entity.surface) < 0.25 then
         return
     end
-    local simple_entities = entity.surface.find_entities_filtered({type = {'simple-entity', 'tree'}, area = {{entity.position.x - 3, entity.position.y - 3}, {entity.position.x + 3, entity.position.y + 3}}})
+    local simple_entities = entity.surface.find_entities_filtered({ type = { 'simple-entity', 'tree' }, area = { { entity.position.x - 3, entity.position.y - 3 }, { entity.position.x + 3, entity.position.y + 3 } } })
     for _, simple_entity in pairs(simple_entities) do
         if simple_entity.valid then
             simple_entity.destroy()
@@ -165,7 +165,7 @@ function Public.spawner_loot(surface, position)
         local objective = Chrono_table.get_table()
         local count = math_random(1, 1 + objective.chronojumps)
         objective.research_tokens.weapons = objective.research_tokens.weapons + count
-        FT.flying_text(nil, surface, position, {'chronosphere.token_weapons_add', count}, {r = 0.8, g = 0.8, b = 0.8})
+        FT.flying_text(nil, surface, position, { 'chronosphere.token_weapons_add', count }, { r = 0.8, g = 0.8, b = 0.8 })
         script.raise_event(Chrono_table.events['update_upgrades_gui'], {})
     end
 end
@@ -189,10 +189,10 @@ end
 function Public.choppy_loot(event)
     local entity = event.entity
     local choppy_entity_yield = {
-        ['tree-01'] = {'iron-ore'},
-        ['tree-02-red'] = {'copper-ore'},
-        ['tree-04'] = {'coal'},
-        ['tree-08-brown'] = {'stone'}
+        ['tree-01'] = { 'iron-ore' },
+        ['tree-02-red'] = { 'copper-ore' },
+        ['tree-04'] = { 'coal' },
+        ['tree-08-brown'] = { 'stone' }
     }
     if choppy_entity_yield[entity.name] then
         if event.buffer then
@@ -207,7 +207,7 @@ function Public.choppy_loot(event)
         local main_item = choppy_entity_yield[entity.name][math_random(1, #choppy_entity_yield[entity.name])]
         local text = '+' .. amount .. ' [item=' .. main_item .. '] +' .. second_item_amount .. ' [item=' .. second_item .. ']'
         local player = game.get_player(event.player_index)
-        FT.flying_text(player, entity.surface, entity.position, text, {r = 0.8, g = 0.8, b = 0.8})
+        FT.flying_text(player, entity.surface, entity.position, text, { r = 0.8, g = 0.8, b = 0.8 })
         reward_ores(amount, main_item, entity.surface, player, player)
         reward_ores(second_item_amount, second_item, entity.surface, player, player)
     end
@@ -217,10 +217,10 @@ function Public.rocky_loot(event)
     local player = game.get_player(event.player_index)
     if not player or not player.valid then return end
     local amount = math_ceil(get_ore_amount(false))
-    local rock_mining = {'iron-ore', 'iron-ore', 'iron-ore', 'iron-ore', 'copper-ore', 'copper-ore', 'copper-ore', 'stone', 'stone', 'coal', 'coal'}
+    local rock_mining = { 'iron-ore', 'iron-ore', 'iron-ore', 'iron-ore', 'copper-ore', 'copper-ore', 'copper-ore', 'stone', 'stone', 'coal', 'coal' }
     local mined_loot = rock_mining[math_random(1, #rock_mining)]
     local text = '+' .. amount .. ' [item=' .. mined_loot .. ']'
-    FT.flying_text(player, player.surface, player.position, text, {r = 0.98, g = 0.66, b = 0.22})
+    FT.flying_text(player, player.surface, player.position, text, { r = 0.98, g = 0.66, b = 0.22 })
     reward_ores(amount, mined_loot, player.surface, player, player)
     reward_ores(math_random(1, 3), 'raw-fish', player.surface, player, player)
 end
@@ -235,12 +235,12 @@ function Public.scrap_loot(event)
     local player = game.get_player(event.player_index)
     if not player or not player.valid then return end
     local text = '+' .. amount .. ' [item=' .. scrap.name .. '] + ' .. amount2 .. ' [item=' .. scrap2.name .. ']'
-    FT.flying_text(player, player.surface, player.position, text, {r = 0.98, g = 0.66, b = 0.22})
+    FT.flying_text(player, player.surface, player.position, text, { r = 0.98, g = 0.66, b = 0.22 })
     reward_ores(amount, scrap.name, player.surface, player, player)
     reward_ores(amount2, scrap2.name, player.surface, player, player)
     if math_random(1, 50) == 1 then
         objective.research_tokens.tech = objective.research_tokens.tech + 1
-        FT.flying_text(player, player.surface, {x = player.position.x, y = player.position.y - 0.5}, {'chronosphere.token_tech_add', 1}, {r = 0.8, g = 0.8, b = 0.8})
+        FT.flying_text(player, player.surface, { x = player.position.x, y = player.position.y - 0.5 }, { 'chronosphere.token_tech_add', 1 }, { r = 0.8, g = 0.8, b = 0.8 })
     end
 end
 
@@ -272,11 +272,11 @@ function Public.swamp_loot(event)
         amount = 50
     end
 
-    local rock_mining = {'iron-ore', 'iron-ore', 'coal'}
+    local rock_mining = { 'iron-ore', 'iron-ore', 'coal' }
     local mined_loot = rock_mining[math_random(1, #rock_mining)]
     reward_ores(amount, mined_loot, surface, nil, event.entity)
     local text = '+' .. amount .. ' [img=item/' .. mined_loot .. ']'
-    FT.flying_text(nil, surface, event.entity.position, text, {r = 0.7, g = 0.8, b = 0.4})
+    FT.flying_text(nil, surface, event.entity.position, text, { r = 0.7, g = 0.8, b = 0.4 })
 end
 
 function Public.biter_loot(event)
@@ -292,7 +292,7 @@ function Public.danger_silo(entity)
         if objective.dangers and #objective.dangers >= 1 then
             for i = 1, #objective.dangers, 1 do
                 if entity == objective.dangers[i].silo then
-                    game.print({'chronosphere.message_silo', Balance.nukes_looted_per_silo(Difficulty.get().difficulty_vote_value)}, {r = 0.98, g = 0.66, b = 0.22})
+                    game.print({ 'chronosphere.message_silo', Balance.nukes_looted_per_silo(Difficulty.get().difficulty_vote_value) }, { r = 0.98, g = 0.66, b = 0.22 })
                     objective.dangers[i].destroyed = true
                     objective.dangers[i].silo = nil
                     objective.dangers[i].speaker.destroy()
@@ -325,8 +325,8 @@ function Public.biter_immunities(event)
                     end
                 end
             end
-        -- else -- other planets
-        -- 	event.entity.health = math_floor(event.entity.health + event.final_damage_amount - (event.final_damage_amount / (1 + 0.02 * Difficulty.get().difficulty_vote_value * objective.chronojumps)))
+            -- else -- other planets
+            -- 	event.entity.health = math_floor(event.entity.health + event.final_damage_amount - (event.final_damage_amount / (1 + 0.02 * Difficulty.get().difficulty_vote_value * objective.chronojumps)))
         end
     elseif event.damage_type.name == 'poison' then
         if id == 8 then --swamp planet
@@ -344,13 +344,13 @@ function Public.flamer_nerfs()
     local difficulty = Difficulty.get().difficulty_vote_value
 
     local flame_researches = {
-        [1] = {name = 'refined-flammables-1', bonus = 0.2},
-        [2] = {name = 'refined-flammables-2', bonus = 0.2},
-        [3] = {name = 'refined-flammables-3', bonus = 0.2},
-        [4] = {name = 'refined-flammables-4', bonus = 0.3},
-        [5] = {name = 'refined-flammables-5', bonus = 0.3},
-        [6] = {name = 'refined-flammables-6', bonus = 0.4},
-        [7] = {name = 'refined-flammables-7', bonus = 0.2}
+        [1] = { name = 'refined-flammables-1', bonus = 0.2 },
+        [2] = { name = 'refined-flammables-2', bonus = 0.2 },
+        [3] = { name = 'refined-flammables-3', bonus = 0.2 },
+        [4] = { name = 'refined-flammables-4', bonus = 0.3 },
+        [5] = { name = 'refined-flammables-5', bonus = 0.3 },
+        [6] = { name = 'refined-flammables-6', bonus = 0.4 },
+        [7] = { name = 'refined-flammables-7', bonus = 0.2 }
     }
 
     local flamer_power = 0
@@ -367,10 +367,10 @@ end
 
 local mining_researches = {
     -- these already give .1 productivity so we're only adding .1 to get to 20%
-    ['mining-productivity-1'] = {bonus_productivity = .1, bonus_mining_speed = .2, bonus_inventory = 10},
-    ['mining-productivity-2'] = {bonus_productivity = .1, bonus_mining_speed = .2, bonus_inventory = 10},
-    ['mining-productivity-3'] = {bonus_productivity = .1, bonus_mining_speed = .2, bonus_inventory = 10},
-    ['mining-productivity-4'] = {bonus_productivity = .1, bonus_mining_speed = .2, bonus_inventory = 10, infinite = true, infinite_level = 4}
+    ['mining-productivity-1'] = { bonus_productivity = .1, bonus_mining_speed = .2, bonus_inventory = 10 },
+    ['mining-productivity-2'] = { bonus_productivity = .1, bonus_mining_speed = .2, bonus_inventory = 10 },
+    ['mining-productivity-3'] = { bonus_productivity = .1, bonus_mining_speed = .2, bonus_inventory = 10 },
+    ['mining-productivity-4'] = { bonus_productivity = .1, bonus_mining_speed = .2, bonus_inventory = 10, infinite = true, infinite_level = 4 }
 }
 
 function Public.mining_buffs(event)
@@ -419,11 +419,11 @@ function Public.on_technology_effects_reset(event)
         local fake_event = {}
         Public.mining_buffs(nil)
         for name, bonuses in pairs(mining_researches) do
-            technology = force.technologies[name]
+            local technology = force.technologies[name]
             if technology.researched == true or bonuses.infinite == true then
                 fake_event.research = technology
                 if bonuses.infinite and bonuses.infinite_level and technology.level > bonuses.infinite_level then
-                    for i = bonuses.infinite_level, technology.level - 1 do
+                    for _ = bonuses.infinite_level, technology.level - 1 do
                         Public.mining_buffs(fake_event)
                     end
                 else
@@ -444,7 +444,7 @@ end
 function Public.initiate_jump_countdown()
     local objective = Chrono_table.get_table()
     objective.jump_countdown_start_time = objective.passivetimer
-    game.print({'chronosphere.message_jump180'}, {r = 0.98, g = 0.66, b = 0.22})
+    game.print({ 'chronosphere.message_jump180' }, { r = 0.98, g = 0.66, b = 0.22 })
 end
 
 function Public.render_train_hp()
@@ -452,34 +452,34 @@ function Public.render_train_hp()
     local surface = game.surfaces[objective.active_surface_index]
     objective.health_text =
         rendering.draw_text {
-        text = {'chronosphere.train_HP', objective.health, objective.max_health},
-        surface = surface,
-        target = {
-            entity = objective.locomotive,
-            offset = {0, -2.5},
-            position = objective.locomotive.position
-        },
-        color = objective.locomotive.color,
-        scale = 1.40,
-        font = 'default-game',
-        alignment = 'center',
-        scale_with_zoom = false
-    }
+            text = { 'chronosphere.train_HP', objective.health, objective.max_health },
+            surface = surface,
+            target = {
+                entity = objective.locomotive,
+                offset = { 0, -2.5 },
+                position = objective.locomotive.position
+            },
+            color = objective.locomotive.color,
+            scale = 1.40,
+            font = 'default-game',
+            alignment = 'center',
+            scale_with_zoom = false
+        }
     objective.caption =
         rendering.draw_text {
-        text = {'chronosphere.train_name'},
-        surface = surface,
-        target = {
-            entity = objective.locomotive,
-            offset = {0, -4.25},
-            position = objective.locomotive.position
-        },
-        color = objective.locomotive.color,
-        scale = 1.80,
-        font = 'default-game',
-        alignment = 'center',
-        scale_with_zoom = false
-    }
+            text = { 'chronosphere.train_name' },
+            surface = surface,
+            target = {
+                entity = objective.locomotive,
+                offset = { 0, -4.25 },
+                position = objective.locomotive.position
+            },
+            color = objective.locomotive.color,
+            scale = 1.80,
+            font = 'default-game',
+            alignment = 'center',
+            scale_with_zoom = false
+        }
 end
 
 function Public.set_objective_health(final_damage_amount)
@@ -498,14 +498,14 @@ function Public.set_objective_health(final_damage_amount)
     if objective.health < objective.max_health / 2 and final_damage_amount > 0 then
         Upgrades.trigger_poison()
     end
-    objective.health_text.text = {'chronosphere.train_HP', objective.health, objective.max_health}
+    objective.health_text.text = { 'chronosphere.train_HP', objective.health, objective.max_health }
 end
 
 function Public.nuclear_artillery(entity, cause)
     local objective = Chrono_table.get_table()
     if objective.upgrades[23] ~= 1 then return end
     if objective.upgrades[24] > 0 and objective.last_artillery_event ~= game.tick then
-        entity.surface.create_entity({name = 'atomic-rocket', position = entity.position, force = 'player', speed = 1, max_range = 100, target = entity, source = cause})
+        entity.surface.create_entity({ name = 'atomic-rocket', position = entity.position, force = 'player', speed = 1, max_range = 100, target = entity, source = cause })
         objective.upgrades[24] = objective.upgrades[24] - 1
         objective.last_artillery_event = game.tick
     end

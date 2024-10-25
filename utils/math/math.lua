@@ -36,6 +36,7 @@ function Public.round(num, idp)
 	return math.floor(num * mult + 0.5) / mult
 end
 
+--luacheck: ignore 122
 function math.round(num, idp)
 	return Public.round(num, idp)
 end

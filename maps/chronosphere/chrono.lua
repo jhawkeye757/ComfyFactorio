@@ -10,7 +10,7 @@ local Server = require 'utils.server'
 local math_random = math.random
 local math_max = math.max
 
-function Public.get_map_gen_settings(planet_name)
+function Public.get_map_gen_settings(_)
     local seed = math_random(1, 1000000)
     local map_gen_settings = prototypes.space_location['nauvis'].map_gen_settings
     -- if planet_name then
@@ -30,7 +30,7 @@ function Public.get_map_gen_settings(planet_name)
     map_gen_settings.width = 960
     map_gen_settings.height = 960
     map_gen_settings.starting_area = 1
-    map_gen_settings.cliff_settings = {name = 'cliff', cliff_elevation_interval = 0, cliff_elevation_0 = 0, cliff_smoothing = 0.5, richness = 0}
+    map_gen_settings.cliff_settings = { name = 'cliff', cliff_elevation_interval = 0, cliff_elevation_0 = 0, cliff_smoothing = 0.5, richness = 0 }
     map_gen_settings.default_enable_all_autoplace_controls = false
     return map_gen_settings
 end
@@ -118,7 +118,7 @@ function Public.restart_settings()
         production.experience[key] = 0
     end
     for _, player in pairs(game.connected_players) do
-        playertable.flame_boots[player.index] = {fuel = 1, steps = {}}
+        playertable.flame_boots[player.index] = { fuel = 1, steps = {} }
     end
     storage.friendly_fire_history = {}
     storage.landfill_history = {}
@@ -172,22 +172,22 @@ end
 function Public.set_difficulty_settings()
     local objective = Chrono_table.get_table()
     local difficulty_tooltips = {
-        [1] = {'chronosphere.difficulty1'},
-        [2] = {'chronosphere.difficulty2'},
-        [3] = {'chronosphere.difficulty3'},
-        [4] = {'chronosphere.difficulty4'},
-        [5] = {'chronosphere.difficulty5'},
-        [6] = {'chronosphere.difficulty6'},
-        [7] = {'chronosphere.difficulty7'}
+        [1] = { 'chronosphere.difficulty1' },
+        [2] = { 'chronosphere.difficulty2' },
+        [3] = { 'chronosphere.difficulty3' },
+        [4] = { 'chronosphere.difficulty4' },
+        [5] = { 'chronosphere.difficulty5' },
+        [6] = { 'chronosphere.difficulty6' },
+        [7] = { 'chronosphere.difficulty7' }
     }
     local difficulty_names = {
-        [1] = {name = {'chronosphere.difficulty1name'}, value = 0.25, color = {r = 0.00, g = 0.45, b = 0.00}, print_color = {r = 0.00, g = 0.8, b = 0.00}, enabled = true},
-        [2] = {name = {'chronosphere.difficulty2name'}, value = 0.50, color = {r = 0.00, g = 0.35, b = 0.00}, print_color = {r = 0.00, g = 0.6, b = 0.00}, enabled = true},
-        [3] = {name = {'chronosphere.difficulty3name'}, value = 0.75, color = {r = 0.00, g = 0.25, b = 0.00}, print_color = {r = 0.00, g = 0.4, b = 0.00}, enabled = true},
-        [4] = {name = {'chronosphere.difficulty4name'}, value = 1.00, color = {r = 0.00, g = 0.00, b = 0.25}, print_color = {r = 0.00, g = 0.0, b = 0.50}, enabled = true},
-        [5] = {name = {'chronosphere.difficulty5name'}, value = 1.50, color = {r = 0.25, g = 0.00, b = 0.00}, print_color = {r = 0.40, g = 0.0, b = 0.00}, enabled = true},
-        [6] = {name = {'chronosphere.difficulty6name'}, value = 3.00, color = {r = 0.35, g = 0.00, b = 0.00}, print_color = {r = 0.60, g = 0.0, b = 0.00}, enabled = true},
-        [7] = {name = {'chronosphere.difficulty7name'}, value = 5.00, color = {r = 0.45, g = 0.00, b = 0.00}, print_color = {r = 0.80, g = 0.0, b = 0.00}, enabled = true}
+        [1] = { name = { 'chronosphere.difficulty1name' }, value = 0.25, color = { r = 0.00, g = 0.45, b = 0.00 }, print_color = { r = 0.00, g = 0.8, b = 0.00 }, enabled = true },
+        [2] = { name = { 'chronosphere.difficulty2name' }, value = 0.50, color = { r = 0.00, g = 0.35, b = 0.00 }, print_color = { r = 0.00, g = 0.6, b = 0.00 }, enabled = true },
+        [3] = { name = { 'chronosphere.difficulty3name' }, value = 0.75, color = { r = 0.00, g = 0.25, b = 0.00 }, print_color = { r = 0.00, g = 0.4, b = 0.00 }, enabled = true },
+        [4] = { name = { 'chronosphere.difficulty4name' }, value = 1.00, color = { r = 0.00, g = 0.00, b = 0.25 }, print_color = { r = 0.00, g = 0.0, b = 0.50 }, enabled = true },
+        [5] = { name = { 'chronosphere.difficulty5name' }, value = 1.50, color = { r = 0.25, g = 0.00, b = 0.00 }, print_color = { r = 0.40, g = 0.0, b = 0.00 }, enabled = true },
+        [6] = { name = { 'chronosphere.difficulty6name' }, value = 3.00, color = { r = 0.35, g = 0.00, b = 0.00 }, print_color = { r = 0.60, g = 0.0, b = 0.00 }, enabled = true },
+        [7] = { name = { 'chronosphere.difficulty7name' }, value = 5.00, color = { r = 0.45, g = 0.00, b = 0.00 }, print_color = { r = 0.80, g = 0.0, b = 0.00 }, enabled = true }
     }
     if objective.config.lock_difficulties then
         difficulty_names[1].enabled = false
@@ -208,10 +208,10 @@ function Public.objective_died()
     end
     objective.health = 0
     local surface = objective.surface
-    game.print({'chronosphere.message_game_lost1'})
-    game.print({'chronosphere.message_game_lost2'})
+    game.print({ 'chronosphere.message_game_lost1' })
+    game.print({ 'chronosphere.message_game_lost2' })
     for i = 1, 3, 1 do
-        surface.create_entity({name = 'big-artillery-explosion', position = objective.locomotive_cargo[i].position})
+        surface.create_entity({ name = 'big-artillery-explosion', position = objective.locomotive_cargo[i].position })
         objective.locomotive_cargo[i].destroy()
         objective.locomotive_cargo[i] = nil
     end
@@ -228,7 +228,7 @@ function Public.objective_died()
     objective.accumulators = {}
     objective.game_lost = true
     objective.game_reset_tick = game.tick + 1800
-    game.play_sound {path = 'utility/game_lost', volume_modifier = 0.75}
+    game.play_sound { path = 'utility/game_lost', volume_modifier = 0.75 }
 end
 
 local function check_nuke_silos()
@@ -258,28 +258,28 @@ function Public.process_jump()
     objective.giftmas_delivered = 0
     objective.jump_countdown_start_time = -1
     objective.dangertimer = 1200
-    game.print({'chronosphere.message_jump', objective.chronojumps}, {r = 0.98, g = 0.66, b = 0.22})
-    Server.to_discord_embed({'chronosphere.message_jump', objective.chronojumps}, true)
+    game.print({ 'chronosphere.message_jump', objective.chronojumps }, { r = 0.98, g = 0.66, b = 0.22 })
+    Server.to_discord_embed({ 'chronosphere.message_jump', objective.chronojumps }, true)
 
     if objective.chronojumps == Balance.jumps_until_overstay_is_on(Difficulty.get().difficulty_vote_value) then
-        game.print({'chronosphere.message_evolve'}, {r = 0.98, g = 0.36, b = 0.22})
+        game.print({ 'chronosphere.message_evolve' }, { r = 0.98, g = 0.36, b = 0.22 })
     elseif objective.chronojumps == 7 then
-        game.print({'chronosphere.message_quest_research'}, {r = 0.98, g = 0.36, b = 0.22})
+        game.print({ 'chronosphere.message_quest_research' }, { r = 0.98, g = 0.36, b = 0.22 })
     elseif objective.chronojumps >= 15 and objective.computermessage == 0 then
-        game.print({'chronosphere.message_quest1'}, {r = 0.98, g = 0.36, b = 0.22})
+        game.print({ 'chronosphere.message_quest1' }, { r = 0.98, g = 0.36, b = 0.22 })
         objective.computermessage = 1
-        game.play_sound {path = 'utility/new_objective', volume_modifier = 0.85}
+        game.play_sound { path = 'utility/new_objective', volume_modifier = 0.85 }
     elseif objective.chronojumps >= 20 and objective.computermessage == 2 then
-        game.print({'chronosphere.message_quest3'}, {r = 0.98, g = 0.36, b = 0.22})
+        game.print({ 'chronosphere.message_quest3' }, { r = 0.98, g = 0.36, b = 0.22 })
         objective.computermessage = 3
-        game.play_sound {path = 'utility/new_objective', volume_modifier = 0.85}
+        game.play_sound { path = 'utility/new_objective', volume_modifier = 0.85 }
     elseif objective.chronojumps >= 25 and objective.computermessage == 4 then
-        game.print({'chronosphere.message_quest5'}, {r = 0.98, g = 0.36, b = 0.22})
+        game.print({ 'chronosphere.message_quest5' }, { r = 0.98, g = 0.36, b = 0.22 })
         objective.computermessage = 5
-        game.play_sound {path = 'utility/new_objective', volume_modifier = 0.85}
+        game.play_sound { path = 'utility/new_objective', volume_modifier = 0.85 }
     end
     if (objective.passivetimer - 180) * objective.passive_chronocharge_rate > objective.chronochargesneeded * 0.75 and objective.chronojumps >= Balance.jumps_until_overstay_is_on(Difficulty.get().difficulty_vote_value) then
-        game.print({'chronosphere.message_overstay'}, {r = 0.98, g = 0.36, b = 0.22})
+        game.print({ 'chronosphere.message_overstay' }, { r = 0.98, g = 0.36, b = 0.22 })
     end
     if objective.world.id == 2 and objective.world.variant.id == 2 then
         check_nuke_silos()
@@ -289,11 +289,11 @@ end
 function Public.get_wagons(start)
     local objective = Chrono_table.get_table()
     local wagons = {}
-    wagons[1] = {inventory = {}, bar = 0, filters = {}}
-    wagons[2] = {inventory = {}, bar = 0, filters = {}}
-    wagons[3] = {inventory = {}, bar = 0, filters = {}}
+    wagons[1] = { inventory = {}, bar = 0, filters = {} }
+    wagons[2] = { inventory = {}, bar = 0, filters = {} }
+    wagons[3] = { inventory = {}, bar = 0, filters = {} }
     if start then
-        wagons[1].inventory[1] = {name = 'raw-fish', count = 100}
+        wagons[1].inventory[1] = { name = 'raw-fish', count = 100 }
         for i = 21, 37, 1 do
             wagons[1].filters[i] = 'atomic-bomb'
         end
@@ -343,10 +343,10 @@ function Public.post_jump()
         game.forces.enemy.set_evolution_factor(1, surface)
     end
     if objective.world.id == 7 then
-        objective.locomotive_cargo[1].insert({name = 'space-science-pack', count = 1000})
+        objective.locomotive_cargo[1].insert({ name = 'space-science-pack', count = 1000 })
         if objective.looted_nukes > 0 then
-            objective.locomotive_cargo[1].insert({name = 'atomic-bomb', count = objective.looted_nukes})
-            game.print({'chronosphere.message_fishmarket3'}, {r = 0.98, g = 0.66, b = 0.22})
+            objective.locomotive_cargo[1].insert({ name = 'atomic-bomb', count = objective.looted_nukes })
+            game.print({ 'chronosphere.message_fishmarket3' }, { r = 0.98, g = 0.66, b = 0.22 })
         end
         objective.chronochargesneeded = 200000000
     elseif objective.world.id == 2 and objective.world.variant.id == 2 then
@@ -363,7 +363,7 @@ function Public.post_jump()
         objective.gen_speed = 2
     end
     for _, player in pairs(game.connected_players) do
-        playertable.flame_boots[player.index] = {fuel = 1, steps = {}}
+        playertable.flame_boots[player.index] = { fuel = 1, steps = {} }
     end
 
     game.map_settings.enemy_evolution.time_factor = 7e-05 + 3e-06 * (objective.chronojumps + objective.overstaycount)
@@ -388,15 +388,15 @@ end
 function Public.message_on_arrival()
     local objective = Chrono_table.get_table()
     local world = objective.world
-    game.print({'chronosphere.map_jump', world.variant.name, world.ores.name, world.dayspeed.name}, {r = 0.98, g = 0.66, b = 0.22})
-    Server.to_discord_embed({'chronosphere.map_jump', world.variant.name, world.ores.name, world.dayspeed.name}, true)
+    game.print({ 'chronosphere.map_jump', world.variant.name, world.ores.name, world.dayspeed.name }, { r = 0.98, g = 0.66, b = 0.22 })
+    Server.to_discord_embed({ 'chronosphere.map_jump', world.variant.name, world.ores.name, world.dayspeed.name }, true)
     if world.id == 4 then
-        game.print({'chronosphere.message_choppy'}, {r = 0.98, g = 0.66, b = 0.22})
+        game.print({ 'chronosphere.message_choppy' }, { r = 0.98, g = 0.66, b = 0.22 })
     elseif world.id == 1 and world.variant.id == 11 then
-        game.print({'chronosphere.message_lava'}, {r = 0.98, g = 0.66, b = 0.22})
+        game.print({ 'chronosphere.message_lava' }, { r = 0.98, g = 0.66, b = 0.22 })
     elseif world.id == 7 then
-        game.print({'chronosphere.message_fishmarket1'}, {r = 0.98, g = 0.66, b = 0.22})
-        game.print({'chronosphere.message_fishmarket2'}, {r = 0.98, g = 0.66, b = 0.22})
+        game.print({ 'chronosphere.message_fishmarket1' }, { r = 0.98, g = 0.66, b = 0.22 })
+        game.print({ 'chronosphere.message_fishmarket2' }, { r = 0.98, g = 0.66, b = 0.22 })
     end
 end
 
@@ -406,12 +406,12 @@ local function create_chunk_list(surface)
     local chunks = {}
     for x = -464, 464, 32 do
         for y = -464, 464, 32 do
-            chunks[#chunks + 1] = {pos = {x, y}, generated = surface.is_chunk_generated({x, y}), distance = math.sqrt(x * x + y * y)}
+            chunks[#chunks + 1] = { pos = { x, y }, generated = surface.is_chunk_generated({ x, y }), distance = math.sqrt(x * x + y * y) }
         end
     end
     for k, v in table.spairs(
         chunks,
-        function(t, a, b)
+        function (t, a, b)
             return t[b].distance > t[a].distance
         end
     ) do
@@ -429,7 +429,7 @@ function Public.setup_world(surface)
     else
         surface.min_brightness = 0
     end
-    surface.brightness_visual_weights = {1, 1, 1}
+    surface.brightness_visual_weights = { 1, 1, 1 }
     objective.surface = surface
     surface.daytime = world.daytime
     local timer = world.dayspeed.timer
@@ -461,7 +461,7 @@ function Public.setup_world(surface)
         local mgs = surface.map_gen_settings
         mgs.width = 2176
         surface.map_gen_settings = mgs
-        surface.request_to_generate_chunks({-960, -64}, 0.5)
+        surface.request_to_generate_chunks({ -960, -64 }, 0.5)
         surface.force_generate_chunk_requests()
     else
         create_chunk_list(surface)

@@ -1224,7 +1224,6 @@ local inserters = {
     ['long-handed-inserter'] = true,
     ['burner-inserter'] = true,
     ['fast-inserter'] = true,
-    ['bulk-inserter'] = true,
     ['bulk-inserter'] = true
 }
 local loaders = {

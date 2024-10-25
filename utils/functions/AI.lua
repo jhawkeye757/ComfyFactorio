@@ -2,9 +2,6 @@
 
 local Public = {}
 
-local Global = require 'utils.global'
-local Utils = require 'utils.utils'
-
 ---Command to move
 ---@param position MapPosition
 ---@param distraction defines.distraction|nil
@@ -50,7 +47,7 @@ end
 ---@param distraction defines.distraction|nil
 function Public.command_attack_obstacles(surface, position, distraction)
     local commands = {}
-    local obstacles = surface.find_entities_filtered {position = position, radius = 25, type = {'simple-entity', 'tree', 'simple-entity-with-owner'}, limit = 100}
+    local obstacles = surface.find_entities_filtered { position = position, radius = 25, type = { 'simple-entity', 'tree', 'simple-entity-with-owner' }, limit = 100 }
     if obstacles then
         --table.shuffle_table(obstacles)
         table.shuffle_by_distance(obstacles, position)
