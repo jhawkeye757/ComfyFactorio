@@ -1526,6 +1526,10 @@ local function gui_closed(event)
 end
 
 local function on_gui_selection_state_changed(event)
+    if not event.element or not event.element.valid then
+        return
+    end
+
     local name = event.element.name
     local player = game.get_player(event.player_index)
     local selected_index = event.element.selected_index

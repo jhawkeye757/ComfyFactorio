@@ -44,7 +44,7 @@ local function remove_player_data(player)
     local player_data = this.players[player.index]
     if player_data then
         if player_data.render_object then
-            rendering.destroy(player_data.render_object)
+            player_data.render_object.destroy()
         end
 
         this.players[player.index] = nil

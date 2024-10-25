@@ -372,6 +372,9 @@ end
 local function get_all_chests(unit_number)
     local t = {}
     local loco_surface = WPT.get('loco_surface')
+    if not loco_surface then
+        return t
+    end
     local containers = this.main_containers
     for check_unit_number, container in pairs(containers) do
         if container.chest and container.chest.valid and container.share.name ~= '' and container.share.name ~= container.unit_number and container.chest.surface.index == loco_surface.index then
@@ -842,13 +845,13 @@ local function update_gui()
 
         local content = container.chest.get_inventory(defines.inventory.chest).get_contents()
 
-        for item_name, item_count in pairs(content) do
-            if item_name ~= 'count' then
-                if not items[item_name] then
+        for _, data in pairs(content) do
+            if data.name ~= 'count' then
+                if not items[data.name] then
                     total = total + 1
-                    items[item_name] = item_count
+                    items[data.name] = data.count
                 else
-                    items[item_name] = items[item_name] + item_count
+                    items[data.name] = items[data.name] + data.count
                 end
             end
         end
@@ -999,9 +1002,9 @@ local function content_mismatches(source, destination)
 
     local mismatch = false
 
-    for source_item_name, _ in pairs(source_inventory) do
-        for destination_item_name, _ in pairs(destination_inventory) do
-            if source_item_name ~= destination_item_name then
+    for _, source_items in pairs(source_inventory) do
+        for _, destination_items in pairs(destination_inventory) do
+            if source_items.name ~= destination_items.name then
                 mismatch = true
             end
         end

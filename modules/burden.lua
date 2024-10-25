@@ -27,13 +27,13 @@ local function compute_fullness(player)
     local num_stacks = 0
 
     local contents = inv.get_contents()
-    for item, count in pairs(contents) do
+    for _, items in pairs(contents) do
         local stack_size = 1
-        if prototypes.item[item].stackable then
-            stack_size = prototypes.item[item].stack_size
+        if prototypes.item[items.name].stackable then
+            stack_size = prototypes.item[items.name].stack_size
         end
 
-        num_stacks = num_stacks + count / stack_size
+        num_stacks = num_stacks + items.count / stack_size
     end
 
     return num_stacks / max_stacks

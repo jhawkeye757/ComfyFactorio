@@ -351,7 +351,7 @@ local function place_wagon(data, adjusted_zones)
         direction = 0
     else
         location = surface.find_tiles_filtered({ area = { { position.x - r1, position.y }, { position.x + r2, position.y + 2 } } })
-        direction = 2
+        direction = 4
     end
 
     for _, tile in pairs(location) do

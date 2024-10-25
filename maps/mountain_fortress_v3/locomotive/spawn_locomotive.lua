@@ -2,7 +2,7 @@ local Public = require 'maps.mountain_fortress_v3.table'
 local ICW = require 'maps.mountain_fortress_v3.icw.main'
 local Task = require 'utils.task_token'
 local MapFunctions = require 'utils.tools.map_functions'
-
+local Event = require 'utils.event'
 local random = math.random
 local floor = math.floor
 
@@ -205,7 +205,7 @@ function Public.locomotive_spawn(surface, position, reversed)
         )
     end
 
-    local s = 'entity/character-corpse'
+    local s = 'entity/fish'
 
     for y = -1, 0, 0.05 do
         local scale = random(50, 100) * 0.01
@@ -230,6 +230,7 @@ function Public.locomotive_spawn(surface, position, reversed)
 
     local locomotive = ICW.register_wagon(this.locomotive)
     if not locomotive then
+        print('Failed to register locomotive')
         return
     end
 
@@ -273,5 +274,18 @@ function Public.locomotive_spawn(surface, position, reversed)
 
     game.forces.player.set_spawn_position({ this.locomotive.position.x - 5, this.locomotive.position.y }, locomotive.surface)
 end
+
+Event.add(Public.events.on_locomotive_cargo_missing, function ()
+    local locomotive_cargo = Public.get('locomotive_cargo')
+    if not locomotive_cargo or not locomotive_cargo.valid then
+        return
+    end
+
+    local wagons = ICW.get('wagons')
+    if wagons[locomotive_cargo.unit_number] then
+        log('Locomotive cargo missing, setting new cargo')
+        Public.set('icw_locomotive', wagons[locomotive_cargo.unit_number])
+    end
+end)
 
 return Public

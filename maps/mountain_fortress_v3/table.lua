@@ -38,7 +38,8 @@ local dataset_key_dev = 'mtn_v3_table_dev'
 Public.events = {
     reset_map = Event.generate_event_name('reset_map'),
     on_entity_mined = Event.generate_event_name('on_entity_mined'),
-    on_market_item_purchased = Event.generate_event_name('on_market_item_purchased')
+    on_market_item_purchased = Event.generate_event_name('on_market_item_purchased'),
+    on_locomotive_cargo_missing = Event.generate_event_name('on_locomotive_cargo_missing'),
 }
 
 local scenario_name = 'nauvis'

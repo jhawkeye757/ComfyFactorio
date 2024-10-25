@@ -5,6 +5,7 @@ local Public = {}
 
 Public.reset = ICW.reset
 Public.get_table = ICW.get
+Public.get = ICW.get
 
 local function on_entity_died(event)
     local entity = event.entity

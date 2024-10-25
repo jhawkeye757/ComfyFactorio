@@ -307,8 +307,8 @@ local function give_passive_xp(data)
                         end
                     end
                 end
-            elseif player.afk_time > 1800 and player.character and player.surface.index == loco_surface.index then
-                player.character_personal_logistic_requests_enabled = false
+            elseif player.afk_time > 1800 and player.character and player.surface.index == loco_surface.index and player.get_requester_point() then
+                player.get_requester_point().enabled = false
             end
             ::pre_exit::
         end
@@ -408,7 +408,12 @@ local function get_driver_action(entity)
         return
     end
 
-    local player = driver.player
+    local player
+    if driver and driver.valid and driver.is_player() then
+        player = driver
+    else
+        player = driver.player
+    end
     if not player or not player.valid then
         return
     end
@@ -493,7 +498,8 @@ local function validate_index()
 
     local icw_table = ICW.get_table()
     local icw_locomotive = Public.get('icw_locomotive')
-    if not icw_locomotive or not icw_locomotive.valid then
+    if not icw_locomotive then
+        Event.raise(Public.events.on_locomotive_cargo_missing)
         return
     end
     local loco_surface = icw_locomotive.surface

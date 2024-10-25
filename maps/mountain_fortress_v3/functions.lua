@@ -1193,11 +1193,19 @@ function Public.set_difficulty()
             elseif player_count >= 11 then
                 mining_bonus = 0 -- back to 0% with more than 11 players
             end
+            if mining_bonus < 0 then
+                mining_bonus = 0
+            end
+
             force.manual_mining_speed_modifier = force.manual_mining_speed_modifier + mining_bonus
             Public.set('mining_bonus', mining_bonus) -- Setting mining_bonus globally so it remembers how much to reduce
         else
             force.manual_mining_speed_modifier = force.manual_mining_speed_modifier - mining_bonus
             Public.set('disable_mining_boost', true)
+        end
+
+        if force.manual_mining_speed_modifier < 0 then
+            force.manual_mining_speed_modifier = 0
         end
     end
 end

@@ -164,11 +164,16 @@ local function zoom_to_pos(event)
     if is_spamming then
         return
     end
-    local player = event.player
+    local player  = event.player
     local element = event.element
-    local position = Gui.get_data(element)
+    local target  = Gui.get_data(element)
 
-    player.zoom_to_world(position, 0.5)
+    if not target or not target.valid then
+        return
+    end
+
+    if target.character ~= nil then target = target.character end
+    player.centered_on = target
 end
 
 local close_alert = Public.close_alert
@@ -285,7 +290,7 @@ function Public.alert_all_players_location(player, message, color, duration)
                     style = 'slot_button'
                 }
 
-            Gui.set_data(sprite, player.position)
+            Gui.set_data(sprite, player)
 
             local label =
                 container.add {
