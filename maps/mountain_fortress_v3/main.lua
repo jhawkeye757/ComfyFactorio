@@ -359,13 +359,12 @@ function Public.reset_map()
         WD.disable_spawning_biters(true)
     end
 
-    if not this.disable_startup_notification then
-        Task.set_timeout_in_ticks(25, announce_new_map)
-    end
-
     Public.equip_players(nil, false)
 
     Task.set_timeout_in_ticks(100, partial_reset_token, {})
+    if not this.disable_startup_notification then
+        Task.set_timeout_in_ticks(125, announce_new_map)
+    end
 end
 
 local is_locomotive_valid = function ()
