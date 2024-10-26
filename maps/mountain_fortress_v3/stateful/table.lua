@@ -519,6 +519,7 @@ local search_corpse_token =
     Task.register(
         function (event)
             local player_index = event.player_index
+            if not player_index then return end
             local player = game.get_player(player_index)
 
             if not player or not player.valid then

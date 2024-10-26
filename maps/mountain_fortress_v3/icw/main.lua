@@ -24,11 +24,18 @@ end
 local function on_player_driving_changed_state(event)
     local icw = ICW.get()
     local player = game.players[event.player_index]
+    if player.controller_type == defines.controllers.remote then
+        return
+    end
+
     Functions.use_cargo_wagon_door_with_entity(icw, player, event.entity)
 end
 
 local function on_player_changed_surface(event)
     local player = game.players[event.player_index]
+    if player.controller_type == defines.controllers.remote then
+        return
+    end
     Functions.kill_minimap(player)
 end
 
@@ -37,6 +44,7 @@ local function on_gui_closed(event)
     if not entity then
         return
     end
+
     if not entity.valid then
         return
     end
@@ -49,6 +57,10 @@ local function on_gui_closed(event)
     end
     local player = game.get_player(event.player_index)
     if not player or not player.valid then
+        return
+    end
+
+    if player.controller_type == defines.controllers.remote then
         return
     end
 
@@ -74,6 +86,10 @@ local function on_gui_opened(event)
 
     local player = game.get_player(event.player_index)
     if not player or not player.valid then
+        return
+    end
+
+    if player.controller_type == defines.controllers.remote then
         return
     end
 

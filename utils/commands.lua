@@ -523,6 +523,14 @@ function Public:set_default(defaults)
     return self
 end
 
+--- Restores the command_activated state for each command
+function Public.restore_states()
+    for _, command in pairs(this.commands) do
+        command.validated_command = false
+        command.command_activated = false
+    end
+end
+
 --- Registers the command to the game. Will return the player/server and the args as separate arguments.
 ---@param func function
 function Public:callback(func)

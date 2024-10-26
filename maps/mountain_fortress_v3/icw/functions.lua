@@ -761,6 +761,7 @@ function Public.use_cargo_wagon_door_with_entity(icw, player, door)
         return
     end
 
+
     if not door then
         return
     end
@@ -1062,6 +1063,10 @@ function Public.toggle_minimap(icw, event)
         return
     end
     local player = game.players[event.player_index]
+    if player.controller_type == defines.controllers.remote then
+        return
+    end
+
     local is_spamming = SpamProtection.is_spamming(player, 5, 'ICW Toggle Minimap')
     if is_spamming then
         return

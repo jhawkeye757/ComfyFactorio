@@ -42,6 +42,7 @@ local JailData = require 'utils.datastore.jail_data'
 local RPG_Progression = require 'utils.datastore.rpg_data'
 local OfflinePlayers = require 'modules.clear_vacant_players'
 local Beam = require 'modules.render_beam'
+local Commands = require 'utils.commands'
 
 -- Use these settings for live
 local send_ping_to_channel = Discord.channel_names.mtn_channel
@@ -142,6 +143,15 @@ partial_reset = function ()
         Public.locomotive_spawn(surface, { x = -18, y = 25 }, this.adjusted_zones.reversed)
     end
 
+    init_bonus_drill_force()
+
+    Public.init_enemy_weapon_damage()
+
+    game.forces.player.manual_mining_speed_modifier = 0
+    game.forces.player.set_ammo_damage_modifier('artillery-shell', -0.95)
+    game.forces.player.worker_robots_battery_modifier = 4
+    game.forces.player.worker_robots_storage_bonus = 15
+
     Public.render_train_hp()
     Public.render_direction(surface, this.adjusted_zones.reversed)
 end
@@ -185,7 +195,6 @@ function Public.reset_map()
     Group.alphanumeric_only(false)
 
     Public.disable_tech()
-    init_bonus_drill_force()
 
     local surface = game.surfaces[this.active_surface_index]
 
@@ -204,11 +213,6 @@ function Public.reset_map()
 
     Beam.reset_valid_targets()
 
-    game.forces.player.manual_mining_speed_modifier = 0
-    game.forces.player.set_ammo_damage_modifier('artillery-shell', -0.95)
-    game.forces.player.worker_robots_battery_modifier = 4
-    game.forces.player.worker_robots_storage_bonus = 15
-
     BiterHealthBooster.set_active_surface(tostring(surface.name))
     BiterHealthBooster.acid_nova(true)
     BiterHealthBooster.check_on_entity_died(true)
@@ -216,7 +220,6 @@ function Public.reset_map()
     BiterHealthBooster.enable_boss_loot(false)
     BiterHealthBooster.enable_randomize_stun_and_slowdown_sticker(true)
 
-    Public.init_enemy_weapon_damage()
 
     -- AntiGrief.whitelist_types('tree', true)
     AntiGrief.enable_capsule_warning(false)
@@ -296,6 +299,7 @@ function Public.reset_map()
     Public.set_difficulty()
     Public.disable_creative()
     Public.boost_difficulty()
+    Commands.restore_states()
 
     if this.adjusted_zones.reversed then
         if not surface.is_chunk_generated({ x = -20, y = -22 }) then

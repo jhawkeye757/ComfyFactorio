@@ -1109,7 +1109,7 @@ spells[#spells + 1] = {
 
         local surface = data.surface
 
-        local pos = surface.find_non_colliding_position('character', game.forces.player.get_spawn_position(surface), 3, 0, 5)
+        local pos = surface.find_non_colliding_position('character', game.forces.player.get_spawn_position(surface), 3, 0)
         if pos then
             player.teleport(pos, surface)
         else
@@ -1145,7 +1145,7 @@ spells[#spells + 1] = {
 
         Public.register_cooldown_for_spell(player)
 
-        local pos = surface.find_non_colliding_position('character', game.forces.player.get_spawn_position(surface), 3, 0, 5)
+        local pos = surface.find_non_colliding_position('character', game.forces.player.get_spawn_position(surface), 3, 0)
         if pos then
             player.teleport(pos, surface)
         else

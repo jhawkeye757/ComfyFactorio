@@ -324,8 +324,6 @@ local function distance(player)
     local breached_wall = Public.get('breached_wall')
     local bonus_xp_on_join = Public.get('bonus_xp_on_join')
     local enable_arties = Public.get('enable_arties')
-    local final_battle = Public.get('final_battle')
-
 
     local p = player.physical_position
 
@@ -421,7 +419,7 @@ local function distance(player)
             end
         end
 
-        if not Collapse.has_collapse_started() or not final_battle then
+        if not Collapse.has_collapse_started() then
             clear_breach_text_and_render()
             Public.set('collapse_started', true)
             Collapse.start_now(true)

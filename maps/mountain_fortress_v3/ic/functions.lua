@@ -39,6 +39,18 @@ local function validate_entity(entity)
     return true
 end
 
+local get_filters = function (points)
+    local filters = {}
+    for _, section in pairs(points.sections) do
+        for _, filter in pairs(section.filters) do
+            if filter and filter.value and filter.value.name then
+                filters[#filters + 1] = filter
+            end
+        end
+    end
+    return filters
+end
+
 ---Returns the car from the unit_number.
 ---@param unit_number any
 ---@return table|boolean
@@ -560,10 +572,11 @@ local function input_filtered(car_inv, chest, chest_inv, free_slots)
     local request_stacks = {}
 
     local prototypes = prototypes.item
-    for slot_index = 1, 30, 1 do
-        local stack = chest.get_request_slot(slot_index)
-        if stack then
-            request_stacks[stack.name] = 10 * prototypes[stack.name].stack_size
+    local logistics = chest.get_logistic_point(defines.logistic_member_index.logistic_container)
+    local filters = get_filters(logistics)
+    for _, filter in pairs(filters) do
+        if filter.value.name then
+            request_stacks[filter.value.name] = 10 * prototypes[filter.value.name].stack_size
         end
     end
     for i = 1, #car_inv - 1, 1 do
@@ -606,7 +619,16 @@ local function input_cargo(car, chest)
         end
     end
 
-    if chest.get_request_slot(1) then
+    local has_request_slot = false
+    local logistics = chest.get_logistic_point(defines.logistic_member_index.logistic_container)
+    local filters = get_filters(logistics)
+    for _, filter in pairs(filters) do
+        if filter.value.name then
+            has_request_slot = true
+        end
+    end
+
+    if has_request_slot then
         input_filtered(car_inventory, chest, chest_inventory, free_slots)
         goto continue
     end
@@ -811,7 +833,7 @@ function Public.save_car(event)
             restore_surface(p, e)
         elseif p.can_insert({ name = car.name, count = 1 }) then
             p.insert({ name = car.name, count = 1, health = health })
-            p.print(module_tag .. 'Your car was stolen from you - the gods foresaw this and granted you a new one.', {color = Color.info})
+            p.print(module_tag .. 'Your car was stolen from you - the gods foresaw this and granted you a new one.', { color = Color.info })
         end
     end
 end
@@ -1081,7 +1103,7 @@ function Public.validate_owner(player, entity)
                     player.driving = false
                     if not player.admin then
                         if list.notify_on_driver_change == 'left' then
-                            p.print(player.name .. ' tried to drive your car.', {color = Color.warning})
+                            p.print(player.name .. ' tried to drive your car.', { color = Color.warning })
                         end
                         return
                     end

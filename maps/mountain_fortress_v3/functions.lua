@@ -1567,10 +1567,7 @@ function Public.is_creativity_mode_on()
 end
 
 function Public.disable_creative()
-    local creative_enabled = Misc.get('creative_enabled')
-    if creative_enabled then
-        Misc.set('creative_enabled', false)
-    end
+    Misc.set('creative_enabled', false)
 end
 
 function Public.on_player_respawned(event)

@@ -64,9 +64,6 @@ local function on_gui_click(event)
     if element.caption ~= '✚' then
         return
     end
-    if element.sprite ~= 'virtual-signal/signal-red' then
-        return
-    end
 
     local rpg_t = Public.get_value_from_player(player.index)
 

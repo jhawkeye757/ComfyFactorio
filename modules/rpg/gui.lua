@@ -157,18 +157,18 @@ end
 
 local function add_gui_increase_stat(element, name, player)
     local rpg_t = Public.get_value_from_player(player.index)
-    local sprite = 'virtual-signal/signal-red'
     local symbol = '✚'
+    local e = element.add({ type = 'sprite-button', name = name, caption = symbol })
     if rpg_t.points_left <= 0 then
-        sprite = 'virtual-signal/signal-black'
+        e.style.font_color = { 0, 0, 0 }
+    else
+        e.style.font_color = { 195, 0, 0 }
     end
-    local e = element.add({ type = 'sprite-button', name = name, caption = symbol, sprite = sprite })
     e.style.maximal_height = 38
     e.style.minimal_height = 38
     e.style.maximal_width = 38
     e.style.minimal_width = 38
     e.style.font = 'default-large-semibold'
-    e.style.font_color = { 0, 0, 0 }
     e.style.horizontal_align = 'center'
     e.style.vertical_align = 'center'
     e.style.padding = 0

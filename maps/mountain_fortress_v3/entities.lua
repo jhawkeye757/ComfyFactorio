@@ -109,6 +109,15 @@ local reset_game =
         end
     )
 
+local change_force_for_drills_token =
+    Task.register(
+        function (event)
+            local entity = event.entity
+            if not entity or not entity.valid then return end
+            entity.force = 'bonus_drill'
+        end
+    )
+
 local function get_random_weighted(player, weighted_table, item_index, weight_index)
     local total_weight = 0
     item_index = item_index or 1
@@ -1507,7 +1516,7 @@ local function on_built_entity(event)
     }
 
     if valid_drills[entity.name] then
-        entity.force = 'bonus_drill'
+        Task.set_timeout_in_ticks(30, change_force_for_drills_token, { entity = entity })
         return
     end
 
@@ -1598,7 +1607,7 @@ local function on_robot_built_entity(event)
     }
 
     if valid_drills[entity.name] then
-        entity.force = 'bonus_drill'
+        Task.set_timeout_in_ticks(30, change_force_for_drills_token, { entity = entity })
         return
     end
 

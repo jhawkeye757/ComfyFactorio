@@ -109,18 +109,19 @@ Commands.new('stats', 'Check what stats a user has!')
         end
     )
 
+Commands.new('rpg_give_xp', 'Give players XP!')
+    :require_admin()
+    :require_validation("Running this again will grant EVERY player XP. Are you sure you want to continue?")
+    :add_parameter('amount', false, 'number')
+    :callback(
+        function (_, amount)
+            Public.give_xp(amount)
+            game.print('Distributed ' .. amount .. ' of xp.')
+        end
+    )
+
 
 if _DEBUG then
-    Commands.new('give_xp', 'Give a player XP!')
-        :require_admin()
-        :add_parameter('amount', false, 'number')
-        :callback(
-            function (_, amount)
-                Public.give_xp(amount)
-                game.print('Distributed ' .. amount .. ' of xp.')
-            end
-        )
-
     Commands.new('rpg_debug_module', 'Toggle debug mode for RPG module!')
         :require_admin()
         :callback(
