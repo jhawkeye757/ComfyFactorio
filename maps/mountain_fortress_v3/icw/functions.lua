@@ -244,20 +244,12 @@ local function equal_fluid(source_tank, target_tank)
         return
     end
 
-    if #source_tank.fluidbox < 1 then
-        return
-    end
-
-    if #target_tank.fluidbox < 1 then
-        return
-    end
-
-    local source_fluid = source_tank.fluidbox[1] ~= nil and source_tank.fluidbox[1]
+    local source_fluid = source_tank.get_fluid(1) ~= nil and source_tank.get_fluid(1)
     if not source_fluid then
         return
     end
 
-    local target_fluid = target_tank.fluidbox[1]
+    local target_fluid = target_tank.get_fluid(1)
     local source_fluid_amount = source_fluid.amount
 
     local amount

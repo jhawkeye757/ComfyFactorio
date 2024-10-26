@@ -184,7 +184,7 @@ local function do_refill_turrets()
 
     local data = turret_data.data
     if data.liquid then
-        turret.fluidbox[1] = data
+        turret.set_fluid(1, data)
     elseif data then
         turret.insert(data)
     end
@@ -278,11 +278,10 @@ local function do_magic_fluid_crafters()
 
             if fcount > 0 then
                 local fluidbox_index = data.fluidbox_index
-                local fb = entity.fluidbox
 
-                local fb_data = fb[fluidbox_index] or { name = data.item, amount = 0 }
+                local fb_data = entity.get_fluid(fluidbox_index) or { name = data.item, amount = 0 }
                 fb_data.amount = fb_data.amount + fcount
-                fb[fluidbox_index] = fb_data
+                entity.set_fluid(fluidbox_index, fb_data)
 
                 entity.products_finished = entity.products_finished + fcount
 

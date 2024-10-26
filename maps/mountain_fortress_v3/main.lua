@@ -565,6 +565,10 @@ local collapse_after_wave_200 = function ()
         return
     end
 
+    if WD.get('paused') then
+        return
+    end
+
     local wave_number = WD.get_wave()
 
     if wave_number >= 200 and not Collapse.has_collapse_started() then

@@ -754,7 +754,7 @@ local function build_config_gui(data)
             if Module.collapse_grace then
                 switch_state = 'left'
             end
-            add_switch(scroll_pane, switch_state, 'collapse_grace', 'Collapse', 'On = Enables collapse after wave 100.\nOff = Disables collapse - you must breach the first zone for collapse to occur.')
+            add_switch(scroll_pane, switch_state, 'collapse_grace', 'Collapse', 'On = Enables collapse after wave 200.\nOff = Disables collapse - you must breach the first zone for collapse to occur.')
 
             scroll_pane.add({ type = 'line' })
 

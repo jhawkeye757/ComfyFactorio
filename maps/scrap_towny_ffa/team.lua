@@ -967,7 +967,7 @@ local function setup_enemy_force()
     if not surface or not surface.valid then
         return
     end
-    e_force.set_evolution_factor(1, surface)               -- this should never change since we are changing biter types on spawn
+    e_force.set_evolution_factor(1, surface.name)          -- this should never change since we are changing biter types on spawn
     e_force.set_friend(game.forces.player, true)           -- outlander force (player) should not be attacked by turrets
     e_force.set_cease_fire(game.forces.player, true)       -- outlander force (player) should not be attacked by units
     if (this.testing_mode == true) then
