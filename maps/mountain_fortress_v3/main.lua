@@ -127,7 +127,6 @@ local function preinit_task()
     local players = game.connected_players
     for i = 1, #players do
         local player = players[i]
-        Difficulty.clear_top_frame(player)
         Score.init_player_table(player, true)
         Misc.insert_all_items(player)
         Modifiers.reset_player_modifiers(player)
@@ -366,6 +365,10 @@ end
 local scenario_manager = function ()
     local current_task = Public.get('current_task')
     if not current_task then return end
+
+    if #game.connected_players == 0 then
+        return
+    end
 
     if current_task.delay then
         if game.tick < current_task.delay then

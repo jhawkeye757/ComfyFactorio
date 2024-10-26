@@ -18,6 +18,8 @@ local Beams = require 'modules.render_beam'
 local BottomFrame = require 'utils.gui.bottom_frame'
 local Modifiers = require 'utils.player_modifiers'
 local Session = require 'utils.datastore.session_data'
+local ICMinimap = require 'maps.mountain_fortress_v3.ic.minimap'
+local Score = require 'utils.gui.score'
 
 local scenario_name = Public.scenario_name
 local zone_settings = Public.zone_settings
@@ -1480,7 +1482,7 @@ function Public.on_player_joined_game(event)
     local players = Public.get('players')
     local player = game.players[event.player_index]
 
-
+    Difficulty.clear_top_frame(player)
     Modifiers.update_player_modifiers(player)
     local active_surface_index = Public.get('active_surface_index')
     local surface = game.surfaces[active_surface_index or 'nauvis']
@@ -1490,6 +1492,12 @@ function Public.on_player_joined_game(event)
         local init_surface = game.get_surface('Init')
         if init_surface and init_surface.valid then
             surface = init_surface
+            Score.init_player_table(player, true)
+            Modifiers.reset_player_modifiers(player)
+            WD.destroy_wave_gui(player)
+            ICMinimap.kill_minimap(player)
+            Event.raise(Public.events.reset_map, { player_index = player.index })
+            Public.add_player_to_permission_group(player, 'init_island', true)
         end
     end
 
