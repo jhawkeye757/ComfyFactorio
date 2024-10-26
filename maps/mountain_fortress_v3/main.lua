@@ -458,7 +458,6 @@ function Public.announce_new_map(current_task)
     current_task.state = 'move_players_to_nauvis'
     current_task.surface_name = 'nauvis'
     current_task.delay = game.tick + 200
-    current_task.done = true
 end
 
 function Public.move_players(current_task)
@@ -514,20 +513,17 @@ function Public.move_players_to_nauvis(current_task)
     end
 
     for _, player in pairs(game.connected_players) do
-        Public.add_player_to_permission_group(player, 'near_locomotive', true)
         local pos = surface.find_non_colliding_position('character', position, 3, 0)
         if pos then
             player.teleport({ x = pos.x, y = pos.y }, surface)
         else
             player.teleport({ x = position.x, y = position.y }, surface)
         end
+        Public.add_player_to_permission_group(player, 'near_locomotive', true)
     end
 
     current_task.message = 'Moved players back to nauvis!'
-    if current_task.done then
-        return
-    end
-    current_task.state = 'clear_nauvis'
+    current_task.done = true
 end
 
 function Public.init_stateful(current_task)
