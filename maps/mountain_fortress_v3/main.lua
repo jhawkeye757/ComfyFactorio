@@ -562,8 +562,6 @@ end
 function Public.reset_map(current_task)
     local this = Public.get()
 
-    Difficulty.show_gui(false)
-
     local wave_defense_table = WD.get_table()
     Misc.reset()
 
@@ -709,6 +707,7 @@ function Public.init_mtn()
     Autostash.insert_into_furnace(true)
     Autostash.insert_into_wagon(true)
     Difficulty.set_gui_width(20)
+    Difficulty.show_gui(false)
 
 
     RPG_Progression.toggle_module(false)
