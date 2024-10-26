@@ -96,7 +96,8 @@ function Public.create_landing_surface()
         surface = game.create_surface('Init', map_gen_settings)
     end
 
-    this.landing_surface_index = surface.index
+    if not surface or not surface.valid then return end
+
     surface.always_day = true
     surface.request_to_generate_chunks({ 0, 0 }, 1)
     surface.force_generate_chunk_requests()
