@@ -362,7 +362,6 @@ local function draw_main_frame(player)
                 name = main_frame_name,
                 caption = ({ 'ic.transfer_car' }),
                 direction = 'vertical',
-                style = 'inner_frame_in_outer_frame'
             }
         )
 
