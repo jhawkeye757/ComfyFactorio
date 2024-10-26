@@ -339,7 +339,7 @@ local function mystical_chest_reward(player)
         if player.gui.screen['reward_system'] then
             player.gui.screen['reward_system'].destroy()
         end
-        return player.print('[Rewards] No rewards are available.', {color = Color.fail})
+        return player.print('[Rewards] No rewards are available.', { color = Color.fail })
     end
 
     -- something fancy to reward players
@@ -371,6 +371,10 @@ local function container_opened(event)
 
     local player = game.get_player(event.player_index)
     if not (player and player.valid) then
+        return
+    end
+
+    if player.controller_type == defines.controllers.remote then
         return
     end
 
@@ -416,7 +420,7 @@ local function on_gui_click(event)
         if data.id == i then
             local success, msg = mc_random_rewards[id].func(player)
             if not success then
-                return player.print(msg, {color = Color.fail})
+                return player.print(msg, { color = Color.fail })
             end
             break
         end

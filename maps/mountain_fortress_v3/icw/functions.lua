@@ -201,7 +201,7 @@ local function kick_players_out_of_vehicles(wagon)
     for _, player in pairs(game.connected_players) do
         local character = player.character
         if character and character.valid and character.driving then
-            if wagon.surface == player.surface then
+            if wagon.surface == player.physical_surface then
                 character.driving = false
             end
         end
@@ -534,7 +534,7 @@ end
 
 function Public.is_minimap_valid(player, surface)
     if validate_entity(player) then
-        if player.surface ~= surface then
+        if player.physical_surface ~= surface then
             Public.kill_minimap(player)
         end
     end
@@ -788,7 +788,7 @@ function Public.use_cargo_wagon_door_with_entity(icw, player, door)
     player_data.fallback_surface = wagon.entity.surface.index
     player_data.fallback_position = { wagon.entity.position.x, wagon.entity.position.y }
 
-    if wagon.entity.surface.name ~= player.surface.name then
+    if wagon.entity.surface.name ~= player.physical_surface.name then
         local surface = wagon.entity.surface
         if not (surface and surface.valid) then
             return
@@ -802,7 +802,7 @@ function Public.use_cargo_wagon_door_with_entity(icw, player, door)
         if not surface_position then
             surface.request_to_generate_chunks({ -20, 22 }, 1)
             if player.character and player.character.valid and player.character.driving then
-                if wagon.surface == player.surface then
+                if wagon.surface == player.physical_surface then
                     player.character.driving = false
                 end
             end

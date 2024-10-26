@@ -340,7 +340,7 @@ local function changed_surface(player)
         return
     end
 
-    if player.surface == main.surface then
+    if player.physical_surface == main.surface then
         local minimap = player.gui.left.icw_main_frame
         if main_toggle_button and not main_toggle_button.visible then
             main_toggle_button.visible = true
@@ -380,7 +380,7 @@ local function changed_surface(player)
             info.sprite = 'utility/expand'
             info.visible = true
         end
-    elseif player.surface == wagon_surface then
+    elseif player.physical_surface == wagon_surface then
         if main_toggle_button and main_toggle_button.visible then
             main_toggle_button.visible = false
         end
@@ -473,10 +473,10 @@ local function on_gui_click(event)
         if not player or not player.valid then
             return
         end
-        if not player.surface or not player.surface.valid then
+        if not player.physical_surface or not player.physical_surface.valid then
             return
         end
-        if player.surface ~= locomotive.surface then
+        if player.physical_surface ~= locomotive.surface then
             local minimap = player.gui.left.icw_main_frame
             if minimap and minimap.visible then
                 minimap.visible = false

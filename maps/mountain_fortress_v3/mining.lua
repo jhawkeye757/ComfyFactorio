@@ -313,7 +313,7 @@ local function randomness(data)
 
     if harvest_amount > max_spill then
         if spill_items_to_surface then
-            player.surface.spill_item_stack({ position = position, stack = { name = harvest, count = max_spill, quality = 'normal' } })
+            player.physical_surface.spill_item_stack({ position = position, stack = { name = harvest, count = max_spill, quality = 'normal' } })
         else
             player.insert({ name = harvest, count = max_spill })
         end
@@ -322,14 +322,14 @@ local function randomness(data)
         harvest_amount = harvest_amount - inserted_count
         if harvest_amount > 0 then
             if spill_items_to_surface then
-                player.surface.spill_item_stack({ position = position, stack = { name = harvest, count = harvest_amount, quality = 'normal' } })
+                player.physical_surface.spill_item_stack({ position = position, stack = { name = harvest, count = harvest_amount, quality = 'normal' } })
             else
                 player.insert({ name = harvest, count = harvest_amount })
             end
         end
     else
         if spill_items_to_surface then
-            player.surface.spill_item_stack({ position = position, stack = { name = harvest, count = harvest_amount, quality = 'normal' } })
+            player.physical_surface.spill_item_stack({ position = position, stack = { name = harvest, count = harvest_amount, quality = 'normal' } })
         else
             player.insert({ name = harvest, count = harvest_amount })
         end
@@ -337,9 +337,9 @@ local function randomness(data)
     local particle = particles[harvest]
 
     if data.script_character then
-        create_particles(player.surface, particle, position, 16, { x = data.script_character.position.x, y = data.script_character.position.y })
+        create_particles(player.physical_surface, particle, position, 16, { x = data.script_character.position.x, y = data.script_character.position.y })
     else
-        create_particles(player.surface, particle, position, 16, { x = player.physical_position.x, y = player.physical_position.y })
+        create_particles(player.physical_surface, particle, position, 16, { x = player.physical_position.x, y = player.physical_position.y })
     end
 end
 
@@ -369,7 +369,7 @@ local function randomness_scrap(data)
 
     if harvest_amount > max_spill then
         if spill_items_to_surface then
-            player.surface.spill_item_stack({ position = position, stack = { name = harvest, count = max_spill, quality = 'normal' } })
+            player.physical_surface.spill_item_stack({ position = position, stack = { name = harvest, count = max_spill, quality = 'normal' } })
         else
             player.insert({ name = harvest, count = max_spill })
         end
@@ -378,23 +378,23 @@ local function randomness_scrap(data)
         harvest_amount = harvest_amount - inserted_count
         if harvest_amount > 0 then
             if spill_items_to_surface then
-                player.surface.spill_item_stack({ position = position, stack = { name = harvest, count = harvest_amount, quality = 'normal' } })
+                player.physical_surface.spill_item_stack({ position = position, stack = { name = harvest, count = harvest_amount, quality = 'normal' } })
             else
                 player.insert({ name = harvest, count = harvest_amount })
             end
         end
     else
         if spill_items_to_surface then
-            player.surface.spill_item_stack({ position = position, stack = { name = harvest, count = harvest_amount, quality = 'normal' } })
+            player.physical_surface.spill_item_stack({ position = position, stack = { name = harvest, count = harvest_amount, quality = 'normal' } })
         else
             player.insert({ name = harvest, count = harvest_amount })
         end
     end
     local particle = particles[harvest]
     if data.script_character then
-        create_particles(player.surface, particle, position, 64, { x = data.script_character.position.x, y = data.script_character.position.y })
+        create_particles(player.physical_surface, particle, position, 64, { x = data.script_character.position.x, y = data.script_character.position.y })
     else
-        create_particles(player.surface, particle, position, 64, { x = player.physical_position.x, y = player.physical_position.y })
+        create_particles(player.physical_surface, particle, position, 64, { x = player.physical_position.x, y = player.physical_position.y })
     end
 end
 

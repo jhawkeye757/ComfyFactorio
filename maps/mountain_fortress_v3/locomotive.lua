@@ -184,19 +184,19 @@ local function hurt_players_outside_of_aura()
 
     Core.iter_connected_players(
         function (player)
-            if sub(player.surface.name, 0, #scenario_name) == scenario_name then
+            if sub(player.physical_surface.name, 0, #scenario_name) == scenario_name then
                 local position = player.physical_position
                 local inside = ((position.x - loco.x) ^ 2 + (position.y - loco.y) ^ 2) < upgrades.locomotive_aura_radius ^ 2
                 if not inside then
                     local entity = player.character
                     if entity and entity.valid then
                         death_effects(player)
-                        player.surface.create_entity({ name = 'fire-flame', position = position })
+                        player.physical_surface.create_entity({ name = 'fire-flame', position = position })
                         if random(1, 3) == 1 then
-                            player.surface.create_entity({ name = 'medium-scorchmark', position = position, force = 'neutral' })
+                            player.physical_surface.create_entity({ name = 'medium-scorchmark', position = position, force = 'neutral' })
                         end
                         local max_health = floor(player.character.max_health + player.character_health_bonus + player.force.character_health_bonus)
-                        local vehicle = player.vehicle
+                        local vehicle = player.physical_vehicle
                         if vehicle and vehicle.valid and non_valid_vehicles[vehicle.type] then
                             player.driving = false
                         end
@@ -263,8 +263,8 @@ local function give_passive_xp(data)
             local position = player.physical_position
             local inside = ((position.x - loco.x) ^ 2 + (position.y - loco.y) ^ 2) < upgrades.locomotive_aura_radius ^ 2
             if player.afk_time < 200 and not RPG.get_last_spell_cast(player) then
-                if inside or player.surface.index == loco_surface.index then
-                    if player.surface.index == loco_surface.index then
+                if inside or player.physical_surface.index == loco_surface.index then
+                    if player.physical_surface.index == loco_surface.index then
                         Public.add_player_to_permission_group(player, 'limited')
                     elseif ICFunctions.get_player_surface(player) then
                         Public.add_player_to_permission_group(player, 'limited')
@@ -302,12 +302,12 @@ local function give_passive_xp(data)
                     local active_surface_index = Public.get('active_surface_index')
                     local surface = game.surfaces[active_surface_index]
                     if surface and surface.valid then
-                        if player.surface.index == surface.index then
+                        if player.physical_surface.index == surface.index then
                             Public.add_player_to_permission_group(player, 'main_surface')
                         end
                     end
                 end
-            elseif player.afk_time > 1800 and player.character and player.surface.index == loco_surface.index and player.get_requester_point() then
+            elseif player.afk_time > 1800 and player.character and player.physical_surface.index == loco_surface.index and player.get_requester_point() then
                 player.get_requester_point().enabled = false
             end
             ::pre_exit::
@@ -572,11 +572,11 @@ local function on_player_changed_surface(event)
 
     local locomotive_surface = Public.get('loco_surface')
 
-    if locomotive_surface and locomotive_surface.valid and player.surface.index == locomotive_surface.index then
+    if locomotive_surface and locomotive_surface.valid and player.physical_surface.index == locomotive_surface.index then
         return Public.add_player_to_permission_group(player, 'limited')
     elseif ICFunctions.get_player_surface(player) then
         return Public.add_player_to_permission_group(player, 'limited')
-    elseif player.surface.index == surface.index then
+    elseif player.physical_surface.index == surface.index then
         return Public.add_player_to_permission_group(player, 'main_surface')
     end
 end

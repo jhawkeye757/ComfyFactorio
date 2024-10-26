@@ -41,12 +41,12 @@ local function on_console_chat(event)
         return
     end
 
-    if player.character.surface.index ~= player.surface.index then return end
+    if player.character.surface.index ~= player.physical_surface.index then return end
 
     this.player_floaty_chat[player.index] =
         rendering.draw_text {
             text = event.message,
-            surface = player.surface,
+            surface = player.physical_surface,
             target = {
                 entity = player.character,
                 offset = { -0.05, y_offset },

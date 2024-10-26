@@ -1644,11 +1644,15 @@ function Public.on_player_changed_position(event)
         return
     end
 
+    if player.controller_type == defines.controllers.remote then
+        return
+    end
+
     if player.controller_type == defines.controllers.spectator then
         return
     end
 
-    if string.sub(player.surface.name, 0, #scenario_name) ~= scenario_name then
+    if string.sub(player.physical_surface.name, 0, #scenario_name) ~= scenario_name then
         return
     end
 
@@ -1665,7 +1669,7 @@ function Public.on_player_changed_position(event)
                 if random(1, 2) == 1 then
                     show_text('This path is not for players!', p, surface, player)
                 end
-                player.surface.create_entity({ name = 'fire-flame', position = player.physical_position })
+                player.physical_surface.create_entity({ name = 'fire-flame', position = player.physical_position })
                 player.character.health = player.character.health - tile_damage
                 if player.character.health == 0 then
                     player.character.die()
@@ -1846,7 +1850,7 @@ function Public.set_player_to_god(player)
         return false
     end
 
-    if string.sub(player.surface.name, 0, #surface.name) == surface.name then
+    if string.sub(player.physical_surface.name, 0, #surface.name) == surface.name then
         local pos = surface.find_non_colliding_position('character', game.forces.player.get_spawn_position(surface), 3, 0)
         if pos then
             player.teleport(pos, surface)
@@ -1855,11 +1859,11 @@ function Public.set_player_to_god(player)
             player.teleport(pos, surface)
         end
     else
-        local pos = player.surface.find_non_colliding_position('character', { 0, 0 }, 3, 0)
+        local pos = player.physical_surface.find_non_colliding_position('character', { 0, 0 }, 3, 0)
         if pos then
-            player.teleport(pos, player.surface)
+            player.teleport(pos, player.physical_surface)
         else
-            player.teleport({ pos }, player.surface)
+            player.teleport({ pos }, player.physical_surface)
         end
     end
 

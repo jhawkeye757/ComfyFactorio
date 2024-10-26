@@ -498,8 +498,8 @@ local unstuck_player_token =
                 return
             end
 
-            local surface = player.surface
-            local position = surface.find_non_colliding_position('character', player.physical_position, 32, 1)
+            local surface = player.physical_surface
+            local position = surface.find_non_colliding_position('stone-furnace', player.physical_position, 32, 1)
             if not position then
                 return
             end
@@ -1319,7 +1319,7 @@ function Public.unstuck_player(index)
         return
     end
 
-    local surface = player.surface
+    local surface = player.physical_surface
     local position = surface.find_non_colliding_position('character', player.physical_position, 32, 1)
     if not position then
         return
@@ -1494,7 +1494,7 @@ local function on_built_entity(event)
                 }
             )
 
-            player.surface.spill_item_stack({ position = position, stack = { name = entity.name, count = 1, quality = 'normal' } })
+            player.physical_surface.spill_item_stack({ position = position, stack = { name = entity.name, count = 1, quality = 'normal' } })
 
             entity.destroy()
             return

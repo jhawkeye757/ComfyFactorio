@@ -293,7 +293,7 @@ function Public.changed_surface(event)
         if diff and diff.visible then
             diff.visible = false
         end
-    elseif player.surface.index == surface.index then
+    elseif player.physical_surface.index == surface.index then
         Gui.remove_toolbar(player)
         Public.toggle_button(player)
         kill_minimap(player)

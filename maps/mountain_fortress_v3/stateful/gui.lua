@@ -25,7 +25,6 @@ local buffs_window_name = Gui.uid_name()
 local on_click_buff_name = Gui.uid_name()
 local random = math.random
 local floor = math.floor
-local scenario_name = Public.scenario_name
 local main_frame
 
 local function create_particles(surface, name, position, amount, cause_position)
@@ -69,7 +68,7 @@ local spread_particles_token =
             end
             local particle = event.particle
 
-            create_particles(player.surface, particle, player.physical_position, 128)
+            create_particles(player.physical_surface, particle, player.physical_position, 128)
         end
     )
 
@@ -199,7 +198,7 @@ local warn_player_sound_token =
 
             player.play_sound { path = 'utility/new_objective', volume_modifier = 0.75 }
 
-            create_particles(player.surface, particle, player.physical_position, 128)
+            create_particles(player.physical_surface, particle, player.physical_position, 128)
         end
     )
 
@@ -1208,7 +1207,7 @@ local function update_raw()
 
         stateful.collection.gather_time = tick + (10 * 3600)
         stateful.collection.gather_time_timer = tick + (10 * 3600)
-        game.forces.enemy.set_evolution_factor(1, player.surface)
+        game.forces.enemy.set_evolution_factor(1, player.physical_surface)
         play_achievement_unlocked()
         local reverse_position = zone_settings.zone_depth * (breached_wall + 1)
         local reversed = Public.get_stateful_settings('reversed')

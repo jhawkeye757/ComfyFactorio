@@ -648,7 +648,7 @@ local function on_built_entity(event, mode, bypass)
             return
         end
 
-        if player.surface.index ~= active_surface_index then
+        if player.physical_surface.index ~= active_surface_index then
             if entity.type ~= 'entity-ghost' then
                 player.insert({ name = 'linked-chest', count = 1 })
             end
@@ -738,7 +738,7 @@ local function built_entity_robot(event)
                         return
                     end
 
-                    if player.surface.index ~= active_surface_index then
+                    if player.physical_surface.index ~= active_surface_index then
                         if entity.type ~= 'entity-ghost' then
                             player.insert({ name = 'linked-chest', count = 1 })
                         end

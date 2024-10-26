@@ -75,7 +75,7 @@ local function charge(player)
         return player.print(module_name .. 'No valid armor to charge was found.', { color = Color.warning })
     end
 
-    local ents = player.surface.find_entities_filtered { name = 'accumulator', force = player.force, position = player.physical_position, radius = 13 }
+    local ents = player.physical_surface.find_entities_filtered { name = 'accumulator', force = player.force, position = player.physical_position, radius = 13 }
     if not ents or not next(ents) then
         return player.print(module_name .. 'No accumulators nearby.', { color = Color.warning })
     end
@@ -85,7 +85,7 @@ local function charge(player)
         if piece.valid and piece.generator_power == 0 then
             local energy_needs = piece.max_energy - piece.energy
             if energy_needs > 0 then
-                local energy = discharge_accumulators(player.surface, player.physical_position, player.force, energy_needs)
+                local energy = discharge_accumulators(player.physical_surface, player.physical_position, player.force, energy_needs)
                 if energy > 0 then
                     if piece.energy + energy >= piece.max_energy then
                         piece.energy = piece.max_energy

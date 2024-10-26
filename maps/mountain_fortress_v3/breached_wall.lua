@@ -137,12 +137,12 @@ local breach_wall_warning_teleport = function (player, check_trusted)
         local message = ({ 'breached_wall.warning_not_trusted_teleport', player.name })
         Alert.alert_all_players(40, message)
     end
-    local pos = player.surface.find_non_colliding_position('character', player.force.get_spawn_position(player.surface), 3, 0)
+    local pos = player.physical_surface.find_non_colliding_position('character', player.force.get_spawn_position(player.physical_surface), 3, 0)
     if pos then
-        player.teleport(pos, player.surface)
+        player.teleport(pos, player.physical_surface)
     else
-        pos = game.forces.player.get_spawn_position(player.surface)
-        player.teleport(pos, player.surface)
+        pos = game.forces.player.get_spawn_position(player.physical_surface)
+        player.teleport(pos, player.physical_surface)
     end
     return true
 end
@@ -157,7 +157,7 @@ local spidertron_too_far =
     )
 
 local check_distance_between_player_and_locomotive = function (player)
-    local surface = player.surface
+    local surface = player.physical_surface
     local position = player.physical_position
     local locomotive = Public.get('locomotive')
     if not locomotive or not locomotive.valid then
@@ -452,10 +452,15 @@ local function on_player_changed_position(event)
     if not player or not player.valid then
         return
     end
+
+    if player.controller_type == defines.controllers.remote then
+        return
+    end
+
     if player.controller_type == defines.controllers.spectator then
         return
     end
-    local surface_name = player.surface.name
+    local surface_name = player.physical_surface.name
 
     if sub(surface_name, 0, #scenario_name) ~= scenario_name then
         return

@@ -138,6 +138,10 @@ local function on_gui_closed(event)
         return
     end
 
+    if player.controller_type == defines.controllers.remote then
+        return
+    end
+
     if player.controller_type == defines.controllers.spectator then
         return
     end
@@ -162,6 +166,10 @@ local function on_gui_opened(event)
 
     local player = game.get_player(event.player_index)
     if not player or not player.valid then
+        return
+    end
+
+    if player.controller_type == defines.controllers.remote then
         return
     end
 

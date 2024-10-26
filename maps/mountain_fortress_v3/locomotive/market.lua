@@ -935,6 +935,11 @@ local function gui_opened(event)
     if not player or not player.valid then
         return
     end
+
+    if player.controller_type == defines.controllers.remote then
+        return
+    end
+
     if player.controller_type == defines.controllers.spectator then
         return
     end

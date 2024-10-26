@@ -48,13 +48,13 @@ local function shoo(event)
     local player = game.players[event.player_index]
 
     if player and player.valid then
-        if player.surface.index ~= loco_surface.index then
+        if player.physical_surface.index ~= loco_surface.index then
             return
         end
     end
 
     local locomotive_biter = Public.get('locomotive_biter')
-    local surface = player.surface
+    local surface = player.physical_surface
     local message = event.message
     message = string.lower(message)
     for word in string.gmatch(message, '%g+') do

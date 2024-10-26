@@ -193,7 +193,7 @@ local function get_entity_from_player_surface(cars, player)
             local surface_index = car.surface
             local surface = game.surfaces[surface_index]
             if validate_entity(surface) then
-                if car.surface == player.surface.index then
+                if car.surface == player.physical_surface.index then
                     return car.entity
                 end
             end
@@ -226,7 +226,7 @@ local function get_player_surface(player)
     for _, index in pairs(surfaces) do
         local surface = game.surfaces[index]
         if validate_entity(surface) then
-            if surface.index == player.surface.index then
+            if surface.index == player.physical_surface.index then
                 return true
             end
         end
@@ -404,7 +404,7 @@ local function kick_players_out_of_vehicles(car)
     for _, player in pairs(game.connected_players) do
         local character = player.character
         if validate_entity(character) and character.driving then
-            if car.surface == player.surface.index then
+            if car.surface == player.physical_surface.index then
                 character.driving = false
             end
         end
@@ -477,7 +477,7 @@ local function kick_non_trusted_players_from_surface(car)
     Core.iter_connected_players(
         function (player)
             local is_trusted = trust_system and trust_system.players and trust_system.players[player.name] and trust_system.players[player.name].trusted
-            if player.surface.index == surface_index and player.index ~= car.owner and not is_trusted then
+            if player.physical_surface.index == surface_index and player.index ~= car.owner and not is_trusted then
                 if position then
                     local new_position = main_surface.find_non_colliding_position('character', position, 3, 0)
                     if new_position then
@@ -806,7 +806,7 @@ function Public.save_car(event)
         }
         Task.set_timeout_in_ticks(10, remove_car, params)
         if restore_on_theft then
-            local e = player.surface.create_entity({ name = car.name, position = position, force = player.force, create_build_effect_smoke = false })
+            local e = player.physical_surface.create_entity({ name = car.name, position = position, force = player.force, create_build_effect_smoke = false })
             e.health = health
             restore_surface(p, e)
         elseif p.can_insert({ name = car.name, count = 1 }) then
@@ -1408,7 +1408,7 @@ function Public.use_door_with_entity(player, door)
         player_data.fallback_position = { car.entity.position.x, car.entity.position.y }
     end
 
-    if validate_entity(car.entity) and car.entity.surface.name == player.surface.name then
+    if validate_entity(car.entity) and car.entity.surface.name == player.physical_surface.name then
         local surface_index = car.surface
         local surface = game.surfaces[surface_index]
         if validate_entity(car.entity) and car.owner == player.index then

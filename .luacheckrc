@@ -1470,7 +1470,7 @@ stds.factorio_defines = {
                         }
                     }
                 },
-                controllers = { fields = { 'spectator', 'character', 'god', 'cutscene', 'editor', 'ghost' } },
+                controllers = { fields = { 'spectator', 'character', 'god', 'cutscene', 'editor', 'ghost', 'remote' } },
                 deconstruction_item = {
                     fields = {
                         entity_filter_mode = { fields = { 'whitelist', 'blacklist' } },
