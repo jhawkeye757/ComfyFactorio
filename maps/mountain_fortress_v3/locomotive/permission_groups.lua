@@ -8,6 +8,7 @@ local required_playtime = 5184000 -- 24 hours
 local valid_groups = {
     ['default'] = true,
     ['limited'] = true,
+    ['init_island'] = true,
     ['main_surface'] = true,
     ['near_locomotive'] = true,
     ['not_trusted'] = true
@@ -18,15 +19,18 @@ function Public.add_player_to_permission_group(player, group, forced)
     local session = Session.get_session_table()
     local AG = Antigrief.get()
     if not AG then
+        log('Antigrief not found.')
         return
     end
 
     local default_group = game.permissions.get_group('Default')
     if not default_group then
+        log('Default group not found.')
         return
     end
 
     if not valid_groups[string.lower(player.permission_group.name)] then
+        log('Invalid group.')
         return
     end
 
@@ -55,6 +59,29 @@ function Public.add_player_to_permission_group(player, group, forced)
         else
             limited_group.set_allows_action(defines.input_action.deconstruct, false)
         end
+    end
+
+    if not game.permissions.get_group('init_island') then
+        local init_island = game.permissions.create_group('init_island')
+        if not init_island then
+            return
+        end
+        init_island.set_allows_action(defines.input_action.cancel_craft, false)
+        init_island.set_allows_action(defines.input_action.drop_item, false)
+        init_island.set_allows_action(defines.input_action.gui_click, false)
+        init_island.set_allows_action(defines.input_action.deconstruct, false)
+        init_island.set_allows_action(defines.input_action.gui_checked_state_changed, false)
+        init_island.set_allows_action(defines.input_action.gui_click, false)
+        init_island.set_allows_action(defines.input_action.gui_confirmed, false)
+        init_island.set_allows_action(defines.input_action.gui_elem_changed, false)
+        init_island.set_allows_action(defines.input_action.gui_hover, false)
+        init_island.set_allows_action(defines.input_action.gui_leave, false)
+        init_island.set_allows_action(defines.input_action.gui_location_changed, false)
+        init_island.set_allows_action(defines.input_action.gui_selected_tab_changed, false)
+        init_island.set_allows_action(defines.input_action.gui_selection_state_changed, false)
+        init_island.set_allows_action(defines.input_action.gui_switch_state_changed, false)
+        init_island.set_allows_action(defines.input_action.gui_text_changed, false)
+        init_island.set_allows_action(defines.input_action.gui_value_changed, false)
     end
 
     if not game.permissions.get_group('near_locomotive') then
@@ -115,11 +142,7 @@ function Public.add_player_to_permission_group(player, group, forced)
 
     if not AG.enabled then
         default_group.add_player(player)
-        return
-    end
-
-    if forced then
-        default_group.add_player(player)
+        log('Antigrief is not enabled. Default group added to player.')
         return
     end
 
@@ -177,9 +200,10 @@ function Public.add_player_to_permission_group(player, group, forced)
         end
     end
 
-    if playtime < required_playtime then
+    if playtime < required_playtime and not forced then
         local not_trusted = game.permissions.get_group('not_trusted')
         if not not_trusted then
+            log('Not trusted group not found.')
             return
         end
 
@@ -200,6 +224,13 @@ function Public.add_player_to_permission_group(player, group, forced)
             end
 
             main_surface_group_inner.add_player(player)
+        elseif group == 'init_island' then
+            local init_island = game.permissions.get_group('init_island')
+            if not init_island then
+                return
+            end
+
+            init_island.add_player(player)
         elseif group == 'near_locomotive' then
             local near_locomotive_group_inner = game.permissions.get_group('near_locomotive')
             if not near_locomotive_group_inner then

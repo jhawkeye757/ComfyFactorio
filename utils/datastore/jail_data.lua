@@ -305,7 +305,7 @@ local function create_gulag_surface()
             surface = game.create_surface('Gulag', { width = 40, height = 40 })
         end
         surface.always_day = true
-        surface.request_to_generate_chunks({ 0, 0 }, 9)
+        surface.request_to_generate_chunks({ 0, 0 }, 1)
         surface.force_generate_chunk_requests()
         local area = { left_top = { x = -128, y = -32 }, right_bottom = { x = 128, y = 32 } }
         for x = area.left_top.x, area.right_bottom.x, 1 do

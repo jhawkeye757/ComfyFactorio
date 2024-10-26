@@ -1361,7 +1361,6 @@ local apply_settings_token =
 
             this.objectives = {}
 
-            Public.reset_stateful()
             Public.increase_enemy_damage_and_health()
             Public.init_mtn()
         end
@@ -1679,9 +1678,6 @@ function Public.reset_stateful(refresh_gui, clear_buffs)
     end
 
     this.objectives = t
-
-    Public.reset_main_table()
-
     clear_all_stats()
 
     apply_buffs()

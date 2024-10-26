@@ -446,6 +446,11 @@ local function on_player_changed_position(event)
         return
     end
 
+    local current_task = Public.get('current_task')
+    if not current_task.done then
+        return
+    end
+
     local player = game.get_player(event.player_index)
     if not player or not player.valid then
         return
@@ -484,6 +489,11 @@ end
 local function on_player_driving_changed_state(event)
     local final_battle = Public.get('final_battle')
     if final_battle then
+        return
+    end
+
+    local current_task = Public.get('current_task')
+    if not current_task.done then
         return
     end
 

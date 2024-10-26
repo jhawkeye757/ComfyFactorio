@@ -502,6 +502,7 @@ function Public.reset()
 end
 
 function Public.bottom_button(value)
+    print('Setting bottom button.')
     this.bottom_button = value or false
 end
 
@@ -511,6 +512,8 @@ Event.add(
         if not this.enabled then
             return
         end
+
+        print('Player joined game.')
 
         local player = game.players[event.player_index]
         on_player_joined_game(player)

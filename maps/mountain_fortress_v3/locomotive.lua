@@ -551,6 +551,8 @@ local function on_player_changed_surface(event)
         return
     end
 
+    if not Public.is_task_done() then return end
+
     local active_surface = Public.get('active_surface_index')
     local surface = game.surfaces[active_surface]
     if not surface or not surface.valid then

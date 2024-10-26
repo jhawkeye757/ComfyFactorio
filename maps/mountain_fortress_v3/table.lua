@@ -17,6 +17,14 @@ local this = {
         operation = nil,
         next_operation = nil
     },
+    -- new initializer for scenario management because the old one sucked hard
+    current_task = {
+        state = 'move_players',
+        surface_name = 'Init',
+        default_task = 'move_players',
+        show_messages = true,
+        step = 1
+    },
     adjusted_zones = {
         scrap = {},
         forest = {},
@@ -42,6 +50,8 @@ Public.events = {
     on_locomotive_cargo_missing = Event.generate_event_name('on_locomotive_cargo_missing'),
 }
 
+local init_name = 'Init'
+Public.init_name = init_name
 local scenario_name = 'nauvis'
 Public.scenario_name = scenario_name
 local discord_name = 'Mtn Fortress'
@@ -136,7 +146,7 @@ Public.pickaxe_upgrades = {
 
 function Public.reset_main_table()
     -- @start
-    this.space_age = has_space_age()
+    this.space_age = script.active_mods['space-age'] or false
     -- these 3 are in case of stop/start/reloading the instance.
     this.soft_reset = true
     this.restart = false
@@ -399,6 +409,19 @@ function Public.set_stateful_settings(key, value)
         stateful_settings[key] = value
     end
     Public.save_stateful_settings()
+end
+
+function Public.set_task(task, surface_name)
+    this.current_task.state = task
+    this.current_task.surface_name = surface_name or 'Init'
+end
+
+function Public.is_task_done()
+    return this.current_task and this.current_task.done or false
+end
+
+function Public.set_show_messages(state)
+    this.current_task.show_messages = state or false
 end
 
 function Public.remove(key, sub_key)

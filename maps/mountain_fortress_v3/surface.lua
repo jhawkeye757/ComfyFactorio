@@ -68,6 +68,72 @@ function Public.create_surface()
     return this.active_surface_index
 end
 
+function Public.create_landing_surface()
+    local map_gen_settings = {
+        autoplace_controls = {
+            ['coal'] = { frequency = 25, size = 3, richness = 3 },
+            ['stone'] = { frequency = 25, size = 3, richness = 3 },
+            ['copper-ore'] = { frequency = 25, size = 3, richness = 3 },
+            ['iron-ore'] = { frequency = 35, size = 3, richness = 3 },
+            ['uranium-ore'] = { frequency = 25, size = 3, richness = 3 },
+            ['crude-oil'] = { frequency = 80, size = 3, richness = 1 },
+            ['trees'] = { frequency = 0.75, size = 3, richness = 0.1 },
+            ['enemy-base'] = { frequency = 15, size = 0, richness = 1 }
+        },
+        cliff_settings = { cliff_elevation_0 = 1024, cliff_elevation_interval = 10, name = 'cliff' },
+        height = 64,
+        width = 256,
+        peaceful_mode = false,
+        seed = 1337,
+        starting_area = 'very-low',
+        starting_points = { { x = 0, y = 0 } },
+        terrain_segmentation = 'normal',
+        water = 'normal'
+    }
+
+    local surface
+    if not this.landing_surface_index then
+        surface = game.create_surface('Init', map_gen_settings)
+    end
+
+    this.landing_surface_index = surface.index
+    surface.always_day = true
+    surface.request_to_generate_chunks({ 0, 0 }, 1)
+    surface.force_generate_chunk_requests()
+
+    local walls = {}
+    local tiles = {}
+
+    local area = { left_top = { x = -128, y = -32 }, right_bottom = { x = 128, y = 32 } }
+    for x = area.left_top.x, area.right_bottom.x, 1 do
+        for y = area.left_top.y, area.right_bottom.y, 1 do
+            tiles[#tiles + 1] = { name = 'black-refined-concrete', position = { x = x, y = y } }
+            if x == area.left_top.x or x == area.right_bottom.x or y == area.left_top.y or y == area.right_bottom.y then
+                walls[#walls + 1] = { name = 'stone-wall', force = 'neutral', position = { x = x, y = y } }
+            end
+        end
+    end
+    surface.set_tiles(tiles)
+    for _, entity in pairs(walls) do
+        local e = surface.create_entity(entity)
+        e.destructible = false
+        e.minable = false
+    end
+
+    rendering.draw_text {
+        text = '♦ Landing zone ♦',
+        surface = surface,
+        target = { 0, -50 },
+        color = { r = 0.98, g = 0.66, b = 0.22 },
+        scale = 10,
+        font = 'heading-1',
+        alignment = 'center',
+        scale_with_zoom = false
+    }
+
+    return this.landing_surface_index
+end
+
 --- Returns the surface index.
 function Public.get_active_surface()
     return this.active_surface

@@ -44,30 +44,18 @@ local OfflinePlayers = require 'modules.clear_vacant_players'
 local Beam = require 'modules.render_beam'
 local Commands = require 'utils.commands'
 
--- Use these settings for live
 local send_ping_to_channel = Discord.channel_names.mtn_channel
 local role_to_mention = Discord.role_mentions.mtn_fortress
--- Use these settings for testing
--- bot-lounge
--- local send_ping_to_channel = Discord.channel_names.bot_quarters
--- local role_to_mention = Discord.role_mentions.test_role
+local mapkeeper = '[color=blue]Mapkeeper:[/color]'
 
 local floor = math.floor
 local remove = table.remove
 local abs = math.abs
-local partial_reset
 RPG.disable_cooldowns_on_spells()
 Gui.mod_gui_button_enabled = true
 Gui.button_style = 'mod_gui_button'
 Gui.set_toggle_button(true)
 Gui.set_mod_gui_top_frame(true)
-
-local partial_reset_token =
-    Task.register(
-        function ()
-            partial_reset()
-        end
-    )
 
 local collapse_kill = {
     entities = {
@@ -114,126 +102,27 @@ local is_position_near_tbl = function (position, tbl)
     return status
 end
 
-local announce_new_map =
-    Task.register(
-        function ()
-            local server_name = Server.check_server_name(Public.discord_name)
-            if server_name then
-                Server.to_discord_named_raw(send_ping_to_channel, role_to_mention .. ' ** Mtn Fortress was just reset! **')
-            end
+local function preinit_task()
+    local this = Public.get()
+    game.speed = 1
+
+    if this.health_text and this.health_text.valid then this.health_text.destroy() end
+    if this.caption and this.caption.valid then this.caption.destroy() end
+    if this.circle and this.circle.valid then this.circle.destroy() end
+    if this.current_season and this.current_season.valid then this.current_season.destroy() end
+    if this.counter and this.counter.valid then this.counter.destroy() end
+    if this.direction_attack and this.direction_attack.valid then this.direction_attack.destroy() end
+    if this.zone1_text1 and this.zone1_text1.valid then this.zone1_text1.destroy() end
+    if this.zone1_text2 and this.zone1_text2.valid then this.zone1_text2.destroy() end
+    if this.zone1_text3 and this.zone1_text3.valid then this.zone1_text3.destroy() end
+
+    for i = 1, 5 do
+        if this['direction_' .. i] and this['direction_' .. i].valid then
+            this['direction_' .. i].destroy()
         end
-    )
-
-
-partial_reset = function ()
-    local this = Public.get()
-    local surface = game.surfaces[this.active_surface_index]
-
-    if this.adjusted_zones.reversed then
-        Explosives.check_growth_below_void(false)
-        this.spawn_near_collapse.compare = abs(this.spawn_near_collapse.compare)
-        Collapse.set_position({ 0, -130 })
-        Collapse.set_direction('south')
-        Public.locomotive_spawn(surface, { x = -18, y = -25 }, this.adjusted_zones.reversed)
-    else
-        Explosives.check_growth_below_void(true)
-        this.spawn_near_collapse.compare = abs(this.spawn_near_collapse.compare) * -1
-        Collapse.set_position({ 0, 130 })
-        Collapse.set_direction('north')
-        Public.locomotive_spawn(surface, { x = -18, y = 25 }, this.adjusted_zones.reversed)
     end
 
-    init_bonus_drill_force()
-
-    Public.init_enemy_weapon_damage()
-
-    game.forces.player.manual_mining_speed_modifier = 0
-    game.forces.player.set_ammo_damage_modifier('artillery-shell', -0.95)
-    game.forces.player.worker_robots_battery_modifier = 4
-    game.forces.player.worker_robots_storage_bonus = 15
-
-    Public.render_train_hp()
-    Public.render_direction(surface, this.adjusted_zones.reversed)
-end
-
-function Public.reset_map()
-    rendering.clear()
-    local this = Public.get()
-    this.active_surface_index = Public.create_surface()
-
-    game.forces.player.reset()
-    Public.reset_main_table()
-
-    Difficulty.show_gui(false)
-
-    local wave_defense_table = WD.get_table()
-    Misc.reset()
-    Misc.bottom_button(true)
-
-    LinkedChests.reset()
-
-    Public.stateful.clear_all_frames()
-
-    Autostash.insert_into_furnace(true)
-    Autostash.insert_into_wagon(true)
-    Autostash.bottom_button(true)
-    BottomFrame.reset()
-    BottomFrame.activate_custom_buttons(true)
-    Public.reset_buried_biters()
-    Poll.reset()
-    ICW.reset()
-    IC.reset()
-    IC.allowed_surface(game.surfaces[this.active_surface_index].name)
-    Public.reset_func_table()
-    game.reset_time_played()
-
-    OfflinePlayers.init(this.active_surface_index)
-    OfflinePlayers.set_enabled(true)
-    -- OfflinePlayers.set_offline_players_surface_removal(true)
-
-    Group.reset_groups()
-    Group.alphanumeric_only(false)
-
-    Public.disable_tech()
-
-    local surface = game.surfaces[this.active_surface_index]
-
-    if this.winter_mode then
-        surface.daytime = 0.45
-    end
-
-    -- surface.brightness_visual_weights = {0.7, 0.7, 0.7}
-
-    JailData.set_valid_surface(tostring(surface.name))
-    JailData.reset_vote_table()
-
-    Explosives.set_surface_whitelist({ [surface.name] = true })
-    Explosives.disable(false)
-    Explosives.slow_explode(true)
-
-    Beam.reset_valid_targets()
-
-    BiterHealthBooster.set_active_surface(tostring(surface.name))
-    BiterHealthBooster.acid_nova(true)
-    BiterHealthBooster.check_on_entity_died(true)
-    BiterHealthBooster.boss_spawns_projectiles(true)
-    BiterHealthBooster.enable_boss_loot(false)
-    BiterHealthBooster.enable_randomize_stun_and_slowdown_sticker(true)
-
-
-    -- AntiGrief.whitelist_types('tree', true)
-    AntiGrief.enable_capsule_warning(false)
-    AntiGrief.enable_capsule_cursor_warning(false)
-    AntiGrief.enable_jail(true)
-    AntiGrief.damage_entity_threshold(20)
-    AntiGrief.decon_surface_blacklist(surface.name)
-    AntiGrief.filtered_types_on_decon({ 'tree', 'simple-entity', 'fish' })
-    AntiGrief.set_limit_per_table(2000)
-
-    PL.show_roles_in_list(true)
-    PL.rpg_enabled(true)
-
-    Score.reset_tbl()
+    WD.set('game_lost', true)
 
     local players = game.connected_players
     for i = 1, #players do
@@ -245,131 +134,18 @@ function Public.reset_map()
         if player.gui.left['mvps'] then
             player.gui.left['mvps'].destroy()
         end
+        WD.destroy_wave_gui(player)
         ICMinimap.kill_minimap(player)
         Event.raise(Public.events.reset_map, { player_index = player.index })
-    end
-
-    Difficulty.reset_difficulty_poll({ closing_timeout = game.tick + 36000 })
-    Difficulty.set_gui_width(20)
-
-    Collapse.set_kill_entities(false)
-    Collapse.set_kill_specific_entities(collapse_kill)
-    Collapse.set_speed(8)
-    Collapse.set_amount(1)
-    -- Collapse.set_max_line_size(zone_settings.zone_width)
-    Collapse.set_max_line_size(540, true)
-    Collapse.set_surface_index(surface.index)
-
-    Collapse.start_now(false)
-
-    RPG.reset_table()
-
-    Public.stateful.enable(true)
-    Public.stateful.reset_stateful(true, true)
-    Public.stateful.increase_enemy_damage_and_health()
-    Public.stateful.apply_startup_settings()
-
-    this.locomotive_health = 10000
-    this.locomotive_max_health = 10000
-
-    WD.reset_wave_defense()
-    wave_defense_table.surface_index = this.active_surface_index
-    wave_defense_table.target = this.locomotive
-    wave_defense_table.nest_building_density = 32
-    wave_defense_table.game_lost = false
-    wave_defense_table.spawn_position = { x = 0, y = 84 }
-    WD.alert_boss_wave(true)
-    WD.enable_side_target(false)
-    WD.remove_entities(true)
-    WD.enable_threat_log(false) -- creates waaaay to many entries in the global table
-    WD.check_collapse_position(true)
-    WD.set_disable_threat_below_zero(true)
-    WD.increase_boss_health_per_wave(true)
-    WD.increase_damage_per_wave(true)
-    WD.increase_health_per_wave(true)
-    WD.increase_average_unit_group_size(true)
-    WD.increase_max_active_unit_groups(true)
-    WD.enable_random_spawn_positions(true)
-    WD.set_track_bosses_only(true)
-    WD.set_pause_waves_custom_callback(Public.pause_waves_custom_callback_token)
-    WD.set_threat_event_custom_callback(Public.check_if_spawning_near_train_custom_callback)
-    -- WD.set_es_unit_limit(400) -- moved to stateful
-    Event.raise(WD.events.on_game_reset, {})
-
-    Public.set_difficulty()
-    Public.disable_creative()
-    Public.boost_difficulty()
-    Commands.restore_states()
-
-    if this.adjusted_zones.reversed then
-        if not surface.is_chunk_generated({ x = -20, y = -22 }) then
-            surface.request_to_generate_chunks({ x = -20, y = -22 }, 1)
-            surface.force_generate_chunk_requests()
-        end
-        game.forces.player.set_spawn_position({ x = -27, y = -25 }, surface)
-        WD.set_spawn_position({ x = -16, y = -80 })
-        WD.enable_inverted(true)
-    else
-        if not surface.is_chunk_generated({ x = -20, y = 22 }) then
-            surface.request_to_generate_chunks({ x = -20, y = 22 }, 1)
-            surface.force_generate_chunk_requests()
-        end
-        game.forces.player.set_spawn_position({ x = -27, y = 25 }, surface)
-        WD.set_spawn_position({ x = -16, y = 80 })
-        WD.enable_inverted(false)
+        Public.add_player_to_permission_group(player, 'init_island', true)
+        player.print(mapkeeper .. ' Map is resetting, please wait a moment. All GUI buttons are disabled at the moment.')
     end
 
     Public.sr_reset_forces()
-    Public.sr_teleport_players()
-
-    game.speed = 1
-    if this.space_age then
-        surface.destroy_decoratives({ name = "brown-cup", invert = true })
-        surface.destroy_decoratives({ name = "small-sand-rock", invert = true })
-    end
-
-    Task.set_queue_speed(16)
-
-    Public.get_scores()
-
-    this.chunk_load_tick = game.tick + 400
-    this.force_chunk = true
-    this.market_announce = game.tick + 1200
-    this.game_lost = false
-
-    RPG.rpg_reset_all_players()
-    RPG.set_surface_name({ game.surfaces[this.active_surface_index].name })
-    RPG.enable_health_and_mana_bars(true)
-    RPG.enable_wave_defense(true)
-    RPG.enable_mana(true)
-    RPG.personal_tax_rate(0.4)
-    RPG.enable_stone_path(true)
-    RPG.enable_aoe_punch(true)
-    RPG.enable_aoe_punch_globally(false)
-    RPG.enable_range_buffs(true)
-    RPG.enable_auto_allocate(true)
-    RPG.enable_explosive_bullets_globally(true)
-    RPG.enable_explosive_bullets(false)
-    RPG_Progression.toggle_module(false)
-    RPG_Progression.set_dataset('mtn_v3_rpg_prestige')
-
-    if Public.get('prestige_system_enabled') then
-        RPG_Progression.restore_xp_on_reset()
-    end
-
-    if _DEBUG then
-        Collapse.start_now(false)
-        WD.disable_spawning_biters(true)
-    end
-
-    if not this.disable_startup_notification then
-        Task.set_timeout_in_ticks(25, announce_new_map)
-    end
-
-    Public.equip_players(nil, false)
-
-    Task.set_timeout_in_ticks(100, partial_reset_token, {})
+    WD.set('wave_interval', 4500)
 end
+
+
 
 local is_locomotive_valid = function ()
     local locomotive = Public.get('locomotive')
@@ -418,7 +194,7 @@ local has_the_game_ended = function ()
             if this.soft_reset and this.game_reset_tick == 0 then
                 this.game_reset_tick = nil
                 Public.set_scores()
-                Public.reset_map()
+                Public.set_task('move_players', 'Init')
                 return
             end
 
@@ -587,6 +363,29 @@ local handle_changes = function ()
     print('Received new changes from backend.')
 end
 
+local scenario_manager = function ()
+    local current_task = Public.get('current_task')
+    if not current_task then return end
+
+    if current_task.delay then
+        if game.tick < current_task.delay then
+            return
+        end
+    end
+
+    if Public[current_task.state] then
+        local old_task = current_task.state
+        current_task.state = 'idle'
+        current_task.step = current_task.step + 1
+        Public[old_task](current_task)
+        if current_task.message and current_task.show_messages then
+            game.print(mapkeeper .. ' ' .. current_task.message)
+        else
+            game.print(mapkeeper .. ' Generating map... Current task: ' .. current_task.step)
+        end
+    end
+end
+
 local nth_40_tick = function ()
     if game.tick < 30 then return end
     local update_gui = Public.update_gui
@@ -616,15 +415,351 @@ local nth_1000_tick = function ()
     Public.is_creativity_mode_on()
 end
 
+function Public.create_locomotive(current_task)
+    if Public.get('disable_startup_notification') then return end
+    local adjusted_zones = Public.get('adjusted_zones')
+    local spawn_near_collapse = Public.get('spawn_near_collapse')
+    local surface_index = Public.get('active_surface_index')
+    local surface = game.surfaces[surface_index]
+    if not surface or not surface.valid then return end
+
+    if adjusted_zones.reversed then
+        Explosives.check_growth_below_void(false)
+        spawn_near_collapse.compare = abs(spawn_near_collapse.compare)
+        Collapse.set_position({ 0, -130 })
+        Collapse.set_direction('south')
+        Public.locomotive_spawn(surface, { x = -18, y = -25 }, adjusted_zones.reversed)
+    else
+        Explosives.check_growth_below_void(true)
+        spawn_near_collapse.compare = abs(spawn_near_collapse.compare) * -1
+        Collapse.set_position({ 0, 130 })
+        Collapse.set_direction('north')
+        Public.locomotive_spawn(surface, { x = -18, y = 25 }, adjusted_zones.reversed)
+    end
+
+    Public.render_train_hp()
+    Public.render_direction(surface, adjusted_zones.reversed)
+
+    current_task.message = 'Created locomotive!'
+    current_task.delay = game.tick + 60
+    current_task.state = 'announce_new_map'
+end
+
+function Public.announce_new_map(current_task)
+    if Public.get('disable_startup_notification') then return end
+    local server_name = Server.check_server_name(Public.discord_name)
+    if server_name then
+        Server.to_discord_named_raw(send_ping_to_channel, role_to_mention .. ' ** Mtn Fortress was just reset! **')
+    end
+    current_task.message = 'Announced new map!'
+    current_task.state = 'move_players_to_nauvis'
+    current_task.surface_name = 'nauvis'
+    current_task.delay = game.tick + 200
+    current_task.done = true
+end
+
+function Public.move_players(current_task)
+    local surface = game.get_surface(current_task.surface_name)
+    if not surface or not surface.valid then
+        return
+    end
+
+    current_task.done = nil
+    current_task.step = 1
+
+    preinit_task()
+
+    for _, player in pairs(game.players) do
+        local pos = surface.find_non_colliding_position("character", { x = 0, y = 0 }, 3, 0)
+        if pos then
+            player.teleport(pos, surface)
+        else
+            player.teleport({ x = 0, y = 0 }, surface)
+        end
+    end
+    current_task.message = 'Moved players to initial surface!'
+    current_task.delay = game.tick + 200
+    current_task.state = 'init_stateful'
+end
+
+function Public.move_players_to_nauvis(current_task)
+    local surface = game.get_surface(current_task.surface_name)
+    if not surface or not surface.valid then
+        return
+    end
+    local adjusted_zones = Public.get('adjusted_zones')
+    local position
+
+    WD.set('game_lost', false)
+
+    if adjusted_zones.reversed then
+        game.forces.player.set_spawn_position({ -27, -25 }, surface)
+        position = game.forces.player.get_spawn_position(surface)
+
+        if not position then
+            game.forces.player.set_spawn_position({ -27, -25 }, surface)
+            position = game.forces.player.get_spawn_position(surface)
+        end
+    else
+        game.forces.player.set_spawn_position({ -27, 25 }, surface)
+        position = game.forces.player.get_spawn_position(surface)
+
+        if not position then
+            game.forces.player.set_spawn_position({ -27, 25 }, surface)
+            position = game.forces.player.get_spawn_position(surface)
+        end
+    end
+
+    for _, player in pairs(game.connected_players) do
+        Public.add_player_to_permission_group(player, 'near_locomotive', true)
+        local pos = surface.find_non_colliding_position('character', position, 3, 0)
+        if pos then
+            player.teleport({ x = pos.x, y = pos.y }, surface)
+        else
+            player.teleport({ x = position.x, y = position.y }, surface)
+        end
+    end
+
+    current_task.message = 'Moved players back to nauvis!'
+    if current_task.done then
+        return
+    end
+    current_task.state = 'clear_nauvis'
+end
+
+function Public.init_stateful(current_task)
+    Public.reset_main_table()
+    Public.stateful.enable(true)
+    Public.stateful.reset_stateful(false, true)
+    Public.stateful.increase_enemy_damage_and_health()
+    Public.stateful.apply_startup_settings()
+    current_task.message = 'Initialized stateful!'
+    current_task.state = 'clear_nauvis'
+end
+
+function Public.create_custom_nauvis_surface(current_task)
+    local nauvis = game.surfaces['nauvis']
+    if nauvis then
+        nauvis.clear()
+    end
+    Public.set('active_surface_index', Public.create_surface())
+    current_task.message = 'Created custom nauvis surface!'
+    current_task.delay = game.tick + 300
+    current_task.state = 'reset_map'
+end
+
+function Public.clear_nauvis(current_task)
+    local surface = game.surfaces['nauvis']
+    surface.clear()
+
+    surface.request_to_generate_chunks({ x = -20, y = -22 }, 1)
+    surface.force_generate_chunk_requests()
+
+    current_task.state = 'create_custom_nauvis_surface'
+    current_task.delay = game.tick + 50
+    current_task.message = 'Cleared nauvis!'
+end
+
+function Public.reset_map(current_task)
+    local this = Public.get()
+
+    Difficulty.show_gui(false)
+
+    local wave_defense_table = WD.get_table()
+    Misc.reset()
+
+
+    LinkedChests.reset()
+
+    Public.stateful.clear_all_frames()
+
+    BottomFrame.reset()
+    Public.reset_buried_biters()
+    Poll.reset()
+    ICW.reset()
+    IC.reset()
+    IC.allowed_surface(game.surfaces[this.active_surface_index].name)
+    Public.reset_func_table()
+    game.reset_time_played()
+
+    OfflinePlayers.init(this.active_surface_index)
+    OfflinePlayers.set_enabled(true)
+    -- OfflinePlayers.set_offline_players_surface_removal(true)
+
+    Group.reset_groups()
+    Group.alphanumeric_only(false)
+
+    Public.disable_tech()
+
+    local surface = game.surfaces[this.active_surface_index]
+
+    if this.winter_mode then
+        surface.daytime = 0.45
+    end
+
+    -- surface.brightness_visual_weights = {0.7, 0.7, 0.7}
+
+    JailData.set_valid_surface(tostring(surface.name))
+    JailData.reset_vote_table()
+    Explosives.set_surface_whitelist({ [surface.name] = true })
+    Beam.reset_valid_targets()
+    BiterHealthBooster.set_active_surface(tostring(surface.name))
+
+    -- AntiGrief.whitelist_types('tree', true)
+
+    AntiGrief.decon_surface_blacklist(surface.name)
+
+    Score.reset_tbl()
+
+    Difficulty.reset_difficulty_poll({ closing_timeout = game.tick + 36000 })
+    Collapse.set_max_line_size(540, true)
+    Collapse.set_speed(8)
+    Collapse.set_amount(1)
+    Collapse.set_surface_index(surface.index)
+    Collapse.start_now(false)
+
+    RPG.reset_table()
+
+    init_bonus_drill_force()
+
+    Public.init_enemy_weapon_damage()
+
+    game.forces.player.manual_mining_speed_modifier = 0
+    game.forces.player.set_ammo_damage_modifier('artillery-shell', -0.95)
+    game.forces.player.worker_robots_battery_modifier = 4
+    game.forces.player.worker_robots_storage_bonus = 15
+
+    WD.reset_wave_defense()
+    wave_defense_table.surface_index = this.active_surface_index
+    wave_defense_table.target = this.locomotive
+    wave_defense_table.nest_building_density = 32
+    wave_defense_table.game_lost = false
+    wave_defense_table.spawn_position = { x = 0, y = 84 }
+
+    -- WD.set_es_unit_limit(400) -- moved to stateful
+    Event.raise(WD.events.on_game_reset, {})
+
+    Public.set_difficulty()
+    Public.disable_creative()
+    Public.boost_difficulty()
+    Commands.restore_states()
+
+    if this.adjusted_zones.reversed then
+        if not surface.is_chunk_generated({ x = -20, y = -22 }) then
+            surface.request_to_generate_chunks({ x = -20, y = -22 }, 1)
+            surface.force_generate_chunk_requests()
+        end
+        game.forces.player.set_spawn_position({ x = -27, y = -25 }, surface)
+        WD.set_spawn_position({ x = -16, y = -80 })
+        WD.enable_inverted(true)
+    else
+        if not surface.is_chunk_generated({ x = -20, y = 22 }) then
+            surface.request_to_generate_chunks({ x = -20, y = 22 }, 1)
+            surface.force_generate_chunk_requests()
+        end
+        game.forces.player.set_spawn_position({ x = -27, y = 25 }, surface)
+        WD.set_spawn_position({ x = -16, y = 80 })
+        WD.enable_inverted(false)
+    end
+
+    if this.space_age then
+        surface.destroy_decoratives({ name = "brown-cup", invert = true })
+        surface.destroy_decoratives({ name = "small-sand-rock", invert = true })
+    end
+
+    Task.set_queue_speed(16)
+
+    Public.get_scores()
+
+    this.chunk_load_tick = game.tick + 400
+    this.force_chunk = true
+    this.market_announce = game.tick + 1200
+    this.game_lost = false
+
+    RPG.enable_health_and_mana_bars(true)
+    RPG.enable_wave_defense(true)
+    RPG.enable_mana(true)
+    RPG.personal_tax_rate(0.4)
+    RPG.enable_stone_path(true)
+    RPG.enable_aoe_punch(true)
+    RPG.enable_aoe_punch_globally(false)
+    RPG.enable_range_buffs(true)
+    RPG.enable_auto_allocate(true)
+    RPG.enable_explosive_bullets_globally(true)
+    RPG.enable_explosive_bullets(false)
+    RPG.rpg_reset_all_players()
+    RPG.set_surface_name({ game.surfaces[this.active_surface_index].name })
+
+
+    if _DEBUG then
+        Collapse.start_now(false)
+        WD.disable_spawning_biters(true)
+    end
+
+    Public.equip_players(nil, false)
+
+    current_task.message = 'Reset map done!'
+    current_task.delay = game.tick + 60
+    current_task.state = 'create_locomotive'
+end
+
 function Public.init_mtn()
-    Public.reset_map()
+    Misc.bottom_button(true)
+    BottomFrame.activate_custom_buttons(true)
+    Autostash.bottom_button(true)
+    Autostash.insert_into_furnace(true)
+    Autostash.insert_into_wagon(true)
+    Difficulty.set_gui_width(20)
+
+
+    RPG_Progression.toggle_module(false)
+    RPG_Progression.set_dataset('mtn_v3_rpg_prestige')
+
+    if Public.get('prestige_system_enabled') then
+        RPG_Progression.restore_xp_on_reset()
+    end
+
+    WD.alert_boss_wave(true)
+    WD.enable_side_target(false)
+    WD.remove_entities(true)
+    WD.enable_threat_log(false) -- creates waaaay to many entries in the global table
+    WD.check_collapse_position(true)
+    WD.set_disable_threat_below_zero(true)
+    WD.increase_boss_health_per_wave(true)
+    WD.increase_damage_per_wave(true)
+    WD.increase_health_per_wave(true)
+    WD.increase_average_unit_group_size(true)
+    WD.increase_max_active_unit_groups(true)
+    WD.enable_random_spawn_positions(true)
+    WD.set_track_bosses_only(true)
+    WD.set_pause_waves_custom_callback(Public.pause_waves_custom_callback_token)
+    WD.set_threat_event_custom_callback(Public.check_if_spawning_near_train_custom_callback)
+
+    Explosives.disable(false)
+    Explosives.slow_explode(true)
+    BiterHealthBooster.acid_nova(true)
+    BiterHealthBooster.check_on_entity_died(true)
+    BiterHealthBooster.boss_spawns_projectiles(true)
+    BiterHealthBooster.enable_boss_loot(false)
+    BiterHealthBooster.enable_randomize_stun_and_slowdown_sticker(true)
+    AntiGrief.enable_capsule_warning(false)
+    AntiGrief.enable_capsule_cursor_warning(false)
+    AntiGrief.enable_jail(true)
+    AntiGrief.damage_entity_threshold(20)
+    AntiGrief.filtered_types_on_decon({ 'tree', 'simple-entity', 'fish' })
+    AntiGrief.set_limit_per_table(2000)
+    PL.show_roles_in_list(true)
+    PL.rpg_enabled(true)
+    Collapse.set_kill_entities(false)
+    Collapse.set_kill_specific_entities(collapse_kill)
+
+    Public.create_landing_surface()
 
     local tooltip = {
         [1] = ({ 'main.diff_tooltip', '500', '50%', '15%', '15%', '1', '12', '50', '10000', '100%', '15', '10' }),
         [2] = ({ 'main.diff_tooltip', '300', '25%', '10%', '10%', '2', '10', '50', '7000', '75%', '8', '8' }),
         [3] = ({ 'main.diff_tooltip', '50', '0%', '0%', '0%', '4', '3', '10', '5000', '50%', '5', '6' })
     }
-
     Difficulty.set_tooltip(tooltip)
 
     local T = Map.Pop_info()
@@ -658,26 +793,10 @@ Server.on_scenario_changed(
     end
 )
 
+Event.add(defines.events.on_tick, scenario_manager)
 Event.on_nth_tick(40, nth_40_tick)
 Event.on_nth_tick(250, nth_250_tick)
 Event.on_nth_tick(1000, nth_1000_tick)
-
-Event.add(
-    defines.events.on_player_created,
-    function (event)
-        if event.player_index == 1 then
-            if not game.is_multiplayer() then
-                Public.init_mtn()
-            end
-        end
-    end
-)
-
-Event.on_init(function ()
-    local nauvis = game.surfaces.nauvis
-    nauvis.clear(true)
-    nauvis.request_to_generate_chunks({ 0, 0 }, 3)
-    nauvis.force_generate_chunk_requests()
-end)
+Event.on_init(Public.init_mtn)
 
 return Public

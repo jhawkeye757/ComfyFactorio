@@ -1235,18 +1235,19 @@ function Public.render_direction(surface, reversed)
     Task.set_timeout_in_ticks(50, do_season_fix_token, {})
 
     if counter then
-        rendering.draw_text {
-            text = text .. '\nRun: ' .. counter,
-            surface = surface,
-            target = { -0, 10 },
-            color = { r = 0.98, g = 0.66, b = 0.22 },
-            scale = 3,
-            font = 'heading-1',
-            alignment = 'center',
-            scale_with_zoom = false
-        }
+        Public.set('counter',
+            rendering.draw_text {
+                text = text .. '\nRun: ' .. counter,
+                surface = surface,
+                target = { -0, 10 },
+                color = { r = 0.98, g = 0.66, b = 0.22 },
+                scale = 3,
+                font = 'heading-1',
+                alignment = 'center',
+                scale_with_zoom = false
+            })
     else
-        rendering.draw_text {
+        Public.set('counter', rendering.draw_text {
             text = text,
             surface = surface,
             target = { -0, 10 },
@@ -1255,7 +1256,7 @@ function Public.render_direction(surface, reversed)
             font = 'heading-1',
             alignment = 'center',
             scale_with_zoom = false
-        }
+        })
     end
 
     local x_min = -zone_settings.zone_width / 2
@@ -1263,20 +1264,21 @@ function Public.render_direction(surface, reversed)
 
     if reversed then
         local inc = 0
-        for _ = 1, 5 do
-            rendering.draw_text {
-                text = '▲',
-                surface = surface,
-                target = { -0, -20 - inc },
-                color = { r = 0.98, g = 0.66, b = 0.22 },
-                scale = 3,
-                font = 'heading-1',
-                alignment = 'center',
-                scale_with_zoom = false
-            }
+        for i = 1, 5 do
+            Public.set('direction_' .. i,
+                rendering.draw_text {
+                    text = '▲',
+                    surface = surface,
+                    target = { -0, -20 - inc },
+                    color = { r = 0.98, g = 0.66, b = 0.22 },
+                    scale = 3,
+                    font = 'heading-1',
+                    alignment = 'center',
+                    scale_with_zoom = false
+                })
             inc = inc + 10
         end
-        rendering.draw_text {
+        Public.set('direction_attack', rendering.draw_text {
             text = 'Biters will attack this area.',
             surface = surface,
             target = { -0, -70 },
@@ -1285,13 +1287,13 @@ function Public.render_direction(surface, reversed)
             font = 'heading-1',
             alignment = 'center',
             scale_with_zoom = false
-        }
+        })
         surface.create_entity({ name = 'electric-beam', position = { x_min, -74 }, source = { x_min, -74 }, target = { x_max, -74 } })
         surface.create_entity({ name = 'electric-beam', position = { x_min, -74 }, source = { x_min, -74 }, target = { x_max, -74 } })
     else
         local inc = 0
-        for _ = 1, 5 do
-            rendering.draw_text {
+        for i = 1, 5 do
+            Public.set('direction_' .. i, rendering.draw_text {
                 text = '▼',
                 surface = surface,
                 target = { -0, 20 + inc },
@@ -1300,10 +1302,10 @@ function Public.render_direction(surface, reversed)
                 font = 'heading-1',
                 alignment = 'center',
                 scale_with_zoom = false
-            }
+            })
             inc = inc + 10
         end
-        rendering.draw_text {
+        Public.set('direction_attack', rendering.draw_text {
             text = 'Biters will attack this area.',
             surface = surface,
             target = { -0, 70 },
@@ -1312,7 +1314,7 @@ function Public.render_direction(surface, reversed)
             font = 'heading-1',
             alignment = 'center',
             scale_with_zoom = false
-        }
+        })
         surface.create_entity({ name = 'electric-beam', position = { x_min, 74 }, source = { x_min, 74 }, target = { x_max, 74 } })
         surface.create_entity({ name = 'electric-beam', position = { x_min, 74 }, source = { x_min, 74 }, target = { x_max, 74 } })
     end
@@ -1475,20 +1477,21 @@ function Public.set_spawn_position()
 end
 
 function Public.on_player_joined_game(event)
-    local active_surface_index = Public.get('active_surface_index')
-    if not active_surface_index then
-        return
-    end
-
     local players = Public.get('players')
     local player = game.players[event.player_index]
-    local surface = game.surfaces[active_surface_index]
 
-    Public.set_difficulty()
-
-    ICW_Func.is_minimap_valid(player, surface)
 
     Modifiers.update_player_modifiers(player)
+    local active_surface_index = Public.get('active_surface_index')
+    local surface = game.surfaces[active_surface_index or 'nauvis']
+
+    local current_task = Public.get('current_task')
+    if not current_task.done then
+        local init_surface = game.get_surface('Init')
+        if init_surface and init_surface.valid then
+            surface = init_surface
+        end
+    end
 
     if player.online_time < 1 then
         if not players[player.index] then
@@ -1505,6 +1508,8 @@ function Public.on_player_joined_game(event)
             player.insert({ name = item, count = data.count })
         end
     end
+
+    ICW_Func.is_minimap_valid(player, surface)
 
     if player.online_time < 1 then
         local pos = surface.find_non_colliding_position('character', game.forces.player.get_spawn_position(surface), 3, 0)

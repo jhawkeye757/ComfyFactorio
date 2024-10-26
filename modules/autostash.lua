@@ -641,7 +641,7 @@ local function auto_stash(player, event)
         end
     end
 
-    local furnaceList = {
+    local furnace_list = {
         ['coal'] = 0,
         ['iron-ore'] = 0,
         ['copper-ore'] = 0,
@@ -659,7 +659,7 @@ local function auto_stash(player, event)
             if ctrl and this.insert_into_furnace then
                 if button == defines.mouse_button_type.right then
                     if is_resource then
-                        furnaceList[name] = (furnaceList[name] or 0) + inventory[i].count
+                        furnace_list[name] = (furnace_list[name] or 0) + inventory[i].count
                     end
                 end
             elseif shift and this.insert_into_wagon then          -- insert into wagon
@@ -684,7 +684,7 @@ local function auto_stash(player, event)
         end
         ::continue::
     end
-    for furnaceName, furnaceCount in pairs(furnaceList) do
+    for furnaceName, furnaceCount in pairs(furnace_list) do
         insert_to_furnace(inventory, chests, furnaceName, furnaceCount, floaty_text_list)
     end
 

@@ -89,7 +89,7 @@ local reset_game =
             if this.soft_reset then
                 Public.set_scores()
                 this.game_reset_tick = nil
-                Public.reset_map()
+                Public.set_task('move_players', 'Init')
                 return
             end
             if this.restart then
@@ -743,6 +743,11 @@ local function on_player_mined_entity(event)
     if not entity.valid then
         return
     end
+    local current_task = Public.get('current_task')
+    if not current_task.done then
+        return
+    end
+
     local rpg_char = RPG.get_value_from_player(player.index)
     if not rpg_char then return end
 
@@ -794,6 +799,11 @@ local function on_robot_mined_entity(event)
     local entity = event.entity
 
     if not entity.valid then
+        return
+    end
+
+    local current_task = Public.get('current_task')
+    if not current_task.done then
         return
     end
 
@@ -1342,6 +1352,8 @@ function Public.loco_died(invalid_locomotive)
         return
     end
 
+    if not Public.is_task_done() then return end
+
     local announced_message = Public.get('announced_message')
     if announced_message then
         return
@@ -1482,7 +1494,12 @@ end
 
 local function on_built_entity(event)
     local entity = event.entity
-    if not entity.valid then
+    if not entity or not entity.valid then
+        return
+    end
+
+    if string.sub(entity.surface.name, 0, #scenario_name) == Public.init_name then
+        entity.destroy()
         return
     end
 

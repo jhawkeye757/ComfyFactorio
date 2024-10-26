@@ -574,12 +574,18 @@ end
 
 Public.new('get', 'Hover over an object to get its name.')
     :require_admin()
+    :add_parameter('die', true, 'string')
     :add_alias('entity')
     :callback(
-        function (player)
+        function (player, action)
             local entity = player.selected
             if not entity or not entity.valid then
                 return false
+            end
+
+            if action and action == 'die' then
+                entity.die()
+                return true
             end
 
             player.print('[color=orange]Name:[/color] ' .. entity.name)

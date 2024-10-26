@@ -122,6 +122,10 @@ local reconstruct_all_trains =
         end
     )
 
+-- local ICW = require 'maps.mountain_fortress_v3.icw.functions'
+-- local icw_table = require 'maps.mountain_fortress_v3.icw.table'.get()
+-- ICW.reconstruct_all_trains(icw_table)
+
 local remove_non_migrated_doors_token =
     Task.register(
         function (data)

@@ -1861,6 +1861,8 @@ stds.factorio_defines = {
                         'cancel_craft',
                         'change_picking_state',
                         'set_inventory_bar',
+                        'gui_leave',
+                        'gui_hover',
                         'gui_selected_tab_changed',
                         'open_logistic_gui',
                         'cursor_split',

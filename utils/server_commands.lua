@@ -89,5 +89,4 @@ function has_space_age()
     return false
 end
 
-
 return ServerCommands

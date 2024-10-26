@@ -82,6 +82,11 @@ local function on_entity_died(event)
         return
     end
 
+    local current_task = Public.get('current_task')
+    if not current_task.done then
+        return
+    end
+
 
 
     local cause = event.cause

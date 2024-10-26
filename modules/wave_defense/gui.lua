@@ -87,12 +87,16 @@ local function get_threat_gain()
     return gain
 end
 
+function Public.destroy_wave_gui(player)
+    if get_top_frame_custom(player, 'wave_defense') and get_top_frame_custom(player, 'wave_defense').valid then
+        get_top_frame_custom(player, 'wave_defense').destroy()
+    end
+end
+
 function Public.update_gui(player)
     local final_battle = Public.get('final_battle')
     if final_battle then
-        if get_top_frame_custom(player, 'wave_defense') and get_top_frame_custom(player, 'wave_defense').valid then
-            get_top_frame_custom(player, 'wave_defense').destroy()
-        end
+        Public.destroy_wave_gui(player)
         return
     end
 

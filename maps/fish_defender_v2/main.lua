@@ -692,7 +692,7 @@ local function biter_attack_wave()
         evolution = 1
     end
 
-    game.forces.enemy.set_evolution_factor(evolution, surface)
+    game.forces.enemy.set_evolution_factor(evolution, surface.name)
 
     local y_raffle = get_y_coord_raffle_table()
 

@@ -1519,6 +1519,10 @@ local function gui_closed(event)
         return
     end
 
+    if not Public.is_task_done() then
+        return
+    end
+
     local type = event.gui_type
 
     if type == defines.gui_type.custom then

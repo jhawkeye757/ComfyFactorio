@@ -818,6 +818,8 @@ main_frame = function (player)
 end
 
 local function update_data()
+    if not Public.is_task_done() then return end
+
     local players = game.connected_players
     local stateful = Public.get_stateful()
     local breached_wall = Public.get('breached_wall')
@@ -999,6 +1001,8 @@ local function update_raw()
         clear_all_frames()
         return
     end
+
+    if not Public.is_task_done() then return end
 
     local stateful = Public.get_stateful()
     if not stateful or not stateful.objectives then
