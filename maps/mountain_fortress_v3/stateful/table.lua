@@ -1246,6 +1246,7 @@ local function apply_buffs()
         end
         this.total_buffs = total_buffs
     end
+    log('Applied all buffs.')
     Public.equip_players(starting_items)
 end
 

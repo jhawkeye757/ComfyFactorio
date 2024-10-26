@@ -1207,7 +1207,7 @@ local function update_raw()
 
         stateful.collection.gather_time = tick + (10 * 3600)
         stateful.collection.gather_time_timer = tick + (10 * 3600)
-        game.forces.enemy.set_evolution_factor(1, player.physical_surface)
+        game.forces.enemy.set_evolution_factor(1, player.surface.name)
         play_achievement_unlocked()
         local reverse_position = zone_settings.zone_depth * (breached_wall + 1)
         local reversed = Public.get_stateful_settings('reversed')
