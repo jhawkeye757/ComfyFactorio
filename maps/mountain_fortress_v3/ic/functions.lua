@@ -327,8 +327,8 @@ local function replace_surface(surfaces, entity, index)
     for k, surface_index in pairs(surfaces) do
         local surface = game.surfaces[surface_index]
         local unit_number = entity.unit_number
-        if tostring(index.saved_entity) == surface.name then
-            if validate_entity(surface) then
+        if validate_entity(surface) then
+            if tostring(index.saved_entity) == surface.name then
                 local car = get_car_by_unit_number(unit_number)
                 surface.name = car.surface_name
                 surfaces[unit_number] = surface.index
