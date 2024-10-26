@@ -15,6 +15,12 @@ Global.register(
     end
 )
 
+local function exclude_surface(surface)
+    for _, force in pairs(game.forces) do
+        force.set_surface_hidden(surface, true)
+    end
+end
+
 function Public.create_surface()
     local map_gen_settings = {
         ['seed'] = math.random(10000, 99999),
@@ -101,6 +107,8 @@ function Public.create_landing_surface()
     surface.always_day = true
     surface.request_to_generate_chunks({ 0, 0 }, 1)
     surface.force_generate_chunk_requests()
+
+    exclude_surface(surface)
 
     local walls = {}
     local tiles = {}
