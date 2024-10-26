@@ -640,6 +640,8 @@ local function on_gui_opened(event)
 end
 
 function Public.boost_players_around_train()
+    if not Public.is_task_done() then return end
+
     local rpg = RPG.get('rpg_t')
     local active_surface_index = Public.get('active_surface_index')
     if not active_surface_index then
