@@ -471,19 +471,43 @@ end
 local function get_item_produced_count(_, item_name)
     local force = game.forces.player
 
+    local loco_surface = Public.get('loco_surface')
+
     local production = force.get_item_production_statistics('nauvis').input_counts[item_name]
     if not production then
         return false
     end
 
-    return production
+    if not loco_surface or not loco_surface.valid then
+        return production
+    end
+
+    local loco_production = force.get_item_production_statistics(loco_surface.name).input_counts[item_name]
+    if not loco_production then
+        return production
+    end
+
+
+    return production + loco_production
 end
 
-local function get_entity_mined_count(event, item_name)
+local function get_entity_mined_count(_, item_name)
     local force = game.forces.player
 
     local count = 0
-    for name, entity_count in pairs(force.get_entity_build_count_statistics(event.surface).output_counts) do
+    for name, entity_count in pairs(force.get_entity_build_count_statistics('nauvis').output_counts) do
+        if name:find(item_name) then
+            count = count + entity_count
+        end
+    end
+
+    local loco_surface = Public.get('loco_surface')
+
+    if not loco_surface or not loco_surface.valid then
+        return count
+    end
+
+    for name, entity_count in pairs(force.get_entity_build_count_statistics(loco_surface.name).output_counts) do
         if name:find(item_name) then
             count = count + entity_count
         end

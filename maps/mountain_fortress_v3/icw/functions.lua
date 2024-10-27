@@ -227,7 +227,7 @@ end
 
 local function connect_power_pole(entity, wagon_area_left_top_y)
     local surface = entity.surface
-    local max_wire_distance = entity.prototype.max_wire_distance
+    local max_wire_distance = prototypes.entity[entity.name].get_max_wire_distance()
     local area = {
         { entity.position.x - max_wire_distance, entity.position.y - max_wire_distance },
         { entity.position.x + max_wire_distance, entity.position.y - 1 }
