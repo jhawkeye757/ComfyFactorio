@@ -234,7 +234,11 @@ local function connect_power_pole(entity, wagon_area_left_top_y)
     }
     for _, pole in pairs(surface.find_entities_filtered({ area = area, name = entity.name })) do
         if pole.position.y < wagon_area_left_top_y then
-            entity.connect_neighbour(pole)
+            local source_wire = entity.get_wire_connector(5)
+            local target_wire = pole.get_wire_connector(5)
+            if source_wire and target_wire then
+                source_wire.connect_to(target_wire, false)
+            end
             return
         end
     end

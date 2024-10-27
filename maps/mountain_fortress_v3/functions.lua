@@ -1896,6 +1896,7 @@ function Public.set_player_to_spectator(player)
         return false
     end
 
+
     if player.driving then
         return player.print('[color=blue][Spectate][/color] Please exit the vehicle before continuing', { color = Color.warning })
     end

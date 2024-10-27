@@ -19,18 +19,17 @@ function Public.add_player_to_permission_group(player, group, forced)
     local session = Session.get_session_table()
     local AG = Antigrief.get()
     if not AG then
-        log('Antigrief not found.')
         return
     end
 
+
+
     local default_group = game.permissions.get_group('Default')
     if not default_group then
-        log('Default group not found.')
         return
     end
 
     if not valid_groups[string.lower(player.permission_group.name)] then
-        log('Invalid group.')
         return
     end
 
@@ -43,102 +42,74 @@ function Public.add_player_to_permission_group(player, group, forced)
         default_group.set_allows_action(defines.input_action.deconstruct, false)
     end
 
-    if not game.permissions.get_group('limited') then
-        local limited_group = game.permissions.create_group('limited')
-        if not limited_group then
-            return
-        end
-        limited_group.set_allows_action(defines.input_action.cancel_craft, false)
-        limited_group.set_allows_action(defines.input_action.drop_item, false)
-        -- limited_group.set_allows_action(defines.input_action.upgrade, false) -- fixes factorio base issue
-        -- limited_group.set_allows_action(defines.input_action.upgrade_opened_blueprint_by_item, false)
-        -- limited_group.set_allows_action(defines.input_action.upgrade_opened_blueprint_by_record, false)
-        -- limited_group.set_allows_action(defines.input_action.cancel_upgrade, false)
-        if allow_decon then
-            limited_group.set_allows_action(defines.input_action.deconstruct, true)
-        else
-            limited_group.set_allows_action(defines.input_action.deconstruct, false)
-        end
+    local limited_group = game.permissions.get_group('limited') or game.permissions.create_group('limited')
+    limited_group.set_allows_action(defines.input_action.cancel_craft, false)
+    limited_group.set_allows_action(defines.input_action.drop_item, false)
+    if allow_decon then
+        limited_group.set_allows_action(defines.input_action.deconstruct, true)
+    else
+        limited_group.set_allows_action(defines.input_action.deconstruct, false)
     end
 
-    if not game.permissions.get_group('init_island') then
-        local init_island = game.permissions.create_group('init_island')
-        if not init_island then
-            return
-        end
-        init_island.set_allows_action(defines.input_action.cancel_craft, false)
-        init_island.set_allows_action(defines.input_action.drop_item, false)
-        init_island.set_allows_action(defines.input_action.gui_click, false)
-        init_island.set_allows_action(defines.input_action.deconstruct, false)
-        init_island.set_allows_action(defines.input_action.gui_checked_state_changed, false)
-        init_island.set_allows_action(defines.input_action.gui_click, false)
-        init_island.set_allows_action(defines.input_action.gui_confirmed, false)
-        init_island.set_allows_action(defines.input_action.gui_elem_changed, false)
-        init_island.set_allows_action(defines.input_action.gui_hover, false)
-        init_island.set_allows_action(defines.input_action.gui_leave, false)
-        init_island.set_allows_action(defines.input_action.gui_location_changed, false)
-        init_island.set_allows_action(defines.input_action.gui_selected_tab_changed, false)
-        init_island.set_allows_action(defines.input_action.gui_selection_state_changed, false)
-        init_island.set_allows_action(defines.input_action.gui_switch_state_changed, false)
-        init_island.set_allows_action(defines.input_action.gui_text_changed, false)
-        init_island.set_allows_action(defines.input_action.gui_value_changed, false)
+    local init_island = game.permissions.get_group('init_island') or game.permissions.create_group('init_island')
+    init_island.set_allows_action(defines.input_action.cancel_craft, false)
+    init_island.set_allows_action(defines.input_action.drop_item, false)
+    init_island.set_allows_action(defines.input_action.gui_click, false)
+    init_island.set_allows_action(defines.input_action.deconstruct, false)
+    init_island.set_allows_action(defines.input_action.gui_checked_state_changed, false)
+    init_island.set_allows_action(defines.input_action.gui_click, false)
+    init_island.set_allows_action(defines.input_action.gui_confirmed, false)
+    init_island.set_allows_action(defines.input_action.gui_elem_changed, false)
+    init_island.set_allows_action(defines.input_action.gui_hover, false)
+    init_island.set_allows_action(defines.input_action.gui_leave, false)
+    init_island.set_allows_action(defines.input_action.gui_location_changed, false)
+    init_island.set_allows_action(defines.input_action.gui_selected_tab_changed, false)
+    init_island.set_allows_action(defines.input_action.gui_selection_state_changed, false)
+    init_island.set_allows_action(defines.input_action.gui_switch_state_changed, false)
+    init_island.set_allows_action(defines.input_action.gui_text_changed, false)
+    init_island.set_allows_action(defines.input_action.gui_value_changed, false)
+
+    local near_locomotive_group = game.permissions.get_group('near_locomotive') or game.permissions.create_group('near_locomotive')
+    near_locomotive_group.set_allows_action(defines.input_action.cancel_craft, false)
+    near_locomotive_group.set_allows_action(defines.input_action.drop_item, false)
+    if allow_decon_main_surface then
+        near_locomotive_group.set_allows_action(defines.input_action.deconstruct, true)
+    else
+        near_locomotive_group.set_allows_action(defines.input_action.deconstruct, false)
     end
 
-    if not game.permissions.get_group('near_locomotive') then
-        local near_locomotive_group = game.permissions.create_group('near_locomotive')
-        if not near_locomotive_group then
-            return
-        end
-        near_locomotive_group.set_allows_action(defines.input_action.cancel_craft, false)
-        near_locomotive_group.set_allows_action(defines.input_action.drop_item, false)
-        if allow_decon_main_surface then
-            near_locomotive_group.set_allows_action(defines.input_action.deconstruct, true)
-        else
-            near_locomotive_group.set_allows_action(defines.input_action.deconstruct, false)
-        end
+    local main_surface_group = game.permissions.get_group('main_surface') or game.permissions.create_group('main_surface')
+    if allow_decon_main_surface then
+        main_surface_group.set_allows_action(defines.input_action.deconstruct, true)
+    else
+        main_surface_group.set_allows_action(defines.input_action.deconstruct, false)
     end
 
-    if not game.permissions.get_group('main_surface') then
-        local main_surface_group = game.permissions.create_group('main_surface')
-        if not main_surface_group then
-            return
-        end
-        if allow_decon_main_surface then
-            main_surface_group.set_allows_action(defines.input_action.deconstruct, true)
-        else
-            main_surface_group.set_allows_action(defines.input_action.deconstruct, false)
-        end
-    end
+    local not_trusted = game.permissions.get_group('not_trusted') or game.permissions.create_group('not_trusted')
 
-    if not game.permissions.get_group('not_trusted') then
-        local not_trusted = game.permissions.create_group('not_trusted')
-        if not not_trusted then
-            return
-        end
-        not_trusted.set_allows_action(defines.input_action.cancel_craft, false)
-        not_trusted.set_allows_action(defines.input_action.edit_permission_group, false)
-        not_trusted.set_allows_action(defines.input_action.import_permissions_string, false)
-        not_trusted.set_allows_action(defines.input_action.delete_permission_group, false)
-        not_trusted.set_allows_action(defines.input_action.add_permission_group, false)
-        not_trusted.set_allows_action(defines.input_action.admin_action, false)
-        not_trusted.set_allows_action(defines.input_action.drop_item, false)
-        not_trusted.set_allows_action(defines.input_action.cancel_research, false)
-        not_trusted.set_allows_action(defines.input_action.disconnect_rolling_stock, false)
-        not_trusted.set_allows_action(defines.input_action.connect_rolling_stock, false)
-        not_trusted.set_allows_action(defines.input_action.open_train_gui, false)
-        not_trusted.set_allows_action(defines.input_action.open_train_station_gui, false)
-        not_trusted.set_allows_action(defines.input_action.open_trains_gui, false)
-        not_trusted.set_allows_action(defines.input_action.change_train_stop_station, false)
-        not_trusted.set_allows_action(defines.input_action.change_train_wait_condition, false)
-        not_trusted.set_allows_action(defines.input_action.change_train_wait_condition_data, false)
-        not_trusted.set_allows_action(defines.input_action.drag_train_schedule, false)
-        not_trusted.set_allows_action(defines.input_action.drag_train_wait_condition, false)
-        not_trusted.set_allows_action(defines.input_action.go_to_train_station, false)
-        not_trusted.set_allows_action(defines.input_action.remove_train_station, false)
-        not_trusted.set_allows_action(defines.input_action.set_trains_limit, false)
-        not_trusted.set_allows_action(defines.input_action.set_train_stopped, false)
-        not_trusted.set_allows_action(defines.input_action.deconstruct, false)
-    end
+    not_trusted.set_allows_action(defines.input_action.cancel_craft, false)
+    not_trusted.set_allows_action(defines.input_action.edit_permission_group, false)
+    not_trusted.set_allows_action(defines.input_action.import_permissions_string, false)
+    not_trusted.set_allows_action(defines.input_action.delete_permission_group, false)
+    not_trusted.set_allows_action(defines.input_action.add_permission_group, false)
+    not_trusted.set_allows_action(defines.input_action.admin_action, false)
+    not_trusted.set_allows_action(defines.input_action.drop_item, false)
+    not_trusted.set_allows_action(defines.input_action.cancel_research, false)
+    not_trusted.set_allows_action(defines.input_action.disconnect_rolling_stock, false)
+    not_trusted.set_allows_action(defines.input_action.connect_rolling_stock, false)
+    not_trusted.set_allows_action(defines.input_action.open_train_gui, false)
+    not_trusted.set_allows_action(defines.input_action.open_train_station_gui, false)
+    not_trusted.set_allows_action(defines.input_action.open_trains_gui, false)
+    not_trusted.set_allows_action(defines.input_action.change_train_stop_station, false)
+    not_trusted.set_allows_action(defines.input_action.change_train_wait_condition, false)
+    not_trusted.set_allows_action(defines.input_action.change_train_wait_condition_data, false)
+    not_trusted.set_allows_action(defines.input_action.drag_train_schedule, false)
+    not_trusted.set_allows_action(defines.input_action.drag_train_wait_condition, false)
+    not_trusted.set_allows_action(defines.input_action.go_to_train_station, false)
+    not_trusted.set_allows_action(defines.input_action.remove_train_station, false)
+    not_trusted.set_allows_action(defines.input_action.set_trains_limit, false)
+    not_trusted.set_allows_action(defines.input_action.set_train_stopped, false)
+    not_trusted.set_allows_action(defines.input_action.deconstruct, false)
 
     if not AG.enabled then
         default_group.add_player(player)
@@ -151,26 +122,15 @@ function Public.add_player_to_permission_group(player, group, forced)
         playtime = player.online_time + session[player.name]
     end
 
-    local limited_group = game.permissions.get_group('limited')
-    local main_surface_group = game.permissions.get_group('main_surface')
-    local near_locomotive_group = game.permissions.get_group('near_locomotive')
 
-    if limited_group then
-        limited_group.set_allows_action(defines.input_action.delete_blueprint_library, false)
-        limited_group.set_allows_action(defines.input_action.delete_blueprint_record, false)
-    end
-    if main_surface_group then
-        main_surface_group.set_allows_action(defines.input_action.delete_blueprint_library, false)
-        main_surface_group.set_allows_action(defines.input_action.delete_blueprint_record, false)
-    end
-    if near_locomotive_group then
-        near_locomotive_group.set_allows_action(defines.input_action.delete_blueprint_library, false)
-        near_locomotive_group.set_allows_action(defines.input_action.delete_blueprint_record, false)
-    end
-    if default_group then
-        default_group.set_allows_action(defines.input_action.delete_blueprint_library, false)
-        default_group.set_allows_action(defines.input_action.delete_blueprint_record, false)
-    end
+    limited_group.set_allows_action(defines.input_action.delete_blueprint_library, false)
+    limited_group.set_allows_action(defines.input_action.delete_blueprint_record, false)
+    main_surface_group.set_allows_action(defines.input_action.delete_blueprint_library, false)
+    main_surface_group.set_allows_action(defines.input_action.delete_blueprint_record, false)
+    near_locomotive_group.set_allows_action(defines.input_action.delete_blueprint_library, false)
+    near_locomotive_group.set_allows_action(defines.input_action.delete_blueprint_record, false)
+    default_group.set_allows_action(defines.input_action.delete_blueprint_library, false)
+    default_group.set_allows_action(defines.input_action.delete_blueprint_record, false)
 
     if enable_permission_group_disconnect then
         if limited_group then
@@ -200,44 +160,19 @@ function Public.add_player_to_permission_group(player, group, forced)
         end
     end
 
-    if playtime < required_playtime and not forced then
-        local not_trusted = game.permissions.get_group('not_trusted')
-        if not not_trusted then
-            log('Not trusted group not found.')
-            return
-        end
-
+    if not Session.get_trusted_player(player) and playtime < required_playtime and not forced then
         if not player.admin then
             not_trusted.add_player(player)
         end
     else
         if group == 'limited' then
-            local limited_group_inner = game.permissions.get_group('limited')
-            if not limited_group_inner then
-                return
-            end
-            limited_group_inner.add_player(player)
+            limited_group.add_player(player)
         elseif group == 'main_surface' then
-            local main_surface_group_inner = game.permissions.get_group('main_surface')
-            if not main_surface_group_inner then
-                return
-            end
-
-            main_surface_group_inner.add_player(player)
+            main_surface_group.add_player(player)
         elseif group == 'init_island' then
-            local init_island = game.permissions.get_group('init_island')
-            if not init_island then
-                return
-            end
-
             init_island.add_player(player)
         elseif group == 'near_locomotive' then
-            local near_locomotive_group_inner = game.permissions.get_group('near_locomotive')
-            if not near_locomotive_group_inner then
-                return
-            end
-
-            near_locomotive_group_inner.add_player(player)
+            near_locomotive_group.add_player(player)
         elseif group == 'default' then
             default_group.add_player(player)
         end

@@ -1626,7 +1626,7 @@ function Public.global_pool(players, count)
         end
     end
 
-    rpg_extra.global_pool = rpg_extra.leftover_pool or 0
+    rpg_extra.global_pool = round(rpg_extra.leftover_pool or 0, 8)
 end
 
 local damage_player_over_time_token =

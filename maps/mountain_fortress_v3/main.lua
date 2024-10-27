@@ -102,53 +102,6 @@ local is_position_near_tbl = function (position, tbl)
     return status
 end
 
-local function preinit_task()
-    local this = Public.get()
-    game.speed = 1
-
-    if this.health_text and this.health_text.valid then this.health_text.destroy() end
-    if this.caption and this.caption.valid then this.caption.destroy() end
-    if this.circle and this.circle.valid then this.circle.destroy() end
-    if this.current_season and this.current_season.valid then this.current_season.destroy() end
-    if this.counter and this.counter.valid then this.counter.destroy() end
-    if this.direction_attack and this.direction_attack.valid then this.direction_attack.destroy() end
-    if this.zone1_text1 and this.zone1_text1.valid then this.zone1_text1.destroy() end
-    if this.zone1_text2 and this.zone1_text2.valid then this.zone1_text2.destroy() end
-    if this.zone1_text3 and this.zone1_text3.valid then this.zone1_text3.destroy() end
-
-    for i = 1, 5 do
-        if this['direction_' .. i] and this['direction_' .. i].valid then
-            this['direction_' .. i].destroy()
-        end
-    end
-
-    WD.set('game_lost', true)
-
-    local players = game.connected_players
-    for i = 1, #players do
-        local player = players[i]
-        Score.init_player_table(player, true)
-        Misc.insert_all_items(player)
-        Modifiers.reset_player_modifiers(player)
-        if player.gui.left['mvps'] then
-            player.gui.left['mvps'].destroy()
-        end
-        WD.destroy_wave_gui(player)
-        ICMinimap.kill_minimap(player)
-        Event.raise(Public.events.reset_map, { player_index = player.index })
-        Public.add_player_to_permission_group(player, 'init_island', true)
-        player.print(mapkeeper .. ' Map is resetting, please wait a moment. All GUI buttons are disabled at the moment.')
-    end
-
-    Public.reset_func_table()
-    RPG.reset_table()
-
-    Public.sr_reset_forces()
-    WD.set('wave_interval', 4500)
-end
-
-
-
 local is_locomotive_valid = function ()
     local locomotive = Public.get('locomotive')
     if game.ticks_played < 1000 then return end
@@ -421,6 +374,83 @@ local nth_1000_tick = function ()
     Public.is_creativity_mode_on()
 end
 
+function Public.pre_init_task(current_task)
+    local this = Public.get()
+    game.speed = 1
+
+    current_task.done = nil
+    current_task.step = 1
+
+    if this.health_text and this.health_text.valid then this.health_text.destroy() end
+    if this.caption and this.caption.valid then this.caption.destroy() end
+    if this.circle and this.circle.valid then this.circle.destroy() end
+    if this.current_season and this.current_season.valid then this.current_season.destroy() end
+    if this.counter and this.counter.valid then this.counter.destroy() end
+    if this.direction_attack and this.direction_attack.valid then this.direction_attack.destroy() end
+    if this.zone1_text1 and this.zone1_text1.valid then this.zone1_text1.destroy() end
+    if this.zone1_text2 and this.zone1_text2.valid then this.zone1_text2.destroy() end
+    if this.zone1_text3 and this.zone1_text3.valid then this.zone1_text3.destroy() end
+
+    for i = 1, 5 do
+        if this['direction_' .. i] and this['direction_' .. i].valid then
+            this['direction_' .. i].destroy()
+        end
+    end
+
+    WD.reset_wave_defense()
+    WD.alert_boss_wave(true)
+    WD.enable_side_target(false)
+    WD.remove_entities(true)
+    WD.enable_threat_log(false) -- creates waaaay to many entries in the global table
+    WD.check_collapse_position(true)
+    WD.set_disable_threat_below_zero(true)
+    WD.increase_boss_health_per_wave(true)
+    WD.increase_damage_per_wave(true)
+    WD.increase_health_per_wave(true)
+    WD.increase_average_unit_group_size(true)
+    WD.increase_max_active_unit_groups(true)
+    WD.enable_random_spawn_positions(true)
+    WD.set_track_bosses_only(true)
+    WD.set_pause_waves_custom_callback(Public.pause_waves_custom_callback_token)
+    WD.set_threat_event_custom_callback(Public.check_if_spawning_near_train_custom_callback)
+    WD.set('surface_index', this.active_surface_index)
+    WD.set('nest_building_density', 32)
+    WD.set('spawn_position', { x = 0, y = 84 })
+    WD.set('game_lost', true)
+
+    local players = game.connected_players
+    for i = 1, #players do
+        local player = players[i]
+        Score.init_player_table(player, true)
+        Misc.insert_all_items(player)
+        Modifiers.reset_player_modifiers(player)
+        if player.gui.left['mvps'] then
+            player.gui.left['mvps'].destroy()
+        end
+        WD.destroy_wave_gui(player)
+        ICMinimap.kill_minimap(player)
+        Event.raise(Public.events.reset_map, { player_index = player.index })
+        Public.add_player_to_permission_group(player, 'init_island', true)
+        player.print(mapkeeper .. ' Map is resetting, please wait a moment. All GUI buttons are disabled at the moment.')
+    end
+
+    Public.reset_func_table()
+    RPG.reset_table()
+    Public.stateful.clear_all_frames()
+    Public.sr_reset_forces()
+    WD.set('wave_interval', 4500)
+
+    current_task.message = 'Pre init done!'
+    current_task.state = 'init_stateful'
+end
+
+function Public.post_init_task(current_task)
+    Public.stateful.increase_enemy_damage_and_health()
+
+    current_task.message = 'Post init done!'
+    current_task.state = 'create_locomotive'
+end
+
 function Public.create_locomotive(current_task)
     if Public.get('disable_startup_notification') then return end
     local adjusted_zones = Public.get('adjusted_zones')
@@ -446,6 +476,11 @@ function Public.create_locomotive(current_task)
     Public.render_train_hp()
     Public.render_direction(surface, adjusted_zones.reversed)
 
+    local locomotive = Public.get('locomotive')
+    if locomotive and locomotive.valid then
+        WD.set_main_target(locomotive)
+    end
+
     current_task.message = 'Created locomotive!'
     current_task.delay = game.tick + 60
     current_task.state = 'announce_new_map'
@@ -458,7 +493,7 @@ function Public.announce_new_map(current_task)
         Server.to_discord_named_raw(send_ping_to_channel, role_to_mention .. ' ** Mtn Fortress was just reset! **')
     end
     current_task.message = 'Announced new map!'
-    current_task.state = 'move_players_to_nauvis'
+    current_task.state = 'to_nauvis'
     current_task.surface_name = 'nauvis'
     current_task.delay = game.tick + 200
 end
@@ -468,11 +503,6 @@ function Public.move_players(current_task)
     if not surface or not surface.valid then
         return
     end
-
-    current_task.done = nil
-    current_task.step = 1
-
-    preinit_task()
 
     for _, player in pairs(game.players) do
         local pos = surface.find_non_colliding_position("character", { x = 0, y = 0 }, 3, 0)
@@ -484,10 +514,10 @@ function Public.move_players(current_task)
     end
     current_task.message = 'Moved players to initial surface!'
     current_task.delay = game.tick + 200
-    current_task.state = 'init_stateful'
+    current_task.state = 'pre_init_task'
 end
 
-function Public.move_players_to_nauvis(current_task)
+function Public.to_nauvis(current_task)
     local surface = game.get_surface(current_task.surface_name)
     if not surface or not surface.valid then
         return
@@ -537,7 +567,6 @@ function Public.init_stateful(current_task)
     Public.reset_main_table()
     Public.stateful.enable(true)
     Public.stateful.reset_stateful(false, true)
-    Public.stateful.increase_enemy_damage_and_health()
     Public.stateful.apply_startup_settings()
     current_task.message = 'Initialized stateful!'
     current_task.state = 'clear_nauvis'
@@ -569,13 +598,12 @@ end
 function Public.reset_map(current_task)
     local this = Public.get()
 
-    local wave_defense_table = WD.get_table()
     Misc.reset()
 
 
     LinkedChests.reset()
 
-    Public.stateful.clear_all_frames()
+
 
     BottomFrame.reset()
     Public.reset_buried_biters()
@@ -630,12 +658,7 @@ function Public.reset_map(current_task)
     game.forces.player.worker_robots_battery_modifier = 4
     game.forces.player.worker_robots_storage_bonus = 15
 
-    WD.reset_wave_defense()
-    wave_defense_table.surface_index = this.active_surface_index
-    wave_defense_table.target = this.locomotive
-    wave_defense_table.nest_building_density = 32
-    wave_defense_table.game_lost = false
-    wave_defense_table.spawn_position = { x = 0, y = 84 }
+
 
     -- WD.set_es_unit_limit(400) -- moved to stateful
     Event.raise(WD.events.on_game_reset, {})
@@ -697,11 +720,9 @@ function Public.reset_map(current_task)
         WD.disable_spawning_biters(true)
     end
 
-
-
     current_task.message = 'Reset map done!'
     current_task.delay = game.tick + 60
-    current_task.state = 'create_locomotive'
+    current_task.state = 'post_init_task'
 end
 
 function Public.init_mtn()

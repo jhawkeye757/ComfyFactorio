@@ -1,5 +1,6 @@
 local Event = require 'utils.event'
 local Public = require 'maps.mountain_fortress_v3.table'
+local Color = require 'utils.color_presets'
 local RPG = require 'modules.rpg.main'
 local IC_Gui = require 'maps.mountain_fortress_v3.ic.gui'
 local IC_Minimap = require 'maps.mountain_fortress_v3.ic.minimap'
@@ -100,6 +101,7 @@ local function spectate_button(player)
     if get_top_frame_custom(player, spectate_button_name) then
         return
     end
+
 
     if Public.get('final_battle') then
         return
@@ -681,6 +683,11 @@ Gui.on_click(
 
         local player = event.player
         if not player or not player.valid then
+            return
+        end
+
+        if Public.get('spectate_button_disable') then
+            player.print('Spectate button is disabled until a bug has been fixed in the base game.', { color = Color.yellow })
             return
         end
 

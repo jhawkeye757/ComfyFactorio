@@ -190,6 +190,7 @@ function Public.reset_main_table()
     this.block_non_trusted_opening_trains = true
     this.block_non_trusted_trigger_collapse = true
     this.allow_decon_main_surface = true
+    this.spectate_button_disable = true
     this.flamethrower_damage = {}
     this.mined_scrap = 0
     this.print_tech_to_discord = true

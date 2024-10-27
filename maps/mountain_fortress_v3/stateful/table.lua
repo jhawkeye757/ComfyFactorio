@@ -1381,8 +1381,6 @@ local apply_settings_token =
             end
 
             this.objectives = {}
-
-            Public.increase_enemy_damage_and_health()
         end
     )
 

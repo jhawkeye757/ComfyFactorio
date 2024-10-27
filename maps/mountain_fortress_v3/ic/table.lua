@@ -28,7 +28,7 @@ function Public.reset()
     for k, _ in pairs(this) do
         this[k] = nil
     end
-    this.debug_mode = true
+    this.debug_mode = false
     this.restore_on_theft = false
     this.doors = {}
     this.cars = {}

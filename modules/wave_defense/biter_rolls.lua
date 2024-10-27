@@ -1,7 +1,8 @@
 local Public = require 'modules.wave_defense.table'
+local round = math.round
 
 function Public.wave_defense_roll_biter_name()
-    local biter_raffle = Public.get('biter_raffle')
+    local biter_raffle = Public.get('biter_raffle') --[[@as table]]
     local max_chance = 0
     for _, v in pairs(biter_raffle) do
         max_chance = max_chance + v
@@ -17,7 +18,7 @@ function Public.wave_defense_roll_biter_name()
 end
 
 function Public.wave_defense_roll_spitter_name()
-    local spitter_raffle = Public.get('spitter_raffle')
+    local spitter_raffle = Public.get('spitter_raffle') --[[@as table]]
     local max_chance = 0
     for _, v in pairs(spitter_raffle) do
         max_chance = max_chance + v
@@ -36,8 +37,8 @@ function Public.wave_defense_set_unit_raffle(level)
     Public.set(
         'biter_raffle',
         {
-            ['small-biter'] = 1000 - level * 1.75,
-            ['medium-biter'] = level,
+            ['small-biter'] = round(1000 - level * 1.75, 6),
+            ['medium-biter'] = round(level, 6),
             ['big-biter'] = 0,
             ['behemoth-biter'] = 0
         }
@@ -46,24 +47,24 @@ function Public.wave_defense_set_unit_raffle(level)
     Public.set(
         'spitter_raffle',
         {
-            ['small-spitter'] = 1000 - level * 1.75,
-            ['medium-spitter'] = level,
+            ['small-spitter'] = round(1000 - level * 1.75, 6),
+            ['medium-spitter'] = round(level, 6),
             ['big-spitter'] = 0,
             ['behemoth-spitter'] = 0
         }
     )
 
-    local biter_raffle = Public.get('biter_raffle')
-    local spitter_raffle = Public.get('spitter_raffle')
+    local biter_raffle = Public.get('biter_raffle') --[[@as table]]
+    local spitter_raffle = Public.get('spitter_raffle') --[[@as table]]
     if level > 500 then
-        biter_raffle['medium-biter'] = 500 - (level - 500)
-        spitter_raffle['medium-spitter'] = 500 - (level - 500)
-        biter_raffle['big-biter'] = (level - 500) * 2
-        spitter_raffle['big-spitter'] = (level - 500) * 2
+        biter_raffle['medium-biter'] = round(500 - (level - 500), 6)
+        spitter_raffle['medium-spitter'] = round(500 - (level - 500), 6)
+        biter_raffle['big-biter'] = round((level - 500) * 2, 6)
+        spitter_raffle['big-spitter'] = round((level - 500) * 2, 6)
     end
     if level > 800 then
-        biter_raffle['behemoth-biter'] = (level - 800) * 2.75
-        spitter_raffle['behemoth-spitter'] = (level - 800) * 2.75
+        biter_raffle['behemoth-biter'] = round((level - 800) * 2.75, 6)
+        spitter_raffle['behemoth-spitter'] = round((level - 800) * 2.75, 6)
     end
     for k, _ in pairs(biter_raffle) do
         if biter_raffle[k] < 0 then
@@ -78,7 +79,7 @@ function Public.wave_defense_set_unit_raffle(level)
 end
 
 function Public.wave_defense_roll_worm_name()
-    local worm_raffle = Public.get('worm_raffle')
+    local worm_raffle = Public.get('worm_raffle') --[[@as table]]
     local max_chance = 0
     for _, v in pairs(worm_raffle) do
         max_chance = max_chance + v
@@ -97,20 +98,20 @@ function Public.wave_defense_set_worm_raffle(level)
     Public.set(
         'worm_raffle',
         {
-            ['small-worm-turret'] = 1000 - level * 1.75,
-            ['medium-worm-turret'] = level,
+            ['small-worm-turret'] = round(1000 - level * 1.75, 6),
+            ['medium-worm-turret'] = round(level, 6),
             ['big-worm-turret'] = 0,
             ['behemoth-worm-turret'] = 0
         }
     )
-    local worm_raffle = Public.get('worm_raffle')
+    local worm_raffle = Public.get('worm_raffle') --[[@as table]]
 
     if level > 500 then
-        worm_raffle['medium-worm-turret'] = 500 - (level - 500)
-        worm_raffle['big-worm-turret'] = (level - 500) * 2
+        worm_raffle['medium-worm-turret'] = round(500 - (level - 500), 6)
+        worm_raffle['big-worm-turret'] = round((level - 500) * 2, 6)
     end
     if level > 800 then
-        worm_raffle['behemoth-worm-turret'] = (level - 800) * 3
+        worm_raffle['behemoth-worm-turret'] = round((level - 800) * 3, 6)
     end
     for k, _ in pairs(worm_raffle) do
         if worm_raffle[k] < 0 then

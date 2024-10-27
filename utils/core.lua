@@ -38,6 +38,18 @@ function Public.print_except(msg, player, color)
     end
 end
 
+function Public.get_filters(points)
+    local filters = {}
+    for _, section in pairs(points.sections) do
+        for _, filter in pairs(section.filters) do
+            if filter and filter.value and filter.value.name then
+                filters[#filters + 1] = filter
+            end
+        end
+    end
+    return filters
+end
+
 function Public.print_to(player_ident, msg, color)
     local player = Public.validate_player(player_ident)
     color = color or Color.yellow
@@ -398,7 +410,7 @@ function Public.validate_player(player_ident, check_admin)
     local data_type = type(player_ident)
     local player
 
-    if data_type == 'table' and player_ident.valid then
+    if data_type == 'userdata' and player_ident.valid then
         local is_player = player_ident.is_player()
         if is_player then
             player = player_ident

@@ -39,18 +39,6 @@ local function validate_entity(entity)
     return true
 end
 
-local get_filters = function (points)
-    local filters = {}
-    for _, section in pairs(points.sections) do
-        for _, filter in pairs(section.filters) do
-            if filter and filter.value and filter.value.name then
-                filters[#filters + 1] = filter
-            end
-        end
-    end
-    return filters
-end
-
 ---Returns the car from the unit_number.
 ---@param unit_number any
 ---@return table|boolean
@@ -573,7 +561,7 @@ local function input_filtered(car_inv, chest, chest_inv, free_slots)
 
     local prototypes = prototypes.item
     local logistics = chest.get_logistic_point(defines.logistic_member_index.logistic_container)
-    local filters = get_filters(logistics)
+    local filters = Core.get_filters(logistics)
     for _, filter in pairs(filters) do
         if filter.value.name then
             request_stacks[filter.value.name] = 10 * prototypes[filter.value.name].stack_size
@@ -621,10 +609,12 @@ local function input_cargo(car, chest)
 
     local has_request_slot = false
     local logistics = chest.get_logistic_point(defines.logistic_member_index.logistic_container)
-    local filters = get_filters(logistics)
-    for _, filter in pairs(filters) do
-        if filter.value.name then
-            has_request_slot = true
+    if logistics then
+        local filters = Core.get_filters(logistics)
+        for _, filter in pairs(filters) do
+            if filter.value.name then
+                has_request_slot = true
+            end
         end
     end
 

@@ -2580,7 +2580,7 @@ end
 
 local function starting_zone(x, y, data, void_or_lab, adjusted_zones)
     local p = { x = x, y = y }
-    local seed = data.seed
+    local seed = data.seed + 10000
     local buildings = data.buildings
     local tiles = data.tiles
     local entities = data.entities
@@ -2594,7 +2594,7 @@ local function starting_zone(x, y, data, void_or_lab, adjusted_zones)
     local cave_rivers = Public.get_noise('cave_rivers', p, seed)
     local no_rocks = Public.get_noise('no_rocks', p, seed)
 
-    if smol_areas < 0.057 and smol_areas > -0.021 then
+    if smol_areas < 0.07 and smol_areas > -0.03 then
         tiles[#tiles + 1] = { name = void_or_lab, position = p }
         if random(1, 32) == 1 then
             Public.spawn_random_buildings(buildings, p)
@@ -2611,21 +2611,21 @@ local function starting_zone(x, y, data, void_or_lab, adjusted_zones)
     end
 
     --Chasms
-    if noise_cave_ponds < 0.105 and noise_cave_ponds > -0.112 then
-        if small_caves > 0.52 then
+    if noise_cave_ponds < 0.12 and noise_cave_ponds > -0.08 then
+        if small_caves > 0.45 then
             tiles[#tiles + 1] = { name = void_or_lab, position = p }
             return
         end
-        if small_caves < -0.52 then
+        if small_caves < -0.45 then
             tiles[#tiles + 1] = { name = void_or_lab, position = p }
             return
         end
     end
 
     --Water Ponds
-    if noise_cave_ponds > 0.6 then
-        if noise_cave_ponds > 0.74 then
-            tiles[#tiles + 1] = { name = 'acid-refined-concrete', position = p }
+    if noise_cave_ponds > 0.65 then
+        if noise_cave_ponds > 0.75 then
+            tiles[#tiles + 1] = { name = 'blue-refined-concrete', position = p }
             if random(1, 4) == 1 then
                 markets[#markets + 1] = p
             end
@@ -2642,8 +2642,8 @@ local function starting_zone(x, y, data, void_or_lab, adjusted_zones)
     end
 
     --Rivers
-    if cave_rivers < 0.044 and cave_rivers > -0.072 then
-        if noise_cave_ponds > 0.1 then
+    if cave_rivers < 0.05 and cave_rivers > -0.05 then
+        if noise_cave_ponds > 0.15 then
             tiles[#tiles + 1] = { name = 'water-shallow', position = p }
             if random(1, 64) == 1 then
                 entities[#entities + 1] = { name = 'fish', position = p }
@@ -2652,9 +2652,9 @@ local function starting_zone(x, y, data, void_or_lab, adjusted_zones)
         end
     end
 
-    if noise_cave_ponds > 0.622 then
-        if noise_cave_ponds > 0.542 then
-            if cave_rivers > -0.302 then
+    if noise_cave_ponds > 0.68 then
+        if noise_cave_ponds > 0.55 then
+            if cave_rivers > -0.35 then
                 tiles[#tiles + 1] = { name = 'refined-hazard-concrete-right', position = p }
             end
         end
@@ -2665,9 +2665,9 @@ local function starting_zone(x, y, data, void_or_lab, adjusted_zones)
     end
 
     --Worm oil Zones
-    if no_rocks < 0.029 and no_rocks > -0.245 then
-        if small_caves > 0.081 then
-            tiles[#tiles + 1] = { name = 'brown-refined-concrete', position = p }
+    if no_rocks < 0.04 and no_rocks > -0.22 then
+        if small_caves > 0.1 then
+            tiles[#tiles + 1] = { name = 'nuclear-ground', position = p }
             if random(1, 250) == 1 then
                 entities[#entities + 1] = { name = 'crude-oil', position = p, amount = get_oil_amount(p) }
             end
@@ -2691,7 +2691,7 @@ local function starting_zone(x, y, data, void_or_lab, adjusted_zones)
     end
 
     --Main Rock Terrain
-    if no_rocks_2 > 0.334 and no_rocks_2 < 0.544 then
+    if no_rocks_2 > 0.35 and no_rocks_2 < 0.55 then
         local success = place_wagon(data, adjusted_zones)
         if success then
             return

@@ -2,6 +2,7 @@
 -- modified by gerkiz
 
 local Global = require 'utils.global'
+local Core = require 'utils.core'
 local SpamProtection = require 'utils.spam_protection'
 local Color = require 'utils.color_presets'
 local Event = require 'utils.event'
@@ -39,18 +40,6 @@ local bps_blacklist = {
     ['blueprint-book'] = true,
     ['blueprint'] = true
 }
-
-local get_filters = function (points)
-    local filters = {}
-    for _, section in pairs(points.sections) do
-        for _, filter in pairs(section.filters) do
-            if filter and filter.value and filter.value.name then
-                filters[#filters + 1] = filter
-            end
-        end
-    end
-    return filters
-end
 
 local on_init_token =
     Task.register(
@@ -149,12 +138,12 @@ local function chest_is_valid(chest)
     ) do
         if e.name ~= 'long-handed-inserter' then
             if e.position.x == chest.position.x then
-                if e.direction == 0 or e.direction == 4 then
+                if e.direction == 0 or e.direction == 8 then
                     return false
                 end
             end
             if e.position.y == chest.position.y then
-                if e.direction == 2 or e.direction == 6 then
+                if e.direction == 4 or e.direction == 12 then
                     return false
                 end
             end
@@ -272,13 +261,13 @@ local function check_if_valid_requests(chest)
         return false
     end
 
-    if chest.type == 'logistic-container' then
-        local logistics = chest.get_logistic_point(defines.logistic_member_index.logistic_container)
-        local filters = get_filters(logistics)
+    local logistics = chest.get_logistic_point(defines.logistic_member_index.logistic_container)
+    if logistics then
+        local filters = Core.get_filters(logistics)
         return #filters > 0
+    else
+        return false
     end
-
-    return false
 end
 
 local function insert_to_furnace(player_inventory, chests, name, count, floaty_text_list)
@@ -430,7 +419,7 @@ local function insert_into_wagon_filtered(stack, chests, name, floaty_text_list)
         if chest.type == 'logistic-container' then
             local chest_inventory = chests.inventory[chestnr]
             local logistics = chest.get_logistic_point(defines.logistic_member_index.logistic_container)
-            local filters = get_filters(logistics)
+            local filters = Core.get_filters(logistics)
             for _, filter in pairs(filters) do
                 if filter.value.name == name then
                     local inserted_count = chest_inventory.insert(stack)
@@ -469,7 +458,7 @@ local function insert_item_into_chest(stack, chests, filtered_chests, name, floa
         if chest.type == 'logistic-container' then
             local chest_inventory = chests.inventory[chestnr]
             local logistics = chest.get_logistic_point(defines.logistic_member_index.logistic_container)
-            local filters = get_filters(logistics)
+            local filters = Core.get_filters(logistics)
             for _, filter in pairs(filters) do
                 if filter.value.name == name then
                     local inserted_count = chest_inventory.insert(stack)
