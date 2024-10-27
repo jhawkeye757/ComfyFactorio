@@ -468,10 +468,10 @@ local function get_random_buff(fetch_all, only_force)
     return buffs[1]
 end
 
-local function get_item_produced_count(player, item_name)
+local function get_item_produced_count(_, item_name)
     local force = game.forces.player
 
-    local production = force.get_item_production_statistics(player.surface).input_counts[item_name]
+    local production = force.get_item_production_statistics('nauvis').input_counts[item_name]
     if not production then
         return false
     end
@@ -497,11 +497,9 @@ local function get_killed_enemies_count(primary, secondary)
     local force = game.forces.player
 
     local count = 0
-    for _, surface in pairs(game.surfaces) do
-        for name, entity_count in pairs(force.get_kill_count_statistics(surface).input_counts) do
-            if name:find(primary) or name:find(secondary) then
-                count = count + entity_count
-            end
+    for name, entity_count in pairs(force.get_kill_count_statistics('nauvis').input_counts) do
+        if name:find(primary) or name:find(secondary) then
+            count = count + entity_count
         end
     end
 
