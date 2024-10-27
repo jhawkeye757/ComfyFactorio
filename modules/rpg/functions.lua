@@ -1114,6 +1114,7 @@ end
 
 function Public.get_mana_modifier(player)
     local rpg_t = Public.get_value_from_player(player.index)
+    if not rpg_t then return end
     if rpg_t.level <= 40 then
         return (rpg_t.magicka - 10) * 0.02000
     elseif rpg_t.level <= 80 then

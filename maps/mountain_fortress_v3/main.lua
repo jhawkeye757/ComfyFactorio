@@ -140,6 +140,9 @@ local function preinit_task()
         player.print(mapkeeper .. ' Map is resetting, please wait a moment. All GUI buttons are disabled at the moment.')
     end
 
+    Public.reset_func_table()
+    RPG.reset_table()
+
     Public.sr_reset_forces()
     WD.set('wave_interval', 4500)
 end
@@ -523,7 +526,8 @@ function Public.move_players_to_nauvis(current_task)
     end
 
     RPG.rpg_reset_all_players()
-    Public.equip_players(nil, false)
+    local starting_items = Public.get_func('starting_items')
+    Public.equip_players(starting_items, false)
 
     current_task.message = 'Moved players back to nauvis!'
     current_task.done = true
@@ -579,7 +583,6 @@ function Public.reset_map(current_task)
     ICW.reset()
     IC.reset()
     IC.allowed_surface(game.surfaces[this.active_surface_index].name)
-    Public.reset_func_table()
     game.reset_time_played()
 
     OfflinePlayers.init(this.active_surface_index)
@@ -617,8 +620,6 @@ function Public.reset_map(current_task)
     Collapse.set_amount(1)
     Collapse.set_surface_index(surface.index)
     Collapse.start_now(false)
-
-    RPG.reset_table()
 
     init_bonus_drill_force()
 

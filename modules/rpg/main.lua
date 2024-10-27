@@ -367,33 +367,32 @@ end
 local function regen_mana_player(players)
     for i = 1, #players do
         local player = players[i]
-        local mana_per_tick = Public.get_mana_modifier(player)
-        local rpg_extra = Public.get('rpg_extra')
         local rpg_t = Public.get_value_from_player(player.index)
-        if not rpg_t then
-            return
-        end
-        if mana_per_tick <= 0.1 then
-            mana_per_tick = rpg_extra.mana_per_tick
-        end
+        if rpg_t then
+            local mana_per_tick = Public.get_mana_modifier(player)
+            local rpg_extra = Public.get('rpg_extra')
+            if mana_per_tick <= 0.1 then
+                mana_per_tick = rpg_extra.mana_per_tick
+            end
 
-        if rpg_extra.force_mana_per_tick then
-            mana_per_tick = 1
-        end
+            if rpg_extra.force_mana_per_tick then
+                mana_per_tick = 1
+            end
 
-        if player and player.valid and not player.in_combat then
-            if player.character and player.character.valid then
-                if rpg_t.mana < 0 then
-                    rpg_t.mana = 0
+            if player and player.valid and not player.in_combat then
+                if player.character and player.character.valid then
+                    if rpg_t.mana < 0 then
+                        rpg_t.mana = 0
+                    end
+                    if rpg_t.mana >= rpg_t.mana_max then
+                        goto continue
+                    end
+                    rpg_t.mana = rpg_t.mana + mana_per_tick
+                    if rpg_t.mana >= rpg_t.mana_max then
+                        rpg_t.mana = rpg_t.mana_max
+                    end
+                    rpg_t.mana = (round(rpg_t.mana * 10) / 10)
                 end
-                if rpg_t.mana >= rpg_t.mana_max then
-                    goto continue
-                end
-                rpg_t.mana = rpg_t.mana + mana_per_tick
-                if rpg_t.mana >= rpg_t.mana_max then
-                    rpg_t.mana = rpg_t.mana_max
-                end
-                rpg_t.mana = (round(rpg_t.mana * 10) / 10)
             end
         end
 
