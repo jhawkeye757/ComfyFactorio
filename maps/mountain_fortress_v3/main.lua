@@ -522,6 +522,9 @@ function Public.move_players_to_nauvis(current_task)
         Public.add_player_to_permission_group(player, 'near_locomotive', true)
     end
 
+    RPG.rpg_reset_all_players()
+    Public.equip_players(nil, false)
+
     current_task.message = 'Moved players back to nauvis!'
     current_task.done = true
 end
@@ -684,7 +687,7 @@ function Public.reset_map(current_task)
     RPG.enable_auto_allocate(true)
     RPG.enable_explosive_bullets_globally(true)
     RPG.enable_explosive_bullets(false)
-    RPG.rpg_reset_all_players()
+
     RPG.set_surface_name({ game.surfaces[this.active_surface_index].name })
 
 
@@ -693,7 +696,7 @@ function Public.reset_map(current_task)
         WD.disable_spawning_biters(true)
     end
 
-    Public.equip_players(nil, false)
+
 
     current_task.message = 'Reset map done!'
     current_task.delay = game.tick + 60
