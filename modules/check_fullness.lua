@@ -36,6 +36,11 @@ local function compute_fullness(player, position)
     if not player.mining_state.mining then
         return false
     end
+
+    if player.controller_type == defines.controllers.remote then
+        return
+    end
+
     local warn_player = is_player_warned(player)
     local free_slots = player.get_main_inventory().count_empty_stacks()
     local inventory_size = #player.get_main_inventory()

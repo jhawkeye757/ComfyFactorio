@@ -17,6 +17,7 @@ local player_frame_name = Where.player_frame_name
 local chest_converter_frame_for_player_name = Gui.uid_name()
 local convert_chest_to_linked = Gui.uid_name()
 local item_name_frame_name = Gui.uid_name()
+local close_name = Gui.uid_name()
 
 local module_name = '[Linked Chests] '
 local deepcopy = table.deepcopy
@@ -575,15 +576,15 @@ local function gui_opened(event)
         return
     end
 
+    local inside_frame, close_button
     local frame = player.gui.center[tostring(unit_number)]
     if not frame or not frame.valid then
-        frame =
-            player.gui.center.add {
-                type = 'frame',
-                caption = 'Linked chest',
-                direction = 'vertical',
-                name = tostring(unit_number)
-            }
+        frame, inside_frame, close_button = Gui.add_main_frame_with_toolbar(player, 'center', tostring(unit_number), nil, close_name, 'Linked chest')
+    end
+
+    if close_button then
+        inside_frame.name = 'inside_frame'
+        Gui.set_data(close_button, tostring(unit_number))
     end
 
     local controls = frame.add { type = 'flow', direction = 'horizontal' }
@@ -1284,11 +1285,38 @@ Event.add(
 )
 
 Gui.on_click(
+    close_name,
+    function (event)
+        local player = game.get_player(event.player_index)
+        if not player or not player.valid then
+            return
+        end
+        local element = event.element
+        local data = Gui.get_data(element)
+        if not data then
+            return
+        end
+
+        local frame = player.gui.center[data]
+        if frame and frame.valid then
+            Gui.destroy(frame)
+        end
+
+        Where.remove_camera_frame(player)
+        this.linked_gui[player.name] = nil
+    end
+)
+
+Gui.on_click(
     item_name_frame_name,
     function (event)
         local player = game.get_player(event.player_index)
         local player_data = this.linked_gui[player.name]
         local element = event.element
+        if not element or not element.valid then
+            return
+        end
+
         if not player_data then
             Gui.remove_data_recursively(element)
             return

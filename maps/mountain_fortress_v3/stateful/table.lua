@@ -1568,11 +1568,10 @@ function Public.reset_stateful(refresh_gui, clear_buffs)
             }
         end
         if not this.objectives.launch_item or (this.objectives_completed ~= nil and this.objectives_completed.launch_item) then
-            local item = get_random_handcrafted_item()
             this.objectives.launch_item = {
                 actual = 0,
-                expected = scale(1, 50),
-                name = item.name
+                expected = scale(1, 500),
+                name = 'raw-fish'
             }
         end
         if not this.objectives.research_level_selection or (this.objectives_completed ~= nil and this.objectives_completed.research_level_selection) then

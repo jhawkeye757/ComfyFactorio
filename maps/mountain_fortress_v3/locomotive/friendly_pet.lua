@@ -39,6 +39,7 @@ end
 
 local function shoo(event)
     local icw_locomotive = Public.get('icw_locomotive')
+    if not icw_locomotive then return end
     local loco_surface = icw_locomotive.surface
 
     if not loco_surface or not loco_surface.valid then

@@ -281,8 +281,10 @@ function Public.add_main_frame_with_toolbar(player, align, set_frame_name, set_s
         end
     end
 
+    local close_button
+
     if close_main_frame_name then
-        titlebar.add {
+        close_button = titlebar.add {
             type = 'sprite-button',
             name = close_main_frame_name,
             style = 'frame_action_button',
@@ -304,7 +306,7 @@ function Public.add_main_frame_with_toolbar(player, align, set_frame_name, set_s
             name = 'inside_frame'
         }
 
-    return main_frame, inside_frame
+    return main_frame, inside_frame, close_button
 end
 
 -- Removes data associated with LuaGuiElement and its children recursively.

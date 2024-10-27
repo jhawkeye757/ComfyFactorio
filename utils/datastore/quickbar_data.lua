@@ -56,7 +56,7 @@ local function apply_logistic_network(player, saved_data)
                 for i, slot in pairs(saved_data) do
                     if slot and slot.name and check_if_item_exists(slot.name) then
                         local item_stack = { min = slot.min, max = slot.max, value = { comparator = "=", name = slot.name, quality = "normal", type = slot.type or nil } }
-                        old_section.set_slot(i, item_stack)
+                        pcall(old_section.set_slot, i, item_stack)
                     end
                 end
             end
@@ -73,7 +73,7 @@ local function apply_logistic_network(player, saved_data)
                         for i, slot in pairs(slots) do
                             if slot and slot.name and check_if_item_exists(slot.name) then
                                 local item_stack = { min = slot.min, max = slot.max, value = { comparator = "=", name = slot.name, quality = "normal", type = slot.type or nil } }
-                                new_section.set_slot(i, item_stack)
+                                pcall(new_section.set_slot, i, item_stack)
                             end
                         end
                     end
