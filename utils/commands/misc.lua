@@ -367,7 +367,7 @@ function Public.insert_all_items(player)
 
             this.players[player.index] = true
 
-            local p_armor = player.get_inventory(5)[1].grid
+            local p_armor = player.get_inventory(defines.inventory.character_armor)[1].grid
             if p_armor and p_armor.valid then
                 p_armor.put({ name = 'fission-reactor-equipment', quality = quality })
                 p_armor.put({ name = 'fission-reactor-equipment', quality = quality })
