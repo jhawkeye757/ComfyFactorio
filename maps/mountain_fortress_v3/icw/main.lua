@@ -1,3 +1,5 @@
+require 'maps.mountain_fortress_v3.icw.commands'
+
 local Event = require 'utils.event'
 local Functions = require 'maps.mountain_fortress_v3.icw.functions'
 local ICW = require 'maps.mountain_fortress_v3.icw.table'

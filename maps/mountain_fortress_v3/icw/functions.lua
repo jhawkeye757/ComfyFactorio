@@ -448,7 +448,7 @@ local function get_wagon_for_entity(icw, entity)
     end
 
     local position = entity.position
-    for k, unit_number in pairs(train.wagons) do
+    for _, unit_number in pairs(train.wagons) do
         local wagon = icw.wagons[unit_number]
         if wagon then
             local left_top = wagon.area.left_top
@@ -972,6 +972,7 @@ function Public.reconstruct_all_trains(icw)
         Public.construct_train(icw, locomotive, carriages)
     end
     delete_empty_surfaces(icw)
+    return true
 end
 
 function Public.item_transfer()

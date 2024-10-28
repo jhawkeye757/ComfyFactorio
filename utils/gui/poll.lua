@@ -829,7 +829,7 @@ local function tick()
         local player_index = p.index
         local tbl = player_create_poll_data[player_index]
         if tbl then
-            for k, element in pairs(tbl) do
+            for _, element in pairs(tbl) do
                 if type(element) == 'table' then
                     if not element.valid then
                         player_create_poll_data[player_index] = nil

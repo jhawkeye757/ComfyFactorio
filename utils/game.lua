@@ -6,7 +6,7 @@ local Game = {}
 local bad_name_players = {}
 Global.register(
     bad_name_players,
-    function(tbl)
+    function (tbl)
         bad_name_players = tbl
     end
 )
@@ -53,7 +53,7 @@ function Game.get_player_from_any(obj)
         p = Game.get_player_by_index(obj)
     elseif o_type == 'string' then
         p = game.players[obj]
-    elseif o_type == 'table' and obj.valid and obj.is_player() then
+    elseif o_type == 'userdata' and obj.valid and obj.is_player() then
         return obj
     end
 
@@ -72,7 +72,7 @@ function Game.player_print(str)
 end
 
 function Game.get_player(mixed)
-    if type(mixed) == 'table' then
+    if type(mixed) == 'userdata' then
         if mixed.__self then
             return mixed and mixed.valid and mixed
         elseif mixed.player_index then
@@ -120,7 +120,7 @@ function Game.print_player_floating_text_position(player_index, text, color, x_o
     end
 
     local position = player.position
-    return Game.print_floating_text(player.surface, {x = position.x + x_offset, y = position.y + y_offset}, text, color)
+    return Game.print_floating_text(player.surface, { x = position.x + x_offset, y = position.y + y_offset }, text, color)
 end
 
 function Game.print_player_floating_text(player_index, text, color)

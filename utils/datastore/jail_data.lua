@@ -558,7 +558,7 @@ local function vote_to_jail(player, offender, msg)
         return
     end
 
-    if type(offender) == 'table' then
+    if type(offender) == 'userdata' then
         offender = offender.name
     end
 
@@ -586,7 +586,7 @@ local function vote_to_free(player, offender)
         return
     end
 
-    if type(offender) == 'table' then
+    if type(offender) == 'userdata' then
         offender = offender.name
     end
 

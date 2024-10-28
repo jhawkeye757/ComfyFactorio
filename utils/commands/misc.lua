@@ -10,6 +10,8 @@ local Gui = require 'utils.gui'
 local SpamProtection = require 'utils.spam_protection'
 local Discord = require 'utils.discord_handler'
 local Commands = require 'utils.commands'
+local mapkeeper = '[color=blue]Mapkeeper:[/color]'
+local Task = require 'utils.task_token'
 
 local this = {
     enabled = true,
@@ -24,28 +26,191 @@ Global.register(
     end
 )
 
-local Public = {
-}
+local Public = {}
 
 local clear_corpse_button_name = Gui.uid_name()
+local floor = math.floor
 
-Commands.new('playtime', 'Fetches a player total playtime or nil.')
+local clear_chunk_token =
+    Task.register(
+        function (event)
+            local chunk = event.chunk
+            if not chunk then
+                return
+            end
+
+            local surface = game.get_surface(event.surface_index)
+            if not surface or not surface.valid then
+                return
+            end
+
+            if chunk and #chunk > 2 then
+                for _, c in pairs(chunk) do
+                    surface.delete_chunk(c)
+                end
+            else
+                surface.delete_chunk(chunk)
+            end
+        end
+    )
+
+local remove_offline_players_token =
+    Task.register(
+        function (event)
+            local list = event.list
+            if not list then
+                return
+            end
+            game.remove_offline_players(list)
+        end
+    )
+
+local function tick_to_hours(t)
+    local seconds = t * 60
+    local minutes = floor((seconds) * 60)
+    return floor((minutes) * 60)
+end
+
+local function hours_to_tick(t)
+    local seconds = t / 60
+    local minutes = floor((seconds) / 60)
+    return floor((minutes) / 60)
+end
+
+Commands.new('clear_all_enemies', 'Iterates over the current player surface and removes all generated enemies.')
+    :require_admin()
+    :require_validation("This will remove all enemies from the map.")
+    :add_parameter('surface', true, 'surface')
+    :add_parameter('force', true, 'string')
+    :callback(
+        function (player, surface_arg, force_arg)
+            local surface = surface_arg or player.surface
+            local force = force_arg or 'enemy'
+            local count = 0
+            for c in surface.get_chunks() do
+                for _, entity in pairs(surface.find_entities_filtered({ area = { { c.x * 32, c.y * 32 }, { c.x * 32 + 32, c.y * 32 + 32 } }, force = force })) do
+                    if entity and entity.valid then
+                        entity.destroy()
+                        count = count + 1
+                    end
+                end
+            end
+            if count == 0 then
+                player.print('No enemies to remove were found!')
+                return false
+            end
+
+            game.print(mapkeeper .. ' ' .. player.name .. ' removed ' .. count .. ' enemies.')
+            Discord.send_notification_raw(nil, player.name .. ' removed ' .. count .. ' enemies.')
+            return true
+        end
+    )
+
+Commands.new('remove_chunks', 'Iterates over a surface and removes chunks that are charted but does not have any player entitie.')
+    :require_validation("This will remove all chunks that are charted but does not have any player entities.")
+    :require_admin()
+    :add_parameter('force', true, 'string')
+    :callback(
+        function (player, args)
+            local surface = player.surface
+            local chunks = surface.get_chunks()
+            local tick = 0
+            local force = args or player.force.name
+
+            local chunks_to_remove = {}
+
+            for chunk in chunks do
+                if surface.is_chunk_generated(chunk) then
+                    local area = {
+                        left_top = { chunk.area.left_top.x - 64, chunk.area.left_top.y - 64 },
+                        right_bottom = { chunk.area.right_bottom.x + 64, chunk.area.right_bottom.y + 64 }
+                    }
+
+                    local ents = surface.find_entities_filtered { area = area, force = { force } }
+                    local total_count = #ents
+
+                    if total_count <= 0 then
+                        chunks_to_remove[#chunks_to_remove + 1] = chunk
+                    end
+                end
+                if chunks_to_remove and #chunks_to_remove >= 10 then
+                    tick = tick + 2
+                    Task.set_timeout_in_ticks(tick, clear_chunk_token,
+                        { chunk = chunks_to_remove, surface_index = surface.index })
+
+                    chunks_to_remove = {}
+                end
+            end
+
+            game.print(mapkeeper .. ' ' .. player.name .. ' scheduled ' .. surface.name .. ' for chunk removal.')
+            Discord.send_notification_raw(nil, player.name .. ' scheduled ' .. surface.name .. ' for chunk removal.')
+            return true
+        end
+    )
+
+Commands.new('remove_offline_players', 'Remove offline players.')
+    :require_validation("This will remove offline players that has not connected in the given hours.")
+    :add_parameter('hours', false, "number")
+    :require_admin()
+    :callback(
+        function (player, hours)
+            local surface = player.surface
+            local remove_players = {}
+            local tick = 0
+            local count = 0
+            local converted_hours = tick_to_hours(hours)
+            local converted_game_tick = hours_to_tick(game.tick)
+
+            if game.tick < converted_hours then
+                player.print('Cannot remove players that has not been offline for less than ' .. hours .. ' hours when the server has been running for ' .. converted_game_tick .. ' hours.')
+                return false
+            end
+
+            for _, p in pairs(game.players) do
+                if p.last_online < converted_hours then
+                    count = count + 1
+                    remove_players[#remove_players + 1] = p.name
+
+                    if remove_players and #remove_players >= 10 then
+                        tick = tick + 2
+                        Task.set_timeout_in_ticks(tick, remove_offline_players_token,
+                            { list = remove_players })
+
+                        remove_players = {}
+                    end
+                end
+            end
+
+
+            local message = player.name .. ' scheduled ' .. surface.name .. ' for offline player removal of count: ' .. count .. '.'
+            game.print(mapkeeper .. ' ' .. message)
+            Discord.send_notification_raw(nil, message)
+            return true
+        end
+    )
+
+Commands.new('playtime', 'Gets a single player total playtime or nil.')
     :require_backend()
     :add_parameter('target', false, 'string')
     :callback(
         function (player, target)
             Session.get_and_print_to_player(player, target)
+            return true
         end
     )
 
 
 Commands.new('refresh', 'Reloads game script')
     :require_admin()
+    :require_validation("Running this command will freeze the server if run in multiplayer.")
+    :add_alias('reload')
     :callback(
-        function ()
+        function (player)
             game.print('Reloading game script...', Color.warning)
-            Server.to_discord_bold('Reloading game script...')
+            Server.to_discord_bold(player.name .. ' is reloading the game script.')
+            Discord.send_notification_raw(nil, player.name .. ' is reloading the game script.')
             game.reload_script()
+            return true
         end
     )
 
@@ -75,6 +240,7 @@ Commands.new('spaghetti', 'Toggle between disabling bots.')
                 force.technologies['worker-robots-speed-5'].enabled = false
                 force.technologies['worker-robots-speed-6'].enabled = false
                 this.spaghetti_enabled = true
+                return true
             elseif args == 'false' then
                 game.print('The world is no longer spaghett!', Color.yellow)
                 force.technologies['logistic-system'].enabled = true
@@ -93,7 +259,9 @@ Commands.new('spaghetti', 'Toggle between disabling bots.')
                 force.technologies['worker-robots-speed-5'].enabled = true
                 force.technologies['worker-robots-speed-6'].enabled = true
                 this.spaghetti_enabled = false
+                return true
             end
+            return false
         end
     )
 
@@ -106,7 +274,7 @@ Commands.new('generate_map', 'Pregenerates map.')
             local radius = args
             local surface = player.surface
             if surface.is_chunk_generated({ radius, radius }) then
-                player.print('Map generation done')
+                player.print('Map generation is already generated')
                 return true
             end
             surface.request_to_generate_chunks({ 0, 0 }, radius)
@@ -115,6 +283,7 @@ Commands.new('generate_map', 'Pregenerates map.')
                 pl.play_sound { path = 'utility/new_objective', volume_modifier = 1 }
             end
             player.print('Map generation done')
+            return true
         end
     )
 

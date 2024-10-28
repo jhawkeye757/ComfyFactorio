@@ -795,7 +795,11 @@ Gui.on_click(
         end
         local player = event.player
         if not player or not player.valid or not player.character then
-            return
+            return player.print(module_name .. 'It seems that you are not in the realm of living.', { color = Color.warning })
+        end
+
+        if player.controller_type == defines.controllers.remote then
+            return player.print(module_name .. 'It seems that you are not in the realm of living.', { color = Color.warning })
         end
 
         auto_stash(event.player, event)

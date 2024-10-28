@@ -3,12 +3,15 @@ local Global = require 'utils.global'
 local this = {}
 Global.register(
     this,
-    function(tbl)
+    function (tbl)
         this = tbl
     end
 )
 
 local Public = {}
+
+local discord_name = 'Mtn Fortress'
+Public.discord_name = discord_name
 
 function Public.reset()
     if this.surfaces then
@@ -39,10 +42,10 @@ function Public.reset()
     }
 
     this.wagon_areas = {
-        ['cargo-wagon'] = {left_top = {x = -40, y = 0}, right_bottom = {x = 40, y = 100}},
-        ['artillery-wagon'] = {left_top = {x = -40, y = 0}, right_bottom = {x = 40, y = 100}},
-        ['fluid-wagon'] = {left_top = {x = -40, y = 0}, right_bottom = {x = 40, y = 100}},
-        ['locomotive'] = {left_top = {x = -40, y = 0}, right_bottom = {x = 40, y = 100}}
+        ['cargo-wagon'] = { left_top = { x = -40, y = 0 }, right_bottom = { x = 40, y = 100 } },
+        ['artillery-wagon'] = { left_top = { x = -40, y = 0 }, right_bottom = { x = 40, y = 100 } },
+        ['fluid-wagon'] = { left_top = { x = -40, y = 0 }, right_bottom = { x = 40, y = 100 } },
+        ['locomotive'] = { left_top = { x = -40, y = 0 }, right_bottom = { x = 40, y = 100 } }
     }
 end
 

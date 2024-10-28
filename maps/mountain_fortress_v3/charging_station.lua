@@ -62,6 +62,9 @@ local function charge(player)
     if not player.character then
         return player.print(module_name .. 'It seems that you are not in the realm of living.', { color = Color.warning })
     end
+    if player.controller_type == defines.controllers.remote then
+        return player.print(module_name .. 'It seems that you are not in the realm of living.', { color = Color.warning })
+    end
     local armor_inventory = player.get_inventory(defines.inventory.character_armor)
     if not armor_inventory.valid then
         return player.print(module_name .. 'No valid armor to charge was found.', { color = Color.warning })

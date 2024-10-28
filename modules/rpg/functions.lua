@@ -375,6 +375,10 @@ function Public.remove_mana(player, mana_to_remove)
         return
     end
 
+    if not Public.check_is_surface_valid(player) then
+        return
+    end
+
     if not mana_to_remove then
         return
     end
@@ -422,6 +426,10 @@ function Public.update_mana(player)
     local rpg_extra = Public.get('rpg_extra')
     local rpg_t = Public.get_value_from_player(player.index)
     if not rpg_extra.enable_mana then
+        return
+    end
+
+    if not Public.check_is_surface_valid(player) then
         return
     end
 
@@ -524,6 +532,10 @@ function Public.update_health(player)
     end
 
     if not player.character or not player.character.valid then
+        return
+    end
+
+    if not Public.check_is_surface_valid(player) then
         return
     end
 
@@ -1338,12 +1350,12 @@ function Public.check_is_surface_valid(player)
     local surface_name = Public.get('rpg_extra').surface_name
     if type(surface_name) == 'table' then
         for _, tbl_surface in pairs(surface_name) do
-            if sub(player.surface.name, 0, #tbl_surface) == tbl_surface then
+            if sub(player.physical_surface.name, 0, #tbl_surface) == tbl_surface then
                 is_surface_valid = true
             end
         end
     else
-        if sub(player.surface.name, 0, #surface_name) ~= surface_name then
+        if sub(player.physical_surface.name, 0, #surface_name) ~= surface_name then
             return false
         else
             return true

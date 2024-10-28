@@ -1148,11 +1148,10 @@ function Public.export_stats()
 
             }
             for _, statName in pairs(statistics) do
-                flow_statistics[statName] = {
-                    [surface.name] = {
-                        input = force[statName](surface).input_counts,
-                        output = force[statName](surface).output_counts
-                    },
+                local surface_stats = flow_statistics[statName] or {}
+                surface_stats[surface.name] = {
+                    input = force[statName](surface).input_counts,
+                    output = force[statName](surface).output_counts
                 }
             end
         end

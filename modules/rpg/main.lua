@@ -749,6 +749,8 @@ local function on_player_crafted_item(event)
     local final_xp = recipe.energy * amount
 
     local get_dex_modifier = Public.get_dex_modifier(player)
+    if not get_dex_modifier then return end
+
     if get_dex_modifier >= 10 then
         local chance = Public.get_crafting_bonus_chance(player) * 10
         local r = random(0, 1999)

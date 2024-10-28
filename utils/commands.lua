@@ -117,7 +117,7 @@ local function execute(event)
         player = game.get_player(event.player_index)
     else
         player = {
-            name = 'Server',
+            name = '<server>',
             position = { x = 0, y = 0 },
             surface = game.get_surface('nauvis'),
             force = game.forces.player,
@@ -267,6 +267,18 @@ local function execute(event)
                 handled_parameters[index] = player_data
                 index = index + 1
             end
+            if param_data.as_type == 'surface' and param ~= nil then
+                local surface_name = param
+                if type(surface_name) ~= 'string' then
+                    return reject('Inputted value is not of type string. Valid values are: "string"')
+                end
+                local surface_data = game.get_surface(surface_name) --[[@type LuaSurface]]
+                if not surface_data then
+                    return reject('Surface was not found.')
+                end
+                handled_parameters[index] = surface_data
+                index = index + 1
+            end
             if param_data.as_type == 'player-online' and param ~= nil then
                 local player_name = param
                 if type(player_name) ~= 'string' then
@@ -345,7 +357,6 @@ local function execute(event)
     end
 
     -- Run the command callback if everything is validated
-    handled_parameters[#handled_parameters + 1] = input_text
     local callback = Task.get(command_data.callback)
     local success, err = pcall(callback, player, unpack(handled_parameters))
     if internal_error(success, command_data.name, err) then
