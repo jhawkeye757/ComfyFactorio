@@ -6,7 +6,7 @@ local _inspect = require('utils.inspect').inspect
 local GuiCommon = require('maps.pirates.gui.common')
 local BuriedTreasure = require('maps.pirates.buried_treasure')
 local Common = require('maps.pirates.common')
-local Memory = require('maps.pirates.memory')
+-- local Memory = require('maps.pirates.memory')
 local Surfaces = require('maps.pirates.surfaces.surfaces')
 
 local Public = {}

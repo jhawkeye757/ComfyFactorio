@@ -109,13 +109,13 @@ function Public.toggle_window(player)
 
 	flow = GuiCommon.new_window(player, window_name)
 	flow.caption = { 'pirates.gui_classes' }
-	
+
 	-- Set the window position
 	local gui_memory = Memory.get_global_memory().player_gui_memories[player.index]
 	if gui_memory and gui_memory[window_name] and gui_memory[window_name].position then
 		flow.location = gui_memory[window_name].position
 	else
-		flow.location = GuiCommon.default_window_positions[window_name] or {x = 300, y = 76}
+		flow.location = GuiCommon.default_window_positions[window_name] or { x = 300, y = 76 }
 	end
 
 	flow.style.maximal_width = 500

@@ -1,14 +1,14 @@
 -- This file is part of thesixthroc's Pirate Ship softmod, licensed under GPLv3 and stored at https://github.com/ComfyFactory/ComfyFactorio and https://github.com/danielmartin0/ComfyFactorio-Pirates.
 
 local Common = require('maps.pirates.common')
-local Memory = require('maps.pirates.memory')
+-- local Memory = require('maps.pirates.memory')
 local Math = require('maps.pirates.math')
 local _inspect = require('utils.inspect')
 local Token = require('utils.token')
 
 local Public = {}
 
-function Public.pick_up_treasure_tick(tick_interval)
+function Public.pick_up_treasure_tick()
 	if Common.activecrewcount() == 0 then
 		return
 	end
@@ -29,7 +29,6 @@ function Public.pick_up_treasure_tick(tick_interval)
 
 	local maps = dynamic_data.treasure_maps or {}
 	local buried_treasure = dynamic_data.buried_treasure or {}
-	local ghosts = dynamic_data.ghosts or {}
 
 	for i = 1, #maps do
 		local map = maps[i]
@@ -80,7 +79,7 @@ function Public.pick_up_treasure_tick(tick_interval)
 	end
 end
 
-function Public.buried_treasure_tick(tick_interval)
+function Public.buried_treasure_tick()
 	if Common.activecrewcount() == 0 then
 		return
 	end
@@ -166,15 +165,16 @@ function Public.buried_treasure_tick(tick_interval)
 							if destination.dynamic_data.treasure_remaining == 0 then
 								-- destroy all
 								local buried_treasure = destination.dynamic_data.buried_treasure
-								for _, t2 in pairs(buried_treasure) do
-									t2 = nil
+								for k, _ in pairs(buried_treasure) do
+									buried_treasure[k] = nil
 								end
+
 								local maps = destination.dynamic_data.treasure_maps
-								for _, m in pairs(maps) do
+								for k, m in pairs(maps) do
 									if m.state == 'on_ground' then
 										m.mapobject_rendering.destroy()
 									end
-									m = nil
+									maps[k] = nil
 								end
 							elseif t.count <= 0 then
 								treasure.treasure = nil

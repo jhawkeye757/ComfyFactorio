@@ -1039,7 +1039,8 @@ function Public.update_gui(player)
 	flow1 = pirates_flow.treasure_piratebutton_frame
 	local maps = BuriedTreasure.get_picked_up_treasure_maps()
 	flow1.visible = #maps > 0
-	local flow2 = flow1.treasure_piratebutton
+
+	flow2 = flow1.treasure_piratebutton
 	flow2.tooltip = { 'pirates.gui_treasure_tooltip', #maps }
 	flow2.number = #maps
 
