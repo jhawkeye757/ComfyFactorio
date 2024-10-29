@@ -606,7 +606,7 @@ function Public.full_update(player)
 						table.insert(proposal_info, ', ')
 					end
 					table.insert(proposal_info, { 'pirates.run_condition_blueprints_disabled_2' })
-					i = i + 1
+					-- i = i + 1
 				end
 			end
 			table.insert(wrappedproposals, proposal_info)
