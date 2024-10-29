@@ -1026,7 +1026,9 @@ function Public.loading_update_lobby(tick_interval, memory, boat, destination_in
 			elseif memory.loading_ticks > 410 then
 				if not Crowsnest.get_crowsnest_surface() then
 					Crew.initialise_crowsnest_1()
-				elseif memory.loading_ticks >= 470 and not memory.crowsnest_surface_delayed_init_called then
+				elseif memory.loading_ticks >= 470 and not memory.initialise_crowsnest_2_called then
+					memory.initialise_crowsnest_2_called = true
+
 					Crew.initialise_crowsnest_2()
 					Overworld.ensure_lane_generated_up_to(0, Crowsnest.Data.visibilitywidth)
 					Overworld.ensure_lane_generated_up_to(24, Crowsnest.Data.visibilitywidth)
