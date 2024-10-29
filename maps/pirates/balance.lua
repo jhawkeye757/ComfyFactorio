@@ -594,11 +594,7 @@ function Public.kraken_evo_increase_per_second()
 end
 
 function Public.sandworm_evo_increase_per_spawn()
-	if _DEBUG then
-		return 1 / 100
-	else
-		return (1 / 100) * (1 / 7) * Math.sloped(Common.difficulty_scale(), 3 / 5)
-	end
+	return (1 / 100) * (1 / 7) * Math.sloped(Common.difficulty_scale(), 3 / 5)
 end
 
 function Public.kraken_kill_reward_items()
