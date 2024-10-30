@@ -91,7 +91,7 @@ function Public.terrain(args)
 
 	if noises.forest_abs_suppressed(p) < 0.6 then
 		if noises.height(p) > 0.12 then
-			local rockdensity = 0.0018 * Math.slopefromto(noises.rock_abs(p), -0.15, 0.3)
+			local rockdensity = 0.003 * Math.slopefromto(noises.rock(p), 0, 0.4)
 			local rockrng = Math.random()
 			if rockrng < rockdensity then
 				args.entities[#args.entities + 1] = IslandsCommon.random_rock_1(args.p)
@@ -102,6 +102,20 @@ function Public.terrain(args)
 			elseif rockrng < rockdensity * 2.5 then
 				args.decoratives[#args.decoratives + 1] = { name = 'tiny-rock', position = args.p }
 			end
+		end
+	end
+
+	if noises.height(p) > 0.15 then
+		-- Place lettuce:
+		local lettuce_density = 0.005 * Math.slopefromto(noises.rock(p), -0.05, -0.4)
+		local lettuce_rng = Math.random()
+		-- if lettuce_rng < lettuce_density then
+		-- 	args.decoratives[#args.decoratives + 1] = { name = 'green-lettuce-lichen-1x1', position = args.p }
+		-- elseif lettuce_rng < lettuce_density * 4 then
+		-- 	args.decoratives[#args.decoratives + 1] = { name = 'green-bush-mini', position = args.p }
+		-- end
+		if lettuce_rng < lettuce_density * 4 then
+			args.decoratives[#args.decoratives + 1] = { name = 'green-bush-mini', position = args.p }
 		end
 	end
 end

@@ -59,6 +59,7 @@ require('maps.pirates.shop.boat_upgrades')
 local Token = require('utils.token')
 local Task = require('utils.task')
 local Server = require('utils.server')
+local BuriedTreasure = require('maps.pirates.buried_treasure')
 
 local Math = require('maps.pirates.math')
 
@@ -136,11 +137,13 @@ local function crew_tick()
 	local destination = Common.current_destination()
 	local tick = game.tick
 
-	if memory.age and memory.overworldx and memory.overworldx > 0 then
-		memory.age = memory.age + 5
-	end
-	if memory.real_age then
-		memory.real_age = memory.real_age + 5
+	if #Common.crew_get_crew_members() > 0 then
+		if memory.age and memory.overworldx and memory.overworldx > 0 then
+			memory.age = memory.age + 5
+		end
+		if memory.age_since_first_island then
+			memory.age_since_first_island = memory.age_since_first_island + 5
+		end
 	end
 
 	PiratesApiOnTick.boat_movement_tick(5) --arguments are tick intervals
@@ -153,13 +156,14 @@ local function crew_tick()
 		PiratesApiOnTick.prevent_disembark(10)
 		PiratesApiOnTick.prevent_unbarreling_off_ship(10)
 		-- PiratesApiOnTick.shop_ratelimit_tick(10)
-		PiratesApiOnTick.pick_up_tick(10)
+		BuriedTreasure.pick_up_treasure_tick(10)
+		PiratesApiOnTick.pick_up_ghosts_tick(10)
 		QuestStructures.tick_quest_structure_entry_price_check()
 		PiratesApiOnTick.update_boat_stored_resources(10)
 
 		if tick % 30 == 0 then
 			PiratesApiOnTick.silo_update(30)
-			PiratesApiOnTick.buried_treasure_check(30)
+			BuriedTreasure.buried_treasure_tick(30)
 			PiratesApiOnTick.apply_restrictions_to_machines(30)
 			ClassPiratesApiOnTick.update_character_properties(30)
 			ClassPiratesApiOnTick.class_update_auxiliary_data(30)
@@ -175,7 +179,7 @@ local function crew_tick()
 				PiratesApiOnTick.update_alert_sound_frequency_tracker()
 				PiratesApiOnTick.check_for_cliff_explosives_in_hold_wooden_chests()
 				PiratesApiOnTick.equalise_fluid_storages() -- Made the update less often for small performance gain, but frequency can be increased if players complain
-				PiratesApiOnTick.revealed_buried_treasure_distance_check()
+				BuriedTreasure.revealed_buried_treasure_distance_check()
 				PiratesApiOnTick.victory_continue_reminder()
 				Kraken.overall_kraken_tick()
 

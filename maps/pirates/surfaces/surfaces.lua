@@ -765,8 +765,10 @@ function Public.create_surface(destination)
 
 	--todo: put into static_params
 
-	if destination.static_params.decorative_settings ~= nil then
-		mgs.autoplace_settings.decorative = { settings = destination.static_params.decorative_settings }
+	if destination.static_params.decorative_preset ~= nil then
+		mgs.autoplace_settings.decorative = {
+			settings = prototypes.space_location[destination.static_params.decorative_preset].map_gen_settings.autoplace_settings.decorative.settings,
+		}
 	end
 
 	-- TODO: Remove this code if Wube fixes this 'bug'

@@ -344,8 +344,10 @@ function Public.create_cabin_surface()
 		rendering.draw_text({
 			color = { 60, 255, 124 },
 			scale = 1.6,
-			target = e,
-			target_offset = { 0, -6 },
+			target = {
+				entity = e,
+				offset = { 0, -6 },
+			},
 			surface = e.surface,
 			alignment = 'center',
 			text = "Captain's Market",

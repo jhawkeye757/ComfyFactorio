@@ -527,7 +527,8 @@ function Public.disband_crew(donotprint)
 	end
 
 	if not donotprint then
-		local message = { 'pirates.crew_disband', memory.name, Utils.time_longform((memory.real_age or 0) / 60) }
+		local message =
+			{ 'pirates.crew_disband', memory.name, Utils.time_longform((memory.age_since_first_island or 0) / 60) }
 		Common.notify_game(message)
 		Server.to_discord_embed_raw({ '', CoreData.comfy_emojis.despair, message }, true)
 
@@ -1017,9 +1018,9 @@ function Public.reset_crew_and_enemy_force(id)
 	-- crew_force.technologies['refined-flammables-5'].enabled = false
 	-- crew_force.technologies['refined-flammables-6'].enabled = false
 	-- crew_force.technologies['refined-flammables-7'].enabled = false
-	-- crew_force.technologies['energy-weapons-damage-5'].enabled = false --5 makes krakens too easy
-	-- crew_force.technologies['energy-weapons-damage-6'].enabled = false
-	-- crew_force.technologies['energy-weapons-damage-7'].enabled = false
+	-- crew_force.technologies['laser-weapons-damage-5'].enabled = false --5 makes krakens too easy
+	-- crew_force.technologies['laser-weapons-damage-6'].enabled = false
+	-- crew_force.technologies['laser-weapons-damage-7'].enabled = false
 	-- crew_force.technologies['physical-projectile-damage-5'].enabled = false
 	-- crew_force.technologies['physical-projectile-damage-6'].enabled = false
 	-- crew_force.technologies['physical-projectile-damage-7'].enabled = false
