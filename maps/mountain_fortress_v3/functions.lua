@@ -111,7 +111,7 @@ local artillery_target_entities = {
     'car',
     'radar',
     'lab',
-    'furnace',
+    'stone-furnace',
     'locomotive',
     'cargo-wagon',
     'fluid-wagon',
@@ -120,7 +120,7 @@ local artillery_target_entities = {
     'laser-turret',
     'gun-turret',
     'flamethrower-turret',
-    'silo',
+    'rocket-silo',
     'spidertron'
 }
 

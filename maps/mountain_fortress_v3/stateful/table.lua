@@ -958,51 +958,63 @@ local function get_random_objectives()
     local items = {
         {
             name = 'single_item',
-            token = empty_token
+            token = empty_token,
+            discord = 'Produce item'
         },
         {
             name = 'killed_enemies',
-            token = killed_enemies_token
+            token = killed_enemies_token,
+            discord = 'Kill enemies'
         },
         {
             name = 'killed_enemies_type',
-            token = killed_enemies_type_token
+            token = killed_enemies_type_token,
+            discord = 'Kill enemies of a specific type'
         },
         {
             name = 'handcrafted_items',
-            token = handcrafted_items_token
+            token = handcrafted_items_token,
+            discord = 'Craft items'
         },
         {
             name = 'handcrafted_items_any',
-            token = handcrafted_items_any_token
+            token = handcrafted_items_any_token,
+            discord = 'Craft any items'
         },
         {
             name = 'cast_spell',
-            token = cast_spell_token
+            token = cast_spell_token,
+            discord = 'Cast a spell'
         },
         {
             name = 'launch_item',
-            token = launch_item_token
+            token = launch_item_token,
+            discord = 'Launch an item'
         },
         {
             name = 'cast_spell_any',
-            token = cast_spell_any_token
+            token = cast_spell_any_token,
+            discord = 'Cast any spell'
         },
         {
             name = 'research_level_selection',
-            token = research_level_selection_token
+            token = research_level_selection_token,
+            discord = 'Research a specific technology'
         },
         {
             name = 'locomotive_market_coins_spent',
-            token = locomotive_market_coins_spent_token
+            token = locomotive_market_coins_spent_token,
+            discord = 'Spend coins at the market'
         },
         {
             name = 'minerals_farmed',
-            token = minerals_farmed_token
+            token = minerals_farmed_token,
+            discord = 'Mine minerals'
         },
         {
             name = 'rockets_launched',
-            token = rockets_launched_token
+            token = rockets_launched_token,
+            discord = 'Launch rockets'
         }
     }
 

@@ -583,6 +583,25 @@ function Public:callback(func)
     end
 end
 
+local directions = {
+    [0] = 'defines.direction.north',
+    [1] = 'defines.direction.northnortheast',
+    [2] = 'defines.direction.northeast',
+    [3] = 'defines.direction.eastnortheast',
+    [4] = 'defines.direction.east',
+    [5] = 'defines.direction.eastsoutheast',
+    [6] = 'defines.direction.southeast',
+    [7] = 'defines.direction.southsoutheast',
+    [8] = 'defines.direction.south',
+    [9] = 'defines.direction.southsouthwest',
+    [10] = 'defines.direction.southwest',
+    [11] = 'defines.direction.westsouthwest',
+    [12] = 'defines.direction.west',
+    [13] = 'defines.direction.westnorthwest',
+    [14] = 'defines.direction.northwest',
+    [15] = 'defines.direction.northnorthwest',
+}
+
 Public.new('get', 'Hover over an object to get its name.')
     :require_admin()
     :add_parameter('die', true, 'string')
@@ -602,7 +621,7 @@ Public.new('get', 'Hover over an object to get its name.')
             player.print('[color=orange]Name:[/color] ' .. entity.name)
             player.print('[color=orange]Type:[/color] ' .. entity.type)
             player.print('[color=orange]Force:[/color] ' .. entity.force.name)
-            player.print('[color=orange]Direction:[/color] ' .. entity.direction)
+            player.print('[color=orange]Direction:[/color] ' .. entity.direction .. ' (' .. directions[entity.direction] .. ')')
             player.print('[color=orange]Destructible:[/color] ' .. (entity.destructible and 'true' or 'false'))
             player.print('[color=orange]Minable:[/color] ' .. (entity.minable and 'true' or 'false'))
             player.print('[color=orange]Unit Number:[/color] ' .. (entity.unit_number or 'nil'))

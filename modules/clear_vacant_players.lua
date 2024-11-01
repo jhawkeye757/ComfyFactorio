@@ -8,8 +8,8 @@ local this = {
     settings = {
         is_enabled = false,
         offline_players_surface_removal = false,
-        active_surface_index = nil, -- needs to be set else this will fail
-        required_online_time = 18000, -- nearest prime to 5 minutes in ticks
+        active_surface_index = nil,      -- needs to be set else this will fail
+        required_online_time = 18000,    -- nearest prime to 5 minutes in ticks
         clear_player_after_tick = 108000 -- nearest prime to 30 minutes in ticks
     },
     offline_players = {}
@@ -17,7 +17,7 @@ local this = {
 
 Global.register(
     this,
-    function(tbl)
+    function (tbl)
         this = tbl
     end
 )
@@ -43,8 +43,6 @@ function Public.dump_expired_players()
     if not surface or not surface.valid then
         return
     end
-    local player_inv = {}
-    local items = {}
     if #this.offline_players > 0 then
         for i = 1, #this.offline_players, 1 do
             if this.offline_players[i] and this.offline_players[i].index then
@@ -54,8 +52,11 @@ function Public.dump_expired_players()
                         remove(this.offline_players, i)
                     else
                         if this.offline_players[i].tick < tick then
-                            local name = this.offline_players[i].name
-                            player_inv[1] = target.get_inventory(defines.inventory.character_main)
+                            local player_inv = {}
+                            local items = {}
+
+                            local name = target.name
+                            player_inv[1] = target.get_main_inventory()
                             player_inv[2] = target.get_inventory(defines.inventory.character_armor)
                             player_inv[3] = target.get_inventory(defines.inventory.character_guns)
                             player_inv[4] = target.get_inventory(defines.inventory.character_ammo)
@@ -64,25 +65,32 @@ function Public.dump_expired_players()
                                 Event.raise(this.events.remove_surface, { target = target })
                             end
 
-                            if target.get_item_count() == 0 then -- if the player has zero items, don't do anything
+                            local found_items = false
+                            for index = 1, 5, 1 do
+                                if player_inv[index] and player_inv[index].valid and player_inv[index].get_item_count() ~= 0 then
+                                    found_items = true
+                                end
+                            end
+
+                            if not found_items then -- if the player has zero items, don't do anything
                                 remove(this.offline_players, i)
                                 goto final
                             end
 
                             local pos = game.forces.player.get_spawn_position(surface)
                             local e =
-                            surface.create_entity(
-                                {
-                                    name = 'character',
-                                    position = pos,
-                                    force = 'neutral'
-                                }
-                            )
+                                surface.create_entity(
+                                    {
+                                        name = 'character',
+                                        position = pos,
+                                        force = 'neutral'
+                                    }
+                                )
                             if not e or not e.valid then
                                 break
                             end
 
-                            local inv = e.get_inventory(defines.inventory.character_main)
+                            local inv = e.get_main_inventory()
                             if not inv then
                                 break
                             end
@@ -90,9 +98,9 @@ function Public.dump_expired_players()
                             ---@diagnostic disable-next-line: assign-type-mismatch
                             e.character_inventory_slots_bonus = #player_inv[1]
                             for ii = 1, 5, 1 do
-                                if player_inv[ii].valid then
+                                if player_inv[ii] and player_inv[ii].valid then
                                     for iii = 1, #player_inv[ii], 1 do
-                                        if player_inv[ii][iii].valid then
+                                        if player_inv[ii][iii] and player_inv[ii][iii].valid then
                                             insert(items, player_inv[ii][iii])
                                         end
                                     end
@@ -117,7 +125,7 @@ function Public.dump_expired_players()
                             end
 
                             for ii = 1, 5, 1 do
-                                if player_inv[ii].valid then
+                                if player_inv[ii] and player_inv[ii].valid then
                                     player_inv[ii].clear()
                                 end
                             end
@@ -184,7 +192,7 @@ Event.on_nth_tick(tick_frequency, Public.dump_expired_players)
 
 Event.add(
     defines.events.on_pre_player_left_game,
-    function(event)
+    function (event)
         if not this.settings.is_enabled then
             return
         end

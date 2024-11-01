@@ -164,16 +164,21 @@ local function zoom_to_pos(event)
     if is_spamming then
         return
     end
-    local player  = event.player
+    local player = event.player
     local element = event.element
-    local target  = Gui.get_data(element)
+    local data = Gui.get_data(element)
+    if not data then return end
 
-    if not target or not target.valid then
+    if player.controller_type == defines.controllers.remote then
         return
     end
 
-    if target.character ~= nil then target = target.character end
-    player.centered_on = target
+    player.set_controller({
+        type = defines.controllers.remote,
+        position = data.position,
+        surface = player.surface,
+        zoom = 4
+    })
 end
 
 local close_alert = Public.close_alert
@@ -290,7 +295,7 @@ function Public.alert_all_players_location(player, message, color, duration)
                     style = 'slot_button'
                 }
 
-            Gui.set_data(sprite, player)
+            Gui.set_data(sprite, player.position)
 
             local label =
                 container.add {
