@@ -1030,8 +1030,8 @@ local function update_raw()
                 stateful.objectives_completed.randomized_zone = true
                 stateful.objectives_time_spent.randomized_zone = tick
                 play_achievement_unlocked()
-                Alert.alert_all_players(100, 'Objective: **breach zone** has been complete!')
-                Server.to_discord_embed('Objective: **breach zone** has been complete!')
+                Alert.alert_all_players(100, 'Objective: [color=blue]Breach zone[/color] has been completed!')
+                Server.to_discord_embed('Objective: **Breach zone** has been completed!')
                 stateful.objectives_completed_count = stateful.objectives_completed_count + 1
             end
         end
@@ -1044,8 +1044,8 @@ local function update_raw()
                 stateful.objectives_time_spent.randomized_wave = tick
 
                 play_achievement_unlocked()
-                Alert.alert_all_players(100, 'Objective: **survive until wave** has been complete!')
-                Server.to_discord_embed('Objective: **survive until wave** has been complete!')
+                Alert.alert_all_players(100, 'Objective: [color=blue]Wave survival[/color] has been completed!')
+                Server.to_discord_embed('Objective: **Wave survival** has been completed!')
                 stateful.objectives_completed_count = stateful.objectives_completed_count + 1
             end
         end
@@ -1069,8 +1069,8 @@ local function update_raw()
                     if not stateful.objectives_completed.supplies then
                         stateful.objectives_completed.supplies = true
                         stateful.objectives_time_spent.supplies = tick
-                        Alert.alert_all_players(100, 'Objective: **produce 3 items multiple times** has been complete!')
-                        Server.to_discord_embed('Objective: **produce 3 items multiple times** has been complete!')
+                        Alert.alert_all_players(100, 'Objective: [color=blue]Produce items[/color] has been completed!')
+                        Server.to_discord_embed('Objective: **Produce items** has been completed!')
                         play_achievement_unlocked()
                         stateful.objectives_completed_count = stateful.objectives_completed_count + 1
                     end
@@ -1097,8 +1097,8 @@ local function update_raw()
                     stateful.objectives_completed.single_item = true
                     stateful.objectives_time_spent.single_item = tick
                     play_achievement_unlocked()
-                    Alert.alert_all_players(100, 'Objective: **produce an item multiple times** has been completed!')
-                    Server.to_discord_embed('Objective: **produce an item multiple times** has been completed!')
+                    Alert.alert_all_players(100, 'Objective: [color=blue]Produce item[/color] has been completed!')
+                    Server.to_discord_embed('Objective: **Produce item** has been completed!')
                     stateful.objectives_completed_count = stateful.objectives_completed_count + 1
                 end
             end
@@ -1194,8 +1194,8 @@ local function update_raw()
             if completed and completed == true and not stateful.objectives_completed[objective_name] then
                 stateful.objectives_completed[objective_name] = true
                 stateful.objectives_time_spent[objective_name] = tick
-                Alert.alert_all_players(100, 'Objective: **' .. objective_name .. '** has been completed!')
-                Server.to_discord_embed('Objective: **' .. objective_name .. '** has been completed!')
+                Alert.alert_all_players(100, 'Objective: [color=blue]' .. objective.discord .. '[/color] has been completed!')
+                Server.to_discord_embed('Objective: **' .. objective.discord .. '** has been completed!')
                 play_achievement_unlocked()
                 stateful.objectives_completed_count = stateful.objectives_completed_count + 1
             end
