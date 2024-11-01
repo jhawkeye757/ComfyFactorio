@@ -484,9 +484,17 @@ local function construct_wagon_doors(icw, wagon)
     for _, x in pairs({ area.left_top.x - 1.5, area.right_bottom.x + 1.5 }) do
         local p = { x = x, y = area.left_top.y + ((area.right_bottom.y - area.left_top.y) * 0.5) }
         if p.x < 0 then
+            surface.set_tiles({ { name = main_tile_name, position = { x = p.x, y = p.y } } }, true)
             surface.set_tiles({ { name = main_tile_name, position = { x = p.x + 0.5, y = p.y } } }, true)
+            surface.set_tiles({ { name = main_tile_name, position = { x = p.x + 0.5, y = p.y - 0.5 } } }, true)
+            surface.set_tiles({ { name = main_tile_name, position = { x = p.x + 0.5, y = p.y - 1 } } }, true)
+            surface.set_tiles({ { name = main_tile_name, position = { x = p.x - 0.5, y = p.y - 1 } } }, true)
         else
+            surface.set_tiles({ { name = main_tile_name, position = { x = p.x, y = p.y } } }, true)
+            surface.set_tiles({ { name = main_tile_name, position = { x = p.x - 0.5, y = p.y } } }, true)
             surface.set_tiles({ { name = main_tile_name, position = { x = p.x - 1, y = p.y } } }, true)
+            surface.set_tiles({ { name = main_tile_name, position = { x = p.x, y = p.y - 0.5 } } }, true)
+            surface.set_tiles({ { name = main_tile_name, position = { x = p.x - 1, y = p.y - 0.5 } } }, true)
         end
         local e =
             surface.create_entity(
