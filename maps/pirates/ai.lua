@@ -56,6 +56,11 @@ function Public.Tick_actions(tick_interval)
 	if destination.type ~= Surfaces.enum.ISLAND then
 		return
 	end
+
+	if destination.subtype and destination.subtype == IslandEnum.enum.FIRST then
+		return
+	end
+
 	if memory.boat.state ~= Boats.enum_state.LANDED and memory.boat.state ~= Boats.enum_state.RETREATING then
 		return
 	end
@@ -74,7 +79,8 @@ function Public.Tick_actions(tick_interval)
 	if game.tick % (tick_interval * 2) == 0 and memory.boat.state == Boats.enum_state.LANDED then
 		local extra_evo = 2 * tick_interval / 60 * Balance.evolution_per_second()
 		Common.increment_evo(extra_evo)
-		destination.dynamic_data.evolution_accrued_time = destination.dynamic_data.evolution_accrued_time + extra_evo
+		destination.dynamic_data.evolution_accrued_time = (destination.dynamic_data.evolution_accrued_time or 0)
+			+ extra_evo
 	end
 
 	-- if destination.subtype == IslandEnum.enum.RED_DESERT then return end -- This was a hack to stop biter boats causing attacks, but, it has the even worse effect of stopping all floating_pollution gathering.

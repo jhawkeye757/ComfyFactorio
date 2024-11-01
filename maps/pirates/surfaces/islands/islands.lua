@@ -16,6 +16,7 @@ local Token = require('utils.token')
 local Task = require('utils.task')
 local QuestStructures = require('maps.pirates.structures.quest_structures.quest_structures')
 local IslandEnum = require('maps.pirates.surfaces.islands.island_enum')
+local BuriedTreasure = require('maps.pirates.buried_treasure')
 
 local Public = {}
 local enum = IslandEnum.enum
@@ -41,8 +42,10 @@ Public['IslandsCommon'] = require('maps.pirates.surfaces.islands.common')
 -- 	destination.dynamic_data.rocketsilohptext = rendering.draw_text{
 -- 		text = 'HP: ' .. destination.dynamic_data.rocketsilohp .. ' / ' .. destination.dynamic_data.rocketsilomaxhp,
 -- 		surface = surface,
--- 		target = destination.dynamic_data.rocketsilos[1],
--- 		target_offset = {0, 4.5},
+-- 		target = {
+-- 			entity = destination.dynamic_data.rocketsilos[1],
+-- 			offset = {0, 4.5},
+-- 		},
 -- 		color = {0, 255, 0},
 -- 		scale = 1.20,
 -- 		font = 'default-game',
@@ -70,26 +73,9 @@ function Public.spawn_treasure_maps(destination, points_to_avoid)
 	}
 
 	for i = 1, num do
-		local map = {}
-
 		local p = Hunt.mid_farness_position_1(args, points_to_avoid)
 
-		-- game.print(p)
-
-		map.position = p
-		map.mapobject_rendering = rendering.draw_sprite({
-			surface = surface,
-			target = p,
-			sprite = 'utility/gps_map_icon',
-			render_layer = '125',
-			x_scale = 2.4,
-			y_scale = 2.4,
-		})
-		map.state = 'on_ground'
-		map.x_renderings = nil
-		map.buried_treasure_position = nil
-
-		destination.dynamic_data.treasure_maps[#destination.dynamic_data.treasure_maps + 1] = map
+		BuriedTreasure.spawn_treasure_map_at_position(p)
 	end
 end
 
@@ -131,7 +117,7 @@ function Public.spawn_ghosts(destination, points_to_avoid)
 			surface = surface,
 			target = p,
 			sprite = 'utility/create_ghost_on_entity_death_modifier_icon',
-			render_layer = '125',
+			render_layer = 'corpse',
 			x_scale = 1,
 			y_scale = 1,
 		})

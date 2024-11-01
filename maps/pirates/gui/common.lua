@@ -33,12 +33,14 @@ Public.rage_font_color_2 = { r = 1, g = 0.5, b = 0.1 }
 Public.rage_font_color_3 = { r = 1, g = 0.1, b = 0.05 }
 
 Public.default_window_positions = {
-	runs = { x = 10, y = 48 },
-	crew = { x = 40, y = 48 },
-	progress = { x = 250, y = 48 },
-	fuel = { x = 468, y = 48 },
-	minimap = { x = 10, y = 48 },
-	color = { x = 160, y = 96 },
+	minimap = { x = 10, y = 76 },
+	color = { x = 160, y = 76 },
+	info = { x = 160, y = 108 },
+	runs = { x = 234, y = 76 },
+	crew = { x = 364, y = 76 },
+	classes = { x = 442, y = 76 },
+	progress = { x = 520, y = 76 },
+	treasure = { x = 676, y = 76 },
 }
 
 function Public.new_window(player, name)
@@ -61,7 +63,7 @@ function Public.new_window(player, name)
 	flow.style = 'map_details_frame'
 	flow.style.minimal_width = 210
 	flow.style.natural_width = 210
-	flow.style.maximal_width = 270
+	flow.style.maximal_width = 420
 	flow.style.minimal_height = 80
 	flow.style.natural_height = 80
 	flow.style.maximal_height = 760
@@ -169,7 +171,6 @@ function Public.flow_add_section(flow, name, caption)
 	flow3.style.font = 'heading-2'
 	flow3.style.font_color = Public.section_header_font_color
 	flow3.style.maximal_width = 300
-	-- flow3.style.maximal_width = 220
 	-- flow3.style.single_line = false
 
 	flow3 = flow2.add({
@@ -194,7 +195,7 @@ function Public.flow_add_subpanel(flow, name)
 	flow2.style = 'tabbed_pane_frame'
 	flow2.style.natural_width = 100
 	flow2.style.top_padding = -2
-	flow2.style.top_margin = -8
+	flow2.style.top_margin = -2
 
 	return flow2
 end

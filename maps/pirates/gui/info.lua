@@ -30,7 +30,7 @@ function Public.toggle_window(player)
 		name = window_name .. '_piratewindow',
 		direction = 'vertical',
 	})
-	flow.location = { x = 90, y = 90 }
+	flow.location = GuiCommon.default_window_positions[window_name]
 	flow.selected_tab_index = 1
 
 	flow.style = 'frame_tabbed_pane'
@@ -56,7 +56,7 @@ function Public.toggle_window(player)
 
 	flow2 = Public.flow_add_info_tab(flow, { 'pirates.gui_info_updates' })
 
-	Public.flow_add_info_sections(flow2, { '1', '2', '3' })
+	Public.flow_add_info_sections(flow2, { '1', '2' })
 	-- Public.flow_add_info_sections(flow2, {'updates', 'bugs'})
 
 	flow2 = Public.flow_add_info_tab(flow, { 'pirates.gui_info_credits' })
@@ -244,7 +244,7 @@ function Public.full_update(player)
 	elseif flow2.selected_tab_index == 2 then
 		flow2.style.height = 500
 	elseif flow2.selected_tab_index == 3 then
-		flow2.style.height = 800
+		flow2.style.height = 500
 	elseif flow2.selected_tab_index == 4 then
 		flow2.style.height = 350
 	end

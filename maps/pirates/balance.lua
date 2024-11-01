@@ -594,11 +594,7 @@ function Public.kraken_evo_increase_per_second()
 end
 
 function Public.sandworm_evo_increase_per_spawn()
-	if _DEBUG then
-		return 1 / 100
-	else
-		return (1 / 100) * (1 / 7) * Math.sloped(Common.difficulty_scale(), 3 / 5)
-	end
+	return (1 / 100) * (1 / 7) * Math.sloped(Common.difficulty_scale(), 3 / 5)
 end
 
 function Public.kraken_kill_reward_items()
@@ -688,11 +684,11 @@ end
 -- 	return 0.95
 -- end
 
--- TODO: Update these for 2.0?
 function Public.player_ammo_damage_modifiers() -- modifiers are fractional. bullet affects gun turrets, but flamethrower does not affect flamer turrets
 	local data = {
 		['artillery-shell'] = 0,
 		['biological'] = 0,
+		['beam'] = 0,
 		['bullet'] = 0.1,
 		['cannon-shell'] = 0,
 		['capsule'] = 0,
@@ -700,9 +696,10 @@ function Public.player_ammo_damage_modifiers() -- modifiers are fractional. bull
 		['flamethrower'] = -0.5,
 		['grenade'] = -0.05,
 		['landmine'] = 0,
+		['laser'] = 0,
 		['melee'] = 0, -- only affects alien melee
 		['rocket'] = 0,
-		['shotgun-shell'] = 2,
+		['shotgun-shell'] = 0.875,
 	}
 	return data
 end
@@ -710,8 +707,6 @@ end
 function Public.player_turret_attack_modifiers()
 	local data = {
 		['gun-turret'] = 0,
-		['artillery-turret'] = 0,
-		['laser-turret'] = 0,
 		['flamethrower-turret'] = -0.5,
 	}
 	return data
@@ -728,6 +723,7 @@ function Public.player_gun_speed_modifiers()
 		['flamethrower'] = 0,
 		['grenade'] = -0.25,
 		['landmine'] = 0,
+		['laser'] = 0,
 		['melee'] = 0, -- only affects alien melee
 		['rocket'] = 0,
 		['shotgun-shell'] = 0,

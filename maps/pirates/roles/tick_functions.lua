@@ -85,6 +85,10 @@ function Public.class_update_auxiliary_data(tick_interval)
 			local data = class_auxiliary_data[player_index]
 			processed_players[player_index] = true
 
+			if not data.shaman_charge then
+				data.shaman_charge = 0
+			end
+
 			if data.shaman_charge < Balance.shaman_max_charge then
 				-- charge from accumulators
 				local power_need = Balance.shaman_max_charge - data.shaman_charge
@@ -367,8 +371,18 @@ function Public.update_character_properties(tick_interval)
 
 					if main_inv.can_insert(main_gun_inv[1]) then
 						main_inv.insert(main_gun_inv[1])
+
+						Common.notify_player_expected(
+							player,
+							{ 'pirates.discard_weapon_to_inventory', Classes.display_form(class) }
+						)
 					else
 						player.character.surface.spill_item_stack(player.character.position, main_gun_inv[1])
+
+						Common.notify_player_error(
+							player,
+							{ 'pirates.discard_weapon_to_ground', Classes.display_form(class) }
+						)
 					end
 
 					main_gun_inv.remove(main_gun_inv[1])
