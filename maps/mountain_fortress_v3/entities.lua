@@ -1167,8 +1167,8 @@ local function get_mvps(force)
             table.insert(score_list, { name = p.name, killscore = killscore, built_entities = built_entities, mined_entities = mined_entities })
         end
     end
-    if not score_list[1] or not score_list[1].name then return mvp end
     local mvp = {}
+    if not score_list[1] or not score_list[1].name then return mvp end
     score_list = get_sorted_list('killscore', score_list)
     mvp.killscore = { name = score_list[1].name, score = score_list[1].killscore }
     score_list = get_sorted_list('mined_entities', score_list)
