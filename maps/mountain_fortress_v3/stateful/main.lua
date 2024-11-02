@@ -199,8 +199,8 @@ Event.add(
                 launch_item.actual = launch_item.actual + 1
             end
         end
-        rocket_inventory.clear()
-        rocket_inventory.insert({ name = 'space-science-pack', count = 200 })
+        -- rocket_inventory.clear()
+        -- rocket_inventory.insert({ name = 'space-science-pack', count = 200 })
     end
 )
 
