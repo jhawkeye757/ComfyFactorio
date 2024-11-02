@@ -105,12 +105,15 @@ Commands.new('mtn_set_queue_speed', 'Usable only for admins - sets the queue spe
 Commands.new('mtn_complete_quests', 'Usable only for admins - sets the queue speed of this map!')
     :require_admin()
     :require_validation()
+    :add_parameter('no_grace', true, 'boolean')
     :callback(
-        function (player)
+        function (player, args)
             Discord.send_notification_raw(Public.discord_name, player.name .. ' completed all the quest via command.')
             local stateful = Public.get_stateful()
             stateful.objectives_completed_count = 6
-            Task.set_timeout_in_ticks(50, gather_time_token, {})
+            if args then
+                Task.set_timeout_in_ticks(50, gather_time_token, {})
+            end
             game.print(mapkeeper .. player.name .. ', has forced completed all quests!', { r = 0.98, g = 0.66, b = 0.22 })
             player.print('Quests completed.')
         end
