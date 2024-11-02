@@ -2277,7 +2277,7 @@ local function zone_forest_1(x, y, data, void_or_lab, adjusted_zones)
     --Water Ponds
     if noise_cave_ponds > 0.670 then
         if noise_cave_ponds > 0.750 then
-            tiles[#tiles + 1] = { name = 'landfill', position = p }
+            tiles[#tiles + 1] = { name = 'nuclear-ground', position = p }
             if random(1, 4) == 1 then
                 markets[#markets + 1] = p
             end
@@ -2306,7 +2306,7 @@ local function zone_forest_1(x, y, data, void_or_lab, adjusted_zones)
     end
 
     if noise_cave_ponds > 0.74 then
-        tiles[#tiles + 1] = { name = 'landfill', position = p }
+        tiles[#tiles + 1] = { name = 'nuclear-ground', position = p }
         if cave_rivers < -0.502 then
             tiles[#tiles + 1] = { name = 'refined-hazard-concrete-right', position = p }
         end
@@ -2367,7 +2367,7 @@ local function zone_forest_1(x, y, data, void_or_lab, adjusted_zones)
     if random(1, 2048) == 1 then
         treasure[#treasure + 1] = { position = p, chest = 'iron-chest' }
     end
-    tiles[#tiles + 1] = { name = 'landfill', position = p }
+    tiles[#tiles + 1] = { name = 'nuclear-ground', position = p }
     local noise_forest_location = Public.get_noise('forest_location', p, seed)
     if noise_forest_location > 0.095 then
         if random(1, 256) == 1 then

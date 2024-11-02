@@ -225,7 +225,7 @@ local function damage_area(cell)
             this.explosives.tiles[key] = nil
             if math_abs(tile.position.y) < surface.map_gen_settings.height * 0.5 and math_abs(tile.position.x) < surface.map_gen_settings.width * 0.5 then
                 if not check_y_pos(tile.position) then
-                    surface.set_tiles({ { name = 'landfill', position = tile.position } }, true)
+                    surface.set_tiles({ { name = 'nuclear-ground', position = tile.position } }, true)
                 end
             end
         else
