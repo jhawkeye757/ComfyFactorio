@@ -511,6 +511,7 @@ function Public.move_players(current_task)
         else
             player.teleport({ x = 0, y = 0 }, surface)
         end
+        player.clear_items_inside()
     end
     current_task.message = 'Moved players to initial surface!'
     current_task.delay = game.tick + 200

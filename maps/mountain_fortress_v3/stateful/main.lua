@@ -86,6 +86,10 @@ Event.on_nth_tick(
             return
         end
 
+        if collection.game_won_notified then
+            return
+        end
+
         if collection.gather_time and collection.gather_time <= 0 and collection.survive_for and collection.survive_for > 0 then
             local spawn_positions = table.deepcopy(Public.get_stateful('stateful_spawn_points'))
 
@@ -199,8 +203,6 @@ Event.add(
                 launch_item.actual = launch_item.actual + 1
             end
         end
-        rocket_inventory.clear()
-        rocket_inventory.insert({ name = 'space-science-pack', count = 200 })
     end
 )
 

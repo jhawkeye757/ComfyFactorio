@@ -1168,6 +1168,7 @@ local function get_mvps(force)
         end
     end
     local mvp = {}
+    if not score_list[1] or not score_list[1].name then return mvp end
     score_list = get_sorted_list('killscore', score_list)
     mvp.killscore = { name = score_list[1].name, score = score_list[1].killscore }
     score_list = get_sorted_list('mined_entities', score_list)
