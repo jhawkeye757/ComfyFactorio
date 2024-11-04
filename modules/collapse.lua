@@ -146,16 +146,20 @@ local function set_collapse_tiles(surface)
     game.forces.player.chart(surface, this.area)
     this.tiles = surface.find_tiles_filtered({ area = this.area, name = 'out-of-map', invert = true })
 
-    if not this.tiles or not next(this.tiles) then
+    if not this.tiles then
         return
     end
+
     this.size_of_tiles = #this.tiles
-    if this.size_of_tiles and this.size_of_tiles > 0 then
+
+    if this.size_of_tiles > 0 then
         table_shuffle_table(this.tiles)
     end
     this.position = { x = this.position.x + this.vector[1], y = this.position.y + this.vector[2] }
     local v = this.vector
-    if not v then return end
+    if not v then
+        return
+    end
     local area = this.area
     this.area = { { area[1][1] + v[1], area[1][2] + v[2] }, { area[2][1] + v[1], area[2][2] + v[2] } }
     local chart_area = { { area[1][1] + v[1] - 4, area[1][2] + v[2] - 4 }, { area[2][1] + v[1] + 4, area[2][2] + v[2] + 4 } }
@@ -169,12 +173,12 @@ local function set_reverse_collapse_tiles(surface)
     end
     this.reverse_tiles = surface.find_tiles_filtered({ area = this.reverse_area, name = 'out-of-map', invert = true })
 
-    if not this.reverse_tiles or not next(this.reverse_tiles) then
+    if not this.reverse_tiles then
         return
     end
 
     this.reverse_size_of_tiles = #this.reverse_tiles
-    if this.reverse_size_of_tiles and this.reverse_size_of_tiles > 0 then
+    if this.reverse_size_of_tiles > 0 then
         table_shuffle_table(this.reverse_tiles)
     end
     this.reverse_position = { x = this.reverse_position.x + this.reverse_vector[1], y = this.reverse_position.y + this.reverse_vector[2] }
