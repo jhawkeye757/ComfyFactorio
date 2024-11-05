@@ -57,6 +57,8 @@ Public.scenario_name = scenario_name
 local discord_name = 'Mtn Fortress'
 Public.discord_name = discord_name
 
+Public.is_modded = script.active_mods['MtnFortressAddons'] or false
+
 Global.register(
     this,
     function (tbl)
@@ -147,6 +149,7 @@ Public.pickaxe_upgrades = {
 function Public.reset_main_table()
     -- @start
     this.space_age = script.active_mods['space-age'] or false
+    this.modded = script.active_mods['MtnFortressAddons'] or false
     -- these 3 are in case of stop/start/reloading the instance.
     this.soft_reset = true
     this.restart = false
@@ -313,7 +316,11 @@ function Public.reset_main_table()
     this.spidertron_unlocked_at_zone = 11
     this.spidertron_unlocked_enabled = false
     -- this.void_or_tile = 'lab-dark-2'
-    this.void_or_tile = 'out-of-map'
+    if Public.is_modded then
+        this.void_or_tile = 'void-tile'
+    else
+        this.void_or_tile = 'out-of-map'
+    end
     this.validate_spider = {}
     this.check_afk_players = true
     this.winter_mode = false

@@ -25,6 +25,7 @@ local scenario_name = Public.scenario_name
 local zone_settings = Public.zone_settings
 local remove_boost_movement_speed_on_respawn
 local de = defines.events
+local is_modded = Public.is_modded
 
 local this = {
     power_sources = { index = 1 },
@@ -461,6 +462,266 @@ local function do_season_fix()
 end
 
 local do_season_fix_token = Task.register(do_season_fix)
+
+local set_unit_raffle_token =
+    Task.register(
+        function (event)
+            local level = event.level
+            if not is_modded then
+                WD.set(
+                    'biter_raffle',
+                    {
+                        ['small-biter'] = round(1000 - level * 1.75, 6),
+                        ['medium-biter'] = round(level, 6),
+                        ['big-biter'] = 0,
+                        ['behemoth-biter'] = 0
+                    }
+                )
+                WD.set(
+                    'spitter_raffle',
+                    {
+                        ['small-spitter'] = round(1000 - level * 1.75, 6),
+                        ['medium-spitter'] = round(level, 6),
+                        ['big-spitter'] = 0,
+                        ['behemoth-spitter'] = 0
+                    }
+                )
+                local biter_raffle = WD.get('biter_raffle') --[[@as table]]
+                local spitter_raffle = WD.get('spitter_raffle') --[[@as table]]
+                if level > 500 then
+                    biter_raffle['medium-biter'] = round(500 - (level - 500), 6)
+                    spitter_raffle['medium-spitter'] = round(500 - (level - 500), 6)
+                    biter_raffle['big-biter'] = round((level - 500) * 2, 6)
+                    spitter_raffle['big-spitter'] = round((level - 500) * 2, 6)
+                end
+                if level > 800 then
+                    biter_raffle['behemoth-biter'] = round((level - 800) * 2.75, 6)
+                    spitter_raffle['behemoth-spitter'] = round((level - 800) * 2.75, 6)
+                end
+                for k, _ in pairs(biter_raffle) do
+                    if biter_raffle[k] < 0 then
+                        biter_raffle[k] = 0
+                    end
+                end
+                for k, _ in pairs(spitter_raffle) do
+                    if spitter_raffle[k] < 0 then
+                        spitter_raffle[k] = 0
+                    end
+                end
+            else
+                WD.set(
+                    'biter_raffle',
+                    {
+                        ['small-biter'] = round(3000 - level * 1.75, 6),
+                        ['mtn-addon-small-piercing-biter-t1'] = round(2500 - level * 1.75, 6),
+                        ['mtn-addon-small-acid-biter-t1'] = round(2500 - level * 1.75, 6),
+                        ['mtn-addon-small-explosive-biter-t1'] = round(2500 - level * 1.75, 6),
+                        ['mtn-addon-small-poison-biter-t1'] = round(2500 - level * 1.75, 6),
+                        ['mtn-addon-small-fire-biter-t1'] = round(2500 - level * 1.75, 6),
+
+                        ['mtn-addon-small-piercing-biter-t2'] = round(2000 - level * 1.75, 6),
+                        ['mtn-addon-small-acid-biter-t2'] = round(2000 - level * 1.75, 6),
+                        ['mtn-addon-small-explosive-biter-t2'] = round(2000 - level * 1.75, 6),
+                        ['mtn-addon-small-poison-biter-t2'] = round(2000 - level * 1.75, 6),
+                        ['mtn-addon-small-fire-biter-t2'] = round(2000 - level * 1.75, 6),
+
+                        ['mtn-addon-small-piercing-biter-t3'] = round(1500 - level * 1.75, 6),
+                        ['mtn-addon-small-acid-biter-t3'] = round(1500 - level * 1.75, 6),
+                        ['mtn-addon-small-explosive-biter-t3'] = round(1500 - level * 1.75, 6),
+                        ['mtn-addon-small-poison-biter-t3'] = round(1500 - level * 1.75, 6),
+                        ['mtn-addon-small-fire-biter-t3'] = round(1500 - level * 1.75, 6),
+                    }
+                )
+                WD.set(
+                    'spitter_raffle',
+                    {
+                        ['mtn-addon-small-piercing-spitter-t1'] = round(2500 - level * 1.75, 6),
+                        ['mtn-addon-small-acid-spitter-t1'] = round(2500 - level * 1.75, 6),
+                        ['mtn-addon-small-explosive-spitter-t1'] = round(2500 - level * 1.75, 6),
+                        ['mtn-addon-small-poison-spitter-t1'] = round(2500 - level * 1.75, 6),
+                        ['mtn-addon-small-fire-spitter-t1'] = round(2500 - level * 1.75, 6),
+
+                        ['mtn-addon-small-piercing-spitter-t2'] = round(2000 - level * 1.75, 6),
+                        ['mtn-addon-small-acid-spitter-t2'] = round(2000 - level * 1.75, 6),
+                        ['mtn-addon-small-explosive-spitter-t2'] = round(2000 - level * 1.75, 6),
+                        ['mtn-addon-small-poison-spitter-t2'] = round(2000 - level * 1.75, 6),
+                        ['mtn-addon-small-fire-spitter-t2'] = round(2000 - level * 1.75, 6),
+
+                        ['mtn-addon-small-piercing-spitter-t3'] = round(1500 - level * 1.75, 6),
+                        ['mtn-addon-small-acid-spitter-t3'] = round(1500 - level * 1.75, 6),
+                        ['mtn-addon-small-explosive-spitter-t3'] = round(1500 - level * 1.75, 6),
+                        ['mtn-addon-small-poison-spitter-t3'] = round(1500 - level * 1.75, 6),
+                        ['mtn-addon-small-fire-spitter-t3'] = round(1500 - level * 1.75, 6),
+                    }
+                )
+                local biter_raffle = WD.get('biter_raffle') --[[@as table]]
+                local spitter_raffle = WD.get('spitter_raffle') --[[@as table]]
+                if level > 250 then
+                    biter_raffle['mtn-addon-medium-piercing-biter-t1'] = round(250 - (level - 250), 6)
+                    biter_raffle['mtn-addon-medium-acid-biter-t1'] = round(250 - (level - 250), 6)
+                    biter_raffle['mtn-addon-medium-explosive-biter-t1'] = round(250 - (level - 250), 6)
+                    biter_raffle['mtn-addon-medium-poison-biter-t1'] = round(250 - (level - 250), 6)
+                    biter_raffle['mtn-addon-medium-fire-biter-t1'] = round(250 - (level - 250), 6)
+
+                    spitter_raffle['mtn-addon-medium-piercing-spitter-t1'] = round(250 - (level - 250), 6)
+                    spitter_raffle['mtn-addon-medium-acid-spitter-t1'] = round(250 - (level - 250), 6)
+                    spitter_raffle['mtn-addon-medium-explosive-spitter-t1'] = round(250 - (level - 250), 6)
+                    spitter_raffle['mtn-addon-medium-poison-spitter-t1'] = round(250 - (level - 250), 6)
+                    spitter_raffle['mtn-addon-medium-fire-spitter-t1'] = round(250 - (level - 250), 6)
+                end
+                if level > 300 then
+                    biter_raffle['mtn-addon-medium-piercing-biter-t2'] = round(300 - (level - 300), 6)
+                    biter_raffle['mtn-addon-medium-acid-biter-t2'] = round(300 - (level - 300), 6)
+                    biter_raffle['mtn-addon-medium-explosive-biter-t2'] = round(300 - (level - 300), 6)
+                    biter_raffle['mtn-addon-medium-poison-biter-t2'] = round(300 - (level - 300), 6)
+                    biter_raffle['mtn-addon-medium-fire-biter-t2'] = round(300 - (level - 300), 6)
+
+                    spitter_raffle['mtn-addon-medium-piercing-spitter-t2'] = round(300 - (level - 300), 6)
+                    spitter_raffle['mtn-addon-medium-acid-spitter-t2'] = round(300 - (level - 300), 6)
+                    spitter_raffle['mtn-addon-medium-explosive-spitter-t2'] = round(300 - (level - 300), 6)
+                    spitter_raffle['mtn-addon-medium-poison-spitter-t2'] = round(300 - (level - 300), 6)
+                    spitter_raffle['mtn-addon-medium-fire-spitter-t2'] = round(300 - (level - 300), 6)
+                end
+                if level > 350 then
+                    biter_raffle['mtn-addon-medium-piercing-biter-t3'] = round(350 - (level - 350), 6)
+                    biter_raffle['mtn-addon-medium-acid-biter-t3'] = round(350 - (level - 350), 6)
+                    biter_raffle['mtn-addon-medium-explosive-biter-t3'] = round(350 - (level - 350), 6)
+                    biter_raffle['mtn-addon-medium-poison-biter-t3'] = round(350 - (level - 350), 6)
+                    biter_raffle['mtn-addon-medium-fire-biter-t3'] = round(350 - (level - 350), 6)
+
+                    spitter_raffle['mtn-addon-medium-piercing-spitter-t3'] = round(350 - (level - 350), 6)
+                    spitter_raffle['mtn-addon-medium-acid-spitter-t3'] = round(350 - (level - 350), 6)
+                    spitter_raffle['mtn-addon-medium-explosive-spitter-t3'] = round(350 - (level - 350), 6)
+                    spitter_raffle['mtn-addon-medium-poison-spitter-t3'] = round(350 - (level - 350), 6)
+                    spitter_raffle['mtn-addon-medium-fire-spitter-t3'] = round(350 - (level - 350), 6)
+                end
+
+                if level > 500 then
+                    biter_raffle['mtn-addon-big-piercing-biter-t1'] = round(500 - (level - 500) * 2, 6)
+                    biter_raffle['mtn-addon-big-acid-biter-t1'] = round(500 - (level - 500) * 2, 6)
+                    biter_raffle['mtn-addon-big-explosive-biter-t1'] = round(500 - (level - 500) * 2, 6)
+                    biter_raffle['mtn-addon-big-poison-biter-t1'] = round(500 - (level - 500) * 2, 6)
+                    biter_raffle['mtn-addon-big-fire-biter-t1'] = round(500 - (level - 500) * 2, 6)
+
+                    spitter_raffle['mtn-addon-big-piercing-spitter-t1'] = round(500 - (level - 500) * 2, 6)
+                    spitter_raffle['mtn-addon-big-acid-spitter-t1'] = round(500 - (level - 500) * 2, 6)
+                    spitter_raffle['mtn-addon-big-explosive-spitter-t1'] = round(500 - (level - 500) * 2, 6)
+                    spitter_raffle['mtn-addon-big-poison-spitter-t1'] = round(500 - (level - 500) * 2, 6)
+                    spitter_raffle['mtn-addon-big-fire-spitter-t1'] = round(500 - (level - 500) * 2, 6)
+                end
+                if level > 550 then
+                    biter_raffle['mtn-addon-big-piercing-biter-t2'] = round(550 - (level - 550) * 2, 6)
+                    biter_raffle['mtn-addon-big-acid-biter-t2'] = round(550 - (level - 550) * 2, 6)
+                    biter_raffle['mtn-addon-big-explosive-biter-t2'] = round(550 - (level - 550) * 2, 6)
+                    biter_raffle['mtn-addon-big-poison-biter-t2'] = round(550 - (level - 550) * 2, 6)
+                    biter_raffle['mtn-addon-big-fire-biter-t2'] = round(550 - (level - 550) * 2, 6)
+
+                    spitter_raffle['mtn-addon-big-piercing-spitter-t2'] = round(550 - (level - 550) * 2, 6)
+                    spitter_raffle['mtn-addon-big-acid-spitter-t2'] = round(550 - (level - 550) * 2, 6)
+                    spitter_raffle['mtn-addon-big-explosive-spitter-t2'] = round(550 - (level - 550) * 2, 6)
+                    spitter_raffle['mtn-addon-big-poison-spitter-t2'] = round(550 - (level - 550) * 2, 6)
+                    spitter_raffle['mtn-addon-big-fire-spitter-t2'] = round(550 - (level - 550) * 2, 6)
+                end
+
+                if level > 600 then
+                    biter_raffle['mtn-addon-big-piercing-biter-t3'] = round(600 - (level - 600) * 2, 6)
+                    biter_raffle['mtn-addon-big-acid-biter-t3'] = round(600 - (level - 600) * 2, 6)
+                    biter_raffle['mtn-addon-big-explosive-biter-t3'] = round(600 - (level - 600) * 2, 6)
+                    biter_raffle['mtn-addon-big-poison-biter-t3'] = round(600 - (level - 600) * 2, 6)
+                    biter_raffle['mtn-addon-big-fire-biter-t3'] = round(600 - (level - 600) * 2, 6)
+
+                    spitter_raffle['mtn-addon-big-piercing-spitter-t3'] = round(600 - (level - 600) * 2, 6)
+                    spitter_raffle['mtn-addon-big-acid-spitter-t3'] = round(600 - (level - 600) * 2, 6)
+                    spitter_raffle['mtn-addon-big-explosive-spitter-t3'] = round(600 - (level - 600) * 2, 6)
+                    spitter_raffle['mtn-addon-big-poison-spitter-t3'] = round(600 - (level - 600) * 2, 6)
+                    spitter_raffle['mtn-addon-big-fire-spitter-t3'] = round(600 - (level - 600) * 2, 6)
+                end
+
+                if level > 800 then
+                    biter_raffle['mtn-addon-behemoth-piercing-biter-t1'] = round((level - 800) * 2.75, 6)
+                    biter_raffle['mtn-addon-behemoth-acid-biter-t1'] = round((level - 800) * 2.75, 6)
+                    biter_raffle['mtn-addon-behemoth-explosive-biter-t1'] = round((level - 800) * 2.75, 6)
+                    biter_raffle['mtn-addon-behemoth-poison-biter-t1'] = round((level - 800) * 2.75, 6)
+                    biter_raffle['mtn-addon-behemoth-fire-biter-t1'] = round((level - 800) * 2.75, 6)
+
+                    spitter_raffle['mtn-addon-behemoth-piercing-spitter-t1'] = round((level - 800) * 2.75, 6)
+                    spitter_raffle['mtn-addon-behemoth-acid-spitter-t1'] = round((level - 800) * 2.75, 6)
+                    spitter_raffle['mtn-addon-behemoth-explosive-spitter-t1'] = round((level - 800) * 2.75, 6)
+                    spitter_raffle['mtn-addon-behemoth-poison-spitter-t1'] = round((level - 800) * 2.75, 6)
+                    spitter_raffle['mtn-addon-behemoth-fire-spitter-t1'] = round((level - 800) * 2.75, 6)
+                end
+                if level > 900 then
+                    biter_raffle['mtn-addon-behemoth-piercing-biter-t2'] = round((level - 900) * 2.75, 6)
+                    biter_raffle['mtn-addon-behemoth-acid-biter-t2'] = round((level - 900) * 2.75, 6)
+                    biter_raffle['mtn-addon-behemoth-explosive-biter-t2'] = round((level - 900) * 2.75, 6)
+                    biter_raffle['mtn-addon-behemoth-poison-biter-t2'] = round((level - 900) * 2.75, 6)
+                    biter_raffle['mtn-addon-behemoth-fire-biter-t2'] = round((level - 900) * 2.75, 6)
+
+                    spitter_raffle['mtn-addon-behemoth-piercing-spitter-t2'] = round((level - 900) * 2.75, 6)
+                    spitter_raffle['mtn-addon-behemoth-acid-spitter-t2'] = round((level - 900) * 2.75, 6)
+                    spitter_raffle['mtn-addon-behemoth-explosive-spitter-t2'] = round((level - 900) * 2.75, 6)
+                    spitter_raffle['mtn-addon-behemoth-poison-spitter-t2'] = round((level - 900) * 2.75, 6)
+                    spitter_raffle['mtn-addon-behemoth-fire-spitter-t2'] = round((level - 900) * 2.75, 6)
+                end
+
+                if level > 1000 then
+                    biter_raffle['mtn-addon-behemoth-piercing-biter-t3'] = round((level - 1000) * 2.75, 6)
+                    biter_raffle['mtn-addon-behemoth-acid-biter-t3'] = round((level - 1000) * 2.75, 6)
+                    biter_raffle['mtn-addon-behemoth-explosive-biter-t3'] = round((level - 1000) * 2.75, 6)
+                    biter_raffle['mtn-addon-behemoth-poison-biter-t3'] = round((level - 1000) * 2.75, 6)
+                    biter_raffle['mtn-addon-behemoth-fire-biter-t3'] = round((level - 1000) * 2.75, 6)
+
+                    spitter_raffle['mtn-addon-behemoth-piercing-spitter-t3'] = round((level - 1000) * 2.75, 6)
+                    spitter_raffle['mtn-addon-behemoth-acid-spitter-t3'] = round((level - 1000) * 2.75, 6)
+                    spitter_raffle['mtn-addon-behemoth-explosive-spitter-t3'] = round((level - 1000) * 2.75, 6)
+                    spitter_raffle['mtn-addon-behemoth-poison-spitter-t3'] = round((level - 1000) * 2.75, 6)
+                    spitter_raffle['mtn-addon-behemoth-fire-spitter-t3'] = round((level - 1000) * 2.75, 6)
+                end
+
+
+                for k, _ in pairs(biter_raffle) do
+                    if biter_raffle[k] < 0 then
+                        biter_raffle[k] = 0
+                    end
+                end
+                for k, _ in pairs(spitter_raffle) do
+                    if spitter_raffle[k] < 0 then
+                        spitter_raffle[k] = 0
+                    end
+                end
+            end
+        end
+    )
+
+local set_worm_raffle_token =
+    Task.register(
+        function (event)
+            local level = event.level
+            WD.set(
+                'worm_raffle',
+                {
+                    ['small-worm-turret'] = round(1000 - level * 1.75, 6),
+                    ['medium-worm-turret'] = round(level, 6),
+                    ['big-worm-turret'] = 0,
+                    ['behemoth-worm-turret'] = 0
+                }
+            )
+            local worm_raffle = WD.get('worm_raffle') --[[@as table]]
+
+            if level > 500 then
+                worm_raffle['medium-worm-turret'] = round(500 - (level - 500), 6)
+                worm_raffle['big-worm-turret'] = round((level - 500) * 2, 6)
+            end
+            if level > 800 then
+                worm_raffle['behemoth-worm-turret'] = round((level - 800) * 3, 6)
+            end
+            for k, _ in pairs(worm_raffle) do
+                if worm_raffle[k] < 0 then
+                    worm_raffle[k] = 0
+                end
+            end
+        end
+    )
 
 local function do_artillery_turrets_targets()
     local art_table = this.art_table
@@ -1021,6 +1282,339 @@ local function on_player_cursor_stack_changed(event)
     end
 end
 
+function Public.set_unit_raffle()
+    local unit_settings = WD.get('unit_settings')
+    unit_settings.custom_unit_raffle = set_unit_raffle_token
+end
+
+function Public.set_threat_values()
+    WD.set('threat_values', {
+        ['biter-spawner'] = 128,
+        ['spitter-spawner'] = 128,
+        ['behemoth-biter'] = 64,
+        ['behemoth-spitter'] = 64,
+        ['big-biter'] = 16,
+        ['big-spitter'] = 16,
+        ['medium-biter'] = 4,
+        ['medium-spitter'] = 4,
+        ['small-biter'] = 1,
+        ['small-spitter'] = 1,
+        ['small-worm-turret'] = 16,
+        ['medium-worm-turret'] = 32,
+        ['big-worm-turret'] = 64,
+        ['behemoth-worm-turret'] = 128,
+
+        -- custom biters/spitters
+        ['mtn-addon-small-piercing-biter-t1'] = 2,
+        ['mtn-addon-small-piercing-biter-t2'] = 3,
+        ['mtn-addon-small-piercing-biter-t3'] = 4,
+        ['mtn-addon-small-acid-biter-t1'] = 2,
+        ['mtn-addon-small-acid-biter-t2'] = 3,
+        ['mtn-addon-small-acid-biter-t3'] = 4,
+        ['mtn-addon-small-explosive-biter-t1'] = 2,
+        ['mtn-addon-small-explosive-biter-t2'] = 3,
+        ['mtn-addon-small-explosive-biter-t3'] = 4,
+        ['mtn-addon-small-poison-biter-t1'] = 2,
+        ['mtn-addon-small-poison-biter-t2'] = 3,
+        ['mtn-addon-small-poison-biter-t3'] = 4,
+        ['mtn-addon-small-fire-biter-t1'] = 2,
+        ['mtn-addon-small-fire-biter-t2'] = 3,
+        ['mtn-addon-small-fire-biter-t3'] = 4,
+        ['mtn-addon-small-piercing-spitter-t1'] = 2,
+        ['mtn-addon-small-piercing-spitter-t2'] = 3,
+        ['mtn-addon-small-piercing-spitter-t3'] = 4,
+        ['mtn-addon-small-acid-spitter-t1'] = 2,
+        ['mtn-addon-small-acid-spitter-t2'] = 3,
+        ['mtn-addon-small-acid-spitter-t3'] = 4,
+        ['mtn-addon-small-explosive-spitter-t1'] = 2,
+        ['mtn-addon-small-explosive-spitter-t2'] = 3,
+        ['mtn-addon-small-explosive-spitter-t3'] = 4,
+        ['mtn-addon-small-poison-spitter-t1'] = 2,
+        ['mtn-addon-small-poison-spitter-t2'] = 3,
+        ['mtn-addon-small-poison-spitter-t3'] = 4,
+        ['mtn-addon-small-fire-spitter-t1'] = 2,
+        ['mtn-addon-small-fire-spitter-t2'] = 3,
+        ['mtn-addon-small-fire-spitter-t3'] = 4,
+
+        ['mtn-addon-medium-piercing-biter-t1'] = 6,
+        ['mtn-addon-medium-piercing-biter-t2'] = 7,
+        ['mtn-addon-medium-piercing-biter-t3'] = 8,
+        ['mtn-addon-medium-acid-biter-t1'] = 6,
+        ['mtn-addon-medium-acid-biter-t2'] = 7,
+        ['mtn-addon-medium-acid-biter-t3'] = 8,
+        ['mtn-addon-medium-explosive-biter-t1'] = 6,
+        ['mtn-addon-medium-explosive-biter-t2'] = 7,
+        ['mtn-addon-medium-explosive-biter-t3'] = 8,
+        ['mtn-addon-medium-poison-biter-t1'] = 6,
+        ['mtn-addon-medium-poison-biter-t2'] = 7,
+        ['mtn-addon-medium-poison-biter-t3'] = 8,
+        ['mtn-addon-medium-fire-biter-t1'] = 6,
+        ['mtn-addon-medium-fire-biter-t2'] = 7,
+        ['mtn-addon-medium-fire-biter-t3'] = 8,
+        ['mtn-addon-medium-piercing-spitter-t1'] = 6,
+        ['mtn-addon-medium-piercing-spitter-t2'] = 7,
+        ['mtn-addon-medium-piercing-spitter-t3'] = 8,
+        ['mtn-addon-medium-acid-spitter-t1'] = 6,
+        ['mtn-addon-medium-acid-spitter-t2'] = 7,
+        ['mtn-addon-medium-acid-spitter-t3'] = 8,
+        ['mtn-addon-medium-explosive-spitter-t1'] = 6,
+        ['mtn-addon-medium-explosive-spitter-t2'] = 7,
+        ['mtn-addon-medium-explosive-spitter-t3'] = 8,
+        ['mtn-addon-medium-poison-spitter-t1'] = 6,
+        ['mtn-addon-medium-poison-spitter-t2'] = 7,
+        ['mtn-addon-medium-poison-spitter-t3'] = 8,
+        ['mtn-addon-medium-fire-spitter-t1'] = 6,
+        ['mtn-addon-medium-fire-spitter-t2'] = 7,
+        ['mtn-addon-medium-fire-spitter-t3'] = 8,
+
+        ['mtn-addon-big-piercing-biter-t1'] = 24,
+        ['mtn-addon-big-piercing-biter-t2'] = 26,
+        ['mtn-addon-big-piercing-biter-t3'] = 28,
+        ['mtn-addon-big-acid-biter-t1'] = 24,
+        ['mtn-addon-big-acid-biter-t2'] = 26,
+        ['mtn-addon-big-acid-biter-t3'] = 28,
+        ['mtn-addon-big-explosive-biter-t1'] = 24,
+        ['mtn-addon-big-explosive-biter-t2'] = 26,
+        ['mtn-addon-big-explosive-biter-t3'] = 28,
+        ['mtn-addon-big-poison-biter-t1'] = 24,
+        ['mtn-addon-big-poison-biter-t2'] = 26,
+        ['mtn-addon-big-poison-biter-t3'] = 28,
+        ['mtn-addon-big-fire-biter-t1'] = 24,
+        ['mtn-addon-big-fire-biter-t2'] = 26,
+        ['mtn-addon-big-fire-biter-t3'] = 28,
+        ['mtn-addon-big-piercing-spitter-t1'] = 24,
+        ['mtn-addon-big-piercing-spitter-t2'] = 26,
+        ['mtn-addon-big-piercing-spitter-t3'] = 28,
+        ['mtn-addon-big-acid-spitter-t1'] = 24,
+        ['mtn-addon-big-acid-spitter-t2'] = 26,
+        ['mtn-addon-big-acid-spitter-t3'] = 28,
+        ['mtn-addon-big-explosive-spitter-t1'] = 24,
+        ['mtn-addon-big-explosive-spitter-t2'] = 26,
+        ['mtn-addon-big-explosive-spitter-t3'] = 28,
+        ['mtn-addon-big-poison-spitter-t1'] = 24,
+        ['mtn-addon-big-poison-spitter-t2'] = 26,
+        ['mtn-addon-big-poison-spitter-t3'] = 28,
+        ['mtn-addon-big-fire-spitter-t1'] = 24,
+        ['mtn-addon-big-fire-spitter-t2'] = 26,
+        ['mtn-addon-big-fire-spitter-t3'] = 28,
+
+        ['mtn-addon-behemoth-piercing-biter-t1'] = 110,
+        ['mtn-addon-behemoth-piercing-biter-t2'] = 120,
+        ['mtn-addon-behemoth-piercing-biter-t3'] = 130,
+        ['mtn-addon-behemoth-acid-biter-t1'] = 110,
+        ['mtn-addon-behemoth-acid-biter-t2'] = 120,
+        ['mtn-addon-behemoth-acid-biter-t3'] = 130,
+        ['mtn-addon-behemoth-explosive-biter-t1'] = 110,
+        ['mtn-addon-behemoth-explosive-biter-t2'] = 120,
+        ['mtn-addon-behemoth-explosive-biter-t3'] = 130,
+        ['mtn-addon-behemoth-poison-biter-t1'] = 110,
+        ['mtn-addon-behemoth-poison-biter-t2'] = 120,
+        ['mtn-addon-behemoth-poison-biter-t3'] = 130,
+        ['mtn-addon-behemoth-fire-biter-t1'] = 110,
+        ['mtn-addon-behemoth-fire-biter-t2'] = 120,
+        ['mtn-addon-behemoth-fire-biter-t3'] = 130,
+        ['mtn-addon-behemoth-piercing-spitter-t1'] = 110,
+        ['mtn-addon-behemoth-piercing-spitter-t2'] = 120,
+        ['mtn-addon-behemoth-piercing-spitter-t3'] = 130,
+        ['mtn-addon-behemoth-acid-spitter-t1'] = 110,
+        ['mtn-addon-behemoth-acid-spitter-t2'] = 120,
+        ['mtn-addon-behemoth-acid-spitter-t3'] = 130,
+        ['mtn-addon-behemoth-explosive-spitter-t1'] = 110,
+        ['mtn-addon-behemoth-explosive-spitter-t2'] = 120,
+        ['mtn-addon-behemoth-explosive-spitter-t3'] = 130,
+        ['mtn-addon-behemoth-poison-spitter-t1'] = 110,
+        ['mtn-addon-behemoth-poison-spitter-t2'] = 120,
+        ['mtn-addon-behemoth-poison-spitter-t3'] = 130,
+        ['mtn-addon-behemoth-fire-spitter-t1'] = 110,
+        ['mtn-addon-behemoth-fire-spitter-t2'] = 120,
+        ['mtn-addon-behemoth-fire-spitter-t3'] = 130,
+        -- worms
+        ['mtn-addon-small-explosive-worm-turret'] = 20,
+        ['mtn-addon-small-fire-worm-turret'] = 20,
+        ['mtn-addon-small-piercing-worm-turret'] = 20,
+        ['mtn-addon-small-poison-worm-turret'] = 20,
+        ['mtn-addon-small-electric-worm-turret'] = 20,
+        ['mtn-addon-medium-explosive-worm-turret'] = 40,
+        ['mtn-addon-medium-fire-worm-turret'] = 40,
+        ['mtn-addon-medium-piercing-worm-turret'] = 40,
+        ['mtn-addon-medium-poison-worm-turret'] = 40,
+        ['mtn-addon-medium-electric-worm-turret'] = 40,
+        ['mtn-addon-big-explosive-worm-turret'] = 80,
+        ['mtn-addon-big-fire-worm-turret'] = 80,
+        ['mtn-addon-big-piercing-worm-turret'] = 80,
+        ['mtn-addon-big-poison-worm-turret'] = 80,
+        ['mtn-addon-big-electric-worm-turret'] = 80,
+        ['mtn-addon-giant-worm-turret'] = 120,
+    })
+
+    local unit_settings = WD.get('unit_settings')
+    unit_settings.scale_units_by_health = {
+        ['small-biter'] = 1,
+        ['medium-biter'] = 0.75,
+        ['big-biter'] = 0.5,
+        ['behemoth-biter'] = 0.25,
+        ['small-spitter'] = 1,
+        ['medium-spitter'] = 0.75,
+        ['big-spitter'] = 0.5,
+        ['behemoth-spitter'] = 0.25,
+        ['mtn-addon-small-piercing-biter-t1'] = 0.50,
+        ['mtn-addon-small-piercing-biter-t2'] = 0.50,
+        ['mtn-addon-small-piercing-biter-t3'] = 0.50,
+        ['mtn-addon-small-acid-biter-t1'] = 0.50,
+        ['mtn-addon-small-acid-biter-t2'] = 0.50,
+        ['mtn-addon-small-acid-biter-t3'] = 0.50,
+        ['mtn-addon-small-explosive-biter-t1'] = 0.50,
+        ['mtn-addon-small-explosive-biter-t2'] = 0.50,
+        ['mtn-addon-small-explosive-biter-t3'] = 0.50,
+        ['mtn-addon-small-poison-biter-t1'] = 0.50,
+        ['mtn-addon-small-poison-biter-t2'] = 0.50,
+        ['mtn-addon-small-poison-biter-t3'] = 0.50,
+        ['mtn-addon-small-fire-biter-t1'] = 0.50,
+        ['mtn-addon-small-fire-biter-t2'] = 0.50,
+        ['mtn-addon-small-fire-biter-t3'] = 0.50,
+
+        ['mtn-addon-small-piercing-spitter-t1'] = 0.50,
+        ['mtn-addon-small-piercing-spitter-t2'] = 0.50,
+        ['mtn-addon-small-piercing-spitter-t3'] = 0.50,
+        ['mtn-addon-small-acid-spitter-t1'] = 0.50,
+        ['mtn-addon-small-acid-spitter-t2'] = 0.50,
+        ['mtn-addon-small-acid-spitter-t3'] = 0.50,
+        ['mtn-addon-small-explosive-spitter-t1'] = 0.50,
+        ['mtn-addon-small-explosive-spitter-t2'] = 0.50,
+        ['mtn-addon-small-explosive-spitter-t3'] = 0.50,
+        ['mtn-addon-small-poison-spitter-t1'] = 0.50,
+        ['mtn-addon-small-poison-spitter-t2'] = 0.50,
+        ['mtn-addon-small-poison-spitter-t3'] = 0.50,
+        ['mtn-addon-small-fire-spitter-t1'] = 0.50,
+        ['mtn-addon-small-fire-spitter-t2'] = 0.50,
+        ['mtn-addon-small-fire-spitter-t3'] = 0.50,
+
+        ['mtn-addon-medium-piercing-biter-t1'] = 0.25,
+        ['mtn-addon-medium-piercing-biter-t2'] = 0.25,
+        ['mtn-addon-medium-piercing-biter-t3'] = 0.25,
+        ['mtn-addon-medium-acid-biter-t1'] = 0.25,
+        ['mtn-addon-medium-acid-biter-t2'] = 0.25,
+        ['mtn-addon-medium-acid-biter-t3'] = 0.25,
+        ['mtn-addon-medium-explosive-biter-t1'] = 0.25,
+        ['mtn-addon-medium-explosive-biter-t2'] = 0.25,
+        ['mtn-addon-medium-explosive-biter-t3'] = 0.25,
+        ['mtn-addon-medium-poison-biter-t1'] = 0.25,
+        ['mtn-addon-medium-poison-biter-t2'] = 0.25,
+        ['mtn-addon-medium-poison-biter-t3'] = 0.25,
+        ['mtn-addon-medium-fire-biter-t1'] = 0.25,
+        ['mtn-addon-medium-fire-biter-t2'] = 0.25,
+        ['mtn-addon-medium-fire-biter-t3'] = 0.25,
+        ['mtn-addon-medium-piercing-spitter-t1'] = 0.25,
+        ['mtn-addon-medium-piercing-spitter-t2'] = 0.25,
+        ['mtn-addon-medium-piercing-spitter-t3'] = 0.25,
+        ['mtn-addon-medium-acid-spitter-t1'] = 0.25,
+        ['mtn-addon-medium-acid-spitter-t2'] = 0.25,
+        ['mtn-addon-medium-acid-spitter-t3'] = 0.25,
+        ['mtn-addon-medium-explosive-spitter-t1'] = 0.25,
+        ['mtn-addon-medium-explosive-spitter-t2'] = 0.25,
+        ['mtn-addon-medium-explosive-spitter-t3'] = 0.25,
+        ['mtn-addon-medium-poison-spitter-t1'] = 0.25,
+        ['mtn-addon-medium-poison-spitter-t2'] = 0.25,
+        ['mtn-addon-medium-poison-spitter-t3'] = 0.25,
+        ['mtn-addon-medium-fire-spitter-t1'] = 0.25,
+        ['mtn-addon-medium-fire-spitter-t2'] = 0.25,
+        ['mtn-addon-medium-fire-spitter-t3'] = 0.25,
+
+        ['mtn-addon-big-piercing-biter-t1'] = 0.25,
+        ['mtn-addon-big-piercing-biter-t2'] = 0.25,
+        ['mtn-addon-big-piercing-biter-t3'] = 0.25,
+        ['mtn-addon-big-acid-biter-t1'] = 0.25,
+        ['mtn-addon-big-acid-biter-t2'] = 0.25,
+        ['mtn-addon-big-acid-biter-t3'] = 0.25,
+        ['mtn-addon-big-explosive-biter-t1'] = 0.25,
+        ['mtn-addon-big-explosive-biter-t2'] = 0.25,
+        ['mtn-addon-big-explosive-biter-t3'] = 0.25,
+        ['mtn-addon-big-poison-biter-t1'] = 0.25,
+        ['mtn-addon-big-poison-biter-t2'] = 0.25,
+        ['mtn-addon-big-poison-biter-t3'] = 0.25,
+        ['mtn-addon-big-fire-biter-t1'] = 0.25,
+        ['mtn-addon-big-fire-biter-t2'] = 0.25,
+        ['mtn-addon-big-fire-biter-t3'] = 0.25,
+        ['mtn-addon-big-piercing-spitter-t1'] = 0.25,
+        ['mtn-addon-big-piercing-spitter-t2'] = 0.25,
+        ['mtn-addon-big-piercing-spitter-t3'] = 0.25,
+        ['mtn-addon-big-acid-spitter-t1'] = 0.25,
+        ['mtn-addon-big-acid-spitter-t2'] = 0.25,
+        ['mtn-addon-big-acid-spitter-t3'] = 0.25,
+        ['mtn-addon-big-explosive-spitter-t1'] = 0.25,
+        ['mtn-addon-big-explosive-spitter-t2'] = 0.25,
+        ['mtn-addon-big-explosive-spitter-t3'] = 0.25,
+        ['mtn-addon-big-poison-spitter-t1'] = 0.25,
+        ['mtn-addon-big-poison-spitter-t2'] = 0.25,
+        ['mtn-addon-big-poison-spitter-t3'] = 0.25,
+        ['mtn-addon-big-fire-spitter-t1'] = 0.25,
+        ['mtn-addon-big-fire-spitter-t2'] = 0.25,
+        ['mtn-addon-big-fire-spitter-t3'] = 0.25,
+
+        ['mtn-addon-behemoth-piercing-biter-t1'] = 0.25,
+        ['mtn-addon-behemoth-piercing-biter-t2'] = 0.25,
+        ['mtn-addon-behemoth-piercing-biter-t3'] = 0.25,
+        ['mtn-addon-behemoth-acid-biter-t1'] = 0.25,
+        ['mtn-addon-behemoth-acid-biter-t2'] = 0.25,
+        ['mtn-addon-behemoth-acid-biter-t3'] = 0.25,
+        ['mtn-addon-behemoth-explosive-biter-t1'] = 0.25,
+        ['mtn-addon-behemoth-explosive-biter-t2'] = 0.25,
+        ['mtn-addon-behemoth-explosive-biter-t3'] = 0.25,
+        ['mtn-addon-behemoth-poison-biter-t1'] = 0.25,
+        ['mtn-addon-behemoth-poison-biter-t2'] = 0.25,
+        ['mtn-addon-behemoth-poison-biter-t3'] = 0.25,
+        ['mtn-addon-behemoth-fire-biter-t1'] = 0.25,
+        ['mtn-addon-behemoth-fire-biter-t2'] = 0.25,
+        ['mtn-addon-behemoth-fire-biter-t3'] = 0.25,
+        ['mtn-addon-behemoth-piercing-spitter-t1'] = 0.25,
+        ['mtn-addon-behemoth-piercing-spitter-t2'] = 0.25,
+        ['mtn-addon-behemoth-piercing-spitter-t3'] = 0.25,
+        ['mtn-addon-behemoth-acid-spitter-t1'] = 0.25,
+        ['mtn-addon-behemoth-acid-spitter-t2'] = 0.25,
+        ['mtn-addon-behemoth-acid-spitter-t3'] = 0.25,
+        ['mtn-addon-behemoth-explosive-spitter-t1'] = 0.25,
+        ['mtn-addon-behemoth-explosive-spitter-t2'] = 0.25,
+        ['mtn-addon-behemoth-explosive-spitter-t3'] = 0.25,
+        ['mtn-addon-behemoth-poison-spitter-t1'] = 0.25,
+        ['mtn-addon-behemoth-poison-spitter-t2'] = 0.25,
+        ['mtn-addon-behemoth-poison-spitter-t3'] = 0.25,
+        ['mtn-addon-behemoth-fire-spitter-t1'] = 0.25,
+        ['mtn-addon-behemoth-fire-spitter-t2'] = 0.25,
+        ['mtn-addon-behemoth-fire-spitter-t3'] = 0.25,
+    }
+    unit_settings.scale_worms_by_health = {
+        ['land-mine'] = 0.5,           -- not active as of now
+        ['gun-turret'] = 0.5,          -- not active as of now
+        ['flamethrower-turret'] = 0.4, -- not active as of now
+        ['artillery-turret'] = 0.25,   -- not active as of now
+        ['small-worm-turret'] = 0.8,
+        ['medium-worm-turret'] = 0.6,
+        ['big-worm-turret'] = 0.3,
+        ['behemoth-worm-turret'] = 0.3,
+        ['mtn-addon-small-explosive-worm-turret'] = 0.50,
+        ['mtn-addon-small-fire-worm-turret'] = 0.50,
+        ['mtn-addon-small-piercing-worm-turret'] = 0.50,
+        ['mtn-addon-small-poison-worm-turret'] = 0.50,
+        ['mtn-addon-small-electric-worm-turret'] = 0.50,
+        ['mtn-addon-medium-explosive-worm-turret'] = 0.25,
+        ['mtn-addon-medium-fire-worm-turret'] = 0.25,
+        ['mtn-addon-medium-piercing-worm-turret'] = 0.25,
+        ['mtn-addon-medium-poison-worm-turret'] = 0.25,
+        ['mtn-addon-medium-electric-worm-turret'] = 0.25,
+        ['mtn-addon-big-explosive-worm-turret'] = 0.1,
+        ['mtn-addon-big-fire-worm-turret'] = 0.1,
+        ['mtn-addon-big-piercing-worm-turret'] = 0.1,
+        ['mtn-addon-big-poison-worm-turret'] = 0.1,
+        ['mtn-addon-big-electric-worm-turret'] = 0.1,
+        ['mtn-addon-giant-worm-turret'] = 0.05,
+    }
+end
+
+function Public.set_worm_raffle()
+    local unit_settings = WD.get('unit_settings')
+    unit_settings.custom_worm_raffle = set_worm_raffle_token
+end
+
 function Public.find_rocks_and_slowly_remove()
     local active_surface_index = Public.get('active_surface_index')
     local surface = game.get_surface(active_surface_index)
@@ -1058,7 +1652,7 @@ function Public.find_void_tiles_and_replace()
         }
     end
 
-    local tiles = surface.find_tiles_filtered({ area = area, name = { 'out-of-map', 'water', 'deepwater', 'water-green', 'deepwater-green' } })
+    local tiles = surface.find_tiles_filtered({ area = area, name = { 'out-of-map', 'water', 'deepwater', 'water-green', 'deepwater-green', 'void-tile' } })
     if tiles and #tiles > 0 then
         Public.set('tiles_to_replace', tiles)
     end
@@ -1378,7 +1972,7 @@ function Public.set_spawn_position()
             return false
         end
         local get_tile = surface.get_tile(tile)
-        if get_tile.valid and get_tile.name == 'out-of-map' then
+        if get_tile.valid and (get_tile.name == 'out-of-map' or get_tile.name == 'void-tile') then
             remove(tbl, inc - inc + 1)
             return true
         else
@@ -1536,7 +2130,7 @@ function Public.on_player_joined_game(event)
     else
         local p = { x = player.physical_position.x, y = player.physical_position.y }
         local get_tile = surface.get_tile(p.x, p.y)
-        if get_tile.valid and get_tile.name == 'out-of-map' then
+        if get_tile.valid and (get_tile.name == 'out-of-map' or get_tile.name == 'void-tile') then
             local pos = surface.find_non_colliding_position('character', game.forces.player.get_spawn_position(surface), 3, 0)
             if pos then
                 player.teleport(pos, surface)

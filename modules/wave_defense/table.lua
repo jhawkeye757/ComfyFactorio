@@ -149,6 +149,22 @@ function Public.reset_wave_defense()
         },
         nests = {}
     }
+    this.threat_values = {
+        ['biter-spawner'] = 128,
+        ['spitter-spawner'] = 128,
+        ['behemoth-biter'] = 64,
+        ['behemoth-spitter'] = 64,
+        ['big-biter'] = 16,
+        ['big-spitter'] = 16,
+        ['medium-biter'] = 4,
+        ['medium-spitter'] = 4,
+        ['small-biter'] = 1,
+        ['small-spitter'] = 1,
+        ['small-worm-turret'] = 16,
+        ['medium-worm-turret'] = 32,
+        ['big-worm-turret'] = 64,
+        ['behemoth-worm-turret'] = 128
+    }
     this.unit_settings = {
         scale_units_by_health = {
             ['small-biter'] = 1,
@@ -159,11 +175,8 @@ function Public.reset_wave_defense()
             ['medium-spitter'] = 0.75,
             ['big-spitter'] = 0.5,
             ['behemoth-spitter'] = 0.25
-        }
-    }
-    this.worm_unit_settings = {
-        -- note that final health modifier isn't lower than 1
-        scale_units_by_health = {
+        },
+        scale_worms_by_health = {
             ['land-mine'] = 0.5,           -- not active as of now
             ['gun-turret'] = 0.5,          -- not active as of now
             ['flamethrower-turret'] = 0.4, -- not active as of now

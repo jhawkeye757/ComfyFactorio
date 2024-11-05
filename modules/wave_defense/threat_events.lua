@@ -45,11 +45,12 @@ local function remove_unit(entity)
     if not biter_health_boost_units then
         return
     end
+    local threat_values = Public.get('threat_values')
 
     if biter_health_boost_units[unit_number] then
         m = 1 / biter_health_boost_units[unit_number][2]
     end
-    local active_threat_loss = math.round(Public.threat_values[entity.name] * m, 2)
+    local active_threat_loss = math.round(threat_values[entity.name] * m, 2)
     local active_biter_threat = Public.get('active_biter_threat')
     Public.set('active_biter_threat', active_biter_threat - active_threat_loss)
     local active_biter_count = Public.get('active_biter_count')
@@ -146,7 +147,8 @@ local place_nest_near_unit_group = function ()
     remove_unit(unit)
     unit.destroy()
     local threat = Public.get('threat')
-    Public.set('threat', threat - Public.threat_values[name])
+    local threat_values = Public.get('threat_values')
+    Public.set('threat', threat - threat_values[name])
     return true
 end
 
@@ -276,14 +278,15 @@ function Public.build_worm()
         return
     end
     local u = unit.surface.create_entity({ name = worm, position = position, force = unit.force })
-    local worm_unit_settings = Public.get('worm_unit_settings')
+    local unit_settings = Public.get('unit_settings')
     local modified_unit_health = Public.get('modified_unit_health')
     local modified_boss_unit_health = Public.get('modified_boss_unit_health')
+    local threat_values = Public.get('threat_values')
 
     if boss then
         BiterHealthBooster.add_boss_unit(u, modified_boss_unit_health.current_value, 0.5)
     else
-        local final_health = round(modified_unit_health.current_value * worm_unit_settings.scale_units_by_health[worm], 3)
+        local final_health = round(modified_unit_health.current_value * unit_settings.scale_worms_by_health[worm], 3)
         if final_health < 1 then
             final_health = 1
         end
@@ -294,7 +297,7 @@ function Public.build_worm()
     unit.surface.create_entity({ name = 'blood-explosion-huge', position = unit.position })
     remove_unit(unit)
     unit.destroy()
-    Public.set('threat', threat - Public.threat_values[worm])
+    Public.set('threat', threat - threat_values[worm])
 end
 
 function Public.build_worm_custom()
@@ -451,49 +454,51 @@ local function on_entity_died(event)
         return
     end
 
+    local threat_values = Public.get('threat_values')
     local disable_threat_below_zero = Public.get('disable_threat_below_zero')
     local valid_enemy_forces = Public.get('valid_enemy_forces')
     if not valid_enemy_forces then
-        goto continue
+        goto end_if
     end
 
     if entity.type == 'unit' then
         local biter_health_boost = BiterHealthBooster.get('biter_health_boost')
 
-        if not Public.threat_values[entity.name] then
+        if not threat_values[entity.name] then
             goto continue
         end
         if disable_threat_below_zero then
             local threat = Public.get('threat')
-            local sub = math.round(threat - Public.threat_values[entity.name] * biter_health_boost, 2)
+            local sub = math.round(threat - threat_values[entity.name] * biter_health_boost, 2)
 
             if sub <= 0 or threat <= 0 then
                 Public.set('threat', 0)
                 remove_unit(entity)
                 goto continue
             end
-            Public.set('threat', math.round(threat - Public.threat_values[entity.name] * biter_health_boost, 2))
+            Public.set('threat', math.round(threat - threat_values[entity.name] * biter_health_boost, 2))
             remove_unit(entity)
         else
             local threat = Public.get('threat')
-            Public.set('threat', math.round(threat - Public.threat_values[entity.name] * biter_health_boost, 2))
+            Public.set('threat', math.round(threat - threat_values[entity.name] * biter_health_boost, 2))
             remove_unit(entity)
         end
+        ::continue::
     else
         local biter_health_boost = BiterHealthBooster.get('biter_health_boost')
 
         if valid_enemy_forces[entity.force.name] then
             if entity.health then
-                if Public.threat_values[entity.name] then
+                if threat_values[entity.name] then
                     local threat = Public.get('threat')
-                    Public.set('threat', math.round(threat - Public.threat_values[entity.name] * biter_health_boost, 2))
+                    Public.set('threat', math.round(threat - threat_values[entity.name] * biter_health_boost, 2))
                 end
                 spawn_unit_spawner_inhabitants(entity)
             end
         end
     end
 
-    ::continue::
+    ::end_if::
 
     if entity.force.index == 3 then
         if event.cause then

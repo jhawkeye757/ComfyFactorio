@@ -16,6 +16,13 @@ local round = math.round
 local floor = math.floor
 local module_tag = '[color=blue]Comfylatron:[/color] '
 
+local is_modded = script.active_mods['MtnFortressAddons'] or false
+
+local out_of_map_tile = 'out-of-map'
+if is_modded then
+    out_of_map_tile = 'void-tile'
+end
+
 local messages = {
     ' vehicle was nibbled to death.',
     ' vehicle should not have played with the biters.',
@@ -890,12 +897,12 @@ function Public.remove_surface(player)
     end
 
     for _, tile in pairs(surface.find_tiles_filtered({ area = car.area })) do
-        surface.set_tiles({ { name = 'out-of-map', position = tile.position } }, true)
+        surface.set_tiles({ { name = out_of_map_tile, position = tile.position } }, true)
     end
     for _, x in pairs({ car.area.left_top.x - 1.5, car.area.right_bottom.x + 1.5 }) do
         local p = { x = x, y = car.area.left_top.y + ((car.area.right_bottom.y - car.area.left_top.y) * 0.5) }
-        surface.set_tiles({ { name = 'out-of-map', position = { x = p.x + 0.5, y = p.y } } }, true)
-        surface.set_tiles({ { name = 'out-of-map', position = { x = p.x - 1, y = p.y } } }, true)
+        surface.set_tiles({ { name = out_of_map_tile, position = { x = p.x + 0.5, y = p.y } } }, true)
+        surface.set_tiles({ { name = out_of_map_tile, position = { x = p.x - 1, y = p.y } } }, true)
     end
     game.delete_surface(surface)
 end
@@ -972,12 +979,12 @@ function Public.kill_car(entity)
     local surface = game.surfaces[surface_index]
     kill_doors(car)
     for _, tile in pairs(surface.find_tiles_filtered({ area = car.area })) do
-        surface.set_tiles({ { name = 'out-of-map', position = tile.position } }, true)
+        surface.set_tiles({ { name = out_of_map_tile, position = tile.position } }, true)
     end
     for _, x in pairs({ car.area.left_top.x - 1.5, car.area.right_bottom.x + 1.5 }) do
         local p = { x = x, y = car.area.left_top.y + ((car.area.right_bottom.y - car.area.left_top.y) * 0.5) }
-        surface.set_tiles({ { name = 'out-of-map', position = { x = p.x + 0.5, y = p.y } } }, true)
-        surface.set_tiles({ { name = 'out-of-map', position = { x = p.x - 1, y = p.y } } }, true)
+        surface.set_tiles({ { name = out_of_map_tile, position = { x = p.x + 0.5, y = p.y } } }, true)
+        surface.set_tiles({ { name = out_of_map_tile, position = { x = p.x - 1, y = p.y } } }, true)
     end
     car.entity.force.chart(surface, car.area)
     game.delete_surface(surface)
@@ -1141,7 +1148,7 @@ function Public.create_room_surface(car)
     surface.force_generate_chunk_requests()
     exclude_surface(surface)
     for _, tile in pairs(surface.find_tiles_filtered({ area = { { -2, -2 }, { 2, 2 } } })) do
-        surface.set_tiles({ { name = 'out-of-map', position = tile.position } }, true)
+        surface.set_tiles({ { name = out_of_map_tile, position = tile.position } }, true)
     end
     local surfaces = IC.get('surfaces')
     surfaces[unit_number] = surface.index

@@ -1124,6 +1124,52 @@ function Public.get_heal_modifier_from_using_fish(player)
     end
 end
 
+function Public.get_mana_modifier_from_using_fish(player, item)
+    local rpg_extra = Public.get('rpg_extra')
+    if rpg_extra.disable_get_heal_modifier_from_using_fish then
+        return
+    end
+
+    local rpg_t = Public.get_value_from_player(player.index)
+    if not rpg_t then return end
+
+    if rpg_t.mana_max < 1 then
+        return
+    end
+
+    if rpg_t.mana >= rpg_t.mana_max then
+        rpg_t.mana = rpg_t.mana_max
+        return
+    end
+
+    if player.character == nil then return end
+
+
+    local base_amount = item == 'cooked-fish' and 40 or item == 'grilled-fish' and 80 or 0
+    local rng = random(base_amount, base_amount * rpg_extra.mana_modifier)
+    local position = player.physical_position
+    local mana_max = rpg_t.mana_max
+    local color
+    if rpg_t.mana > (mana_max * 0.50) then
+        color = { b = 0.2, r = 0.1, g = 1, a = 0.8 }
+    elseif rpg_t.mana > (mana_max * 0.25) then
+        color = { r = 1, g = 1, b = 0 }
+    else
+        color = { b = 0.1, r = 1, g = 0, a = 0.8 }
+    end
+    player.create_local_flying_text(
+        {
+            position = { position.x, position.y + 0.6 },
+            text = '+' .. rng,
+            color = color,
+        }
+    )
+    rpg_t.mana = rpg_t.mana + rng
+    if rpg_t.mana >= rpg_t.mana_max then
+        rpg_t.mana = rpg_t.mana_max
+    end
+end
+
 function Public.get_mana_modifier(player)
     local rpg_t = Public.get_value_from_player(player.index)
     if not rpg_t then return end

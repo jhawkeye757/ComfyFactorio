@@ -137,12 +137,12 @@ local function spawn_worms(data)
     local unit = surface.create_entity({ name = unit_to_create, position = position })
     max_biters.amount = max_biters.amount + 1
 
-    local worm_unit_settings = WD.get('worm_unit_settings')
+    local unit_settings = WD.get('unit_settings')
 
     if random(1, 30) == 1 then
         BiterHealthBooster.add_boss_unit(unit, modified_boss_unit_health.current_value, 0.38)
     else
-        local final_health = round(modified_unit_health.current_value * worm_unit_settings.scale_units_by_health[unit.name], 3)
+        local final_health = round(modified_unit_health.current_value * unit_settings.scale_worms_by_health[unit.name], 3)
         if final_health < 1 then
             final_health = 1
         end

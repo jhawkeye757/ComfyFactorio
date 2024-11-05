@@ -7,6 +7,8 @@ local abs = math.abs
 local floor = math.floor
 local ceil = math.ceil
 
+local is_modded = Public.is_modded
+
 local scenario_name = Public.scenario_name
 local zone_settings = Public.zone_settings
 local worm_level_modifier = 0.19
@@ -46,6 +48,16 @@ if not has_space_age() then
     start_ground_tiles = vanilla_start_ground_tiles
 end
 
+local out_of_map_tile = 'out-of-map'
+if is_modded then
+    out_of_map_tile = 'void-tile'
+end
+
+local custom_stone_wall = 'stone-wall'
+if is_modded then
+    custom_stone_wall = 'steel-wall'
+end
+
 local nuclear_tiles = {
     'nuclear-ground',
     'nuclear-ground',
@@ -78,6 +90,21 @@ local rock_raffle = {
     'big-rock',
     'huge-rock'
 }
+
+if is_modded then
+    rock_raffle = {
+        'huge-rock-crisp',
+        'big-rock-crisp',
+        'big-sand-rock-crisp',
+        'huge-rock-crisp-1',
+        'big-rock-crisp-1',
+        'big-sand-rock-crisp-1',
+        'huge-rock-crisp-2',
+        'big-rock-crisp-2',
+        'big-sand-rock-crisp-2',
+
+    }
+end
 
 local size_of_rock_raffle = #rock_raffle
 
@@ -148,6 +175,31 @@ local turret_list = {
     [6] = { name = 'artillery-turret', callback = callback[6] }
 }
 
+if is_modded then
+    turret_list = {}
+    turret_list[#turret_list + 1] = { name = 'mtn-addon-gun-turret-1', callback = callback[1] }
+    turret_list[#turret_list + 1] = { name = 'mtn-addon-gun-turret-2', callback = callback[2] }
+    turret_list[#turret_list + 1] = { name = 'mtn-addon-gun-turret-3', callback = callback[3] }
+    turret_list[#turret_list + 1] = { name = 'mtn-addon-gun-turret-4', callback = callback[4] }
+    turret_list[#turret_list + 1] = { name = 'mtn-addon-gun-turret-5', callback = callback[4] }
+    turret_list[#turret_list + 1] = { name = 'mtn-addon-gun-turret-6', callback = callback[4] }
+    turret_list[#turret_list + 1] = { name = 'mtn-addon-gun-turret-7', callback = callback[4] }
+    turret_list[#turret_list + 1] = { name = 'mtn-addon-gun-turret-8', callback = callback[4] }
+    turret_list[#turret_list + 1] = { name = 'mtn-addon-gun-turret-9', callback = callback[4] }
+    turret_list[#turret_list + 1] = { name = 'mtn-addon-laser-turret-1', callback = nil }
+    turret_list[#turret_list + 1] = { name = 'mtn-addon-laser-turret-2', callback = nil }
+    turret_list[#turret_list + 1] = { name = 'mtn-addon-laser-turret-3', callback = nil }
+    turret_list[#turret_list + 1] = { name = 'mtn-addon-laser-turret-4', callback = nil }
+    turret_list[#turret_list + 1] = { name = 'mtn-addon-laser-turret-5', callback = nil }
+    turret_list[#turret_list + 1] = { name = 'mtn-addon-laser-turret-6', callback = nil }
+    turret_list[#turret_list + 1] = { name = 'mtn-addon-laser-turret-7', callback = nil }
+    turret_list[#turret_list + 1] = { name = 'mtn-addon-laser-turret-8', callback = nil }
+    turret_list[#turret_list + 1] = { name = 'mtn-addon-laser-turret-9', callback = nil }
+    turret_list[#turret_list + 1] = { name = 'flamethrower-turret', callback = callback[5] }
+    turret_list[#turret_list + 1] = { name = 'artillery-turret', callback = callback[6] }
+end
+
+
 local function get_scrap_mineable_entities()
     local scrap_mineable_entities = {
         'crash-site-spaceship-wreck-small-1',
@@ -162,6 +214,23 @@ local function get_scrap_mineable_entities()
         'crash-site-spaceship-wreck-small-5',
         'crash-site-spaceship-wreck-small-6'
     }
+
+    if is_modded then
+        scrap_mineable_entities = {
+            'mineable-wreckage-1',
+            'mineable-wreckage-1',
+            'mineable-wreckage-1',
+            'mineable-wreckage-1',
+            'mineable-wreckage-4',
+            'mineable-wreckage-4',
+            'mineable-wreckage-4',
+            'mineable-wreckage-4',
+            'mineable-wreckage-6',
+            'mineable-wreckage-6',
+            'mineable-wreckage-6',
+            'mineable-wreckage-6',
+        }
+    end
 
     local scrap_mineable_entities_index = #scrap_mineable_entities
 
@@ -458,7 +527,7 @@ local function wall(p, data)
         if
             surface.can_place_entity(
                 {
-                    name = 'stone-wall',
+                    name = custom_stone_wall,
                     position = p,
                     force = 'enemy'
                 }
@@ -475,7 +544,7 @@ local function wall(p, data)
                 if y <= 22 then
                     if random(1, y + 1) == 1 then
                         entities[#entities + 1] = {
-                            name = 'stone-wall',
+                            name = custom_stone_wall,
                             position = p,
                             force = 'neutral',
                             callback = stone_wall
@@ -580,7 +649,7 @@ local function wall(p, data)
                 else
                     if random(1, 32 - y) == 1 then
                         entities[#entities + 1] = {
-                            name = 'stone-wall',
+                            name = custom_stone_wall,
                             position = p,
                             force = 'neutral',
                             callback = stone_wall
@@ -618,26 +687,58 @@ local function wall(p, data)
                     spawn_turret(entities, p, 2)
                 end
             elseif abs(p.y) < zone_settings.zone_depth * 2.5 then
-                if random(1, 8) == 1 then
+                if random(1, 4) == 1 then
                     spawn_turret(entities, p, 3)
+                else
+                    spawn_turret(entities, p, 4)
                 end
             elseif abs(p.y) < zone_settings.zone_depth * 3.5 then
                 if random(1, 4) == 1 then
-                    spawn_turret(entities, p, 4)
+                    spawn_turret(entities, p, 5)
                 else
-                    spawn_turret(entities, p, 3)
+                    spawn_turret(entities, p, 6)
                 end
             elseif abs(p.y) < zone_settings.zone_depth * 4.5 then
                 if random(1, 4) == 1 then
-                    spawn_turret(entities, p, 4)
+                    spawn_turret(entities, p, 7)
                 else
-                    spawn_turret(entities, p, 5)
+                    spawn_turret(entities, p, 8)
                 end
             elseif abs(p.y) < zone_settings.zone_depth * 5.5 then
                 if random(1, 4) == 1 then
-                    spawn_turret(entities, p, 4)
+                    spawn_turret(entities, p, 9)
                 elseif random(1, 2) == 1 then
-                    spawn_turret(entities, p, 5)
+                    spawn_turret(entities, p, 10)
+                end
+            elseif abs(p.y) < zone_settings.zone_depth * 6.5 then
+                if random(1, 4) == 1 then
+                    spawn_turret(entities, p, 11)
+                elseif random(1, 2) == 1 then
+                    spawn_turret(entities, p, 12)
+                end
+            elseif abs(p.y) < zone_settings.zone_depth * 7.5 then
+                if random(1, 4) == 1 then
+                    spawn_turret(entities, p, 13)
+                elseif random(1, 2) == 1 then
+                    spawn_turret(entities, p, 14)
+                end
+            elseif abs(p.y) < zone_settings.zone_depth * 8.5 then
+                if random(1, 4) == 1 then
+                    spawn_turret(entities, p, 15)
+                elseif random(1, 2) == 1 then
+                    spawn_turret(entities, p, 16)
+                end
+            elseif abs(p.y) < zone_settings.zone_depth * 9.5 then
+                if random(1, 4) == 1 then
+                    spawn_turret(entities, p, 17)
+                elseif random(1, 2) == 1 then
+                    spawn_turret(entities, p, 18)
+                end
+            elseif abs(p.y) < zone_settings.zone_depth * 10.5 then
+                if random(1, 4) == 1 then
+                    spawn_turret(entities, p, 19)
+                elseif random(1, 2) == 1 then
+                    spawn_turret(entities, p, 20)
                 end
             end
         elseif abs(p.y) > zone_settings.zone_depth * 5.5 then
@@ -2938,7 +3039,7 @@ end
 
 local function out_of_map(p, data)
     local tiles = data.tiles
-    tiles[#tiles + 1] = { name = 'out-of-map', position = p }
+    tiles[#tiles + 1] = { name = out_of_map_tile, position = p }
 end
 
 function Public.heavy_functions(data)
@@ -2955,7 +3056,7 @@ function Public.heavy_functions(data)
     local pre_final_battle = Public.get('pre_final_battle')
     if pre_final_battle then
         local tiles = data.tiles
-        tiles[#tiles + 1] = { name = 'out-of-map', position = p }
+        tiles[#tiles + 1] = { name = out_of_map_tile, position = p }
         return
     end
 
@@ -3054,7 +3155,7 @@ Event.add(
             local tiles = {}
             for x = 0, 31 do
                 for y = 0, 31 do
-                    tiles[#tiles + 1] = { name = 'out-of-map', position = { left_top.x + x, left_top.y + y } }
+                    tiles[#tiles + 1] = { name = out_of_map_tile, position = { left_top.x + x, left_top.y + y } }
                 end
             end
             surface.set_tiles(tiles, false)
@@ -3095,7 +3196,7 @@ Event.add(
 
             if left_top.y > 32 then
                 for k, v in pairs(loading_chunk_vectors) do
-                    tiles[k] = { name = 'out-of-map', position = { left_top.x + v[1], left_top.y + v[2] } }
+                    tiles[k] = { name = out_of_map_tile, position = { left_top.x + v[1], left_top.y + v[2] } }
                 end
             end
             surface.set_tiles(tiles, false)
@@ -3118,7 +3219,7 @@ Event.add(
 
             if math.abs(left_top.y) > 128 then
                 for k, v in pairs(loading_chunk_vectors) do
-                    tiles[k] = { name = 'out-of-map', position = { left_top.x + v[1], left_top.y + v[2] } }
+                    tiles[k] = { name = out_of_map_tile, position = { left_top.x + v[1], left_top.y + v[2] } }
                 end
             end
             surface.set_tiles(tiles, false)

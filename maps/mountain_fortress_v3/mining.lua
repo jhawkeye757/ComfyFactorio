@@ -112,7 +112,16 @@ local scrap_yield_amounts = {
 local valid_rocks = {
     ['big-sand-rock'] = true,
     ['big-rock'] = true,
-    ['huge-rock'] = true
+    ['huge-rock'] = true,
+    ['huge-rock-crisp'] = true,
+    ['big-rock-crisp'] = true,
+    ['big-sand-rock-crisp'] = true,
+    ['huge-rock-crisp-1'] = true,
+    ['big-rock-crisp-1'] = true,
+    ['big-sand-rock-crisp-1'] = true,
+    ['huge-rock-crisp-2'] = true,
+    ['big-rock-crisp-2'] = true,
+    ['big-sand-rock-crisp-2'] = true,
 }
 
 local valid_trees = {
@@ -136,13 +145,28 @@ local valid_scrap = {
     ['crash-site-spaceship-wreck-small-4'] = true,
     ['crash-site-spaceship-wreck-small-5'] = true,
     ['crash-site-spaceship-wreck-small-6'] = true,
-    ['mineable-wreckages'] = true
+    ['mineable-wreckages'] = true,
+    ['mineable-wreckages-1'] = true,
+    ['mineable-wreckages-2'] = true,
+    ['mineable-wreckages-3'] = true,
+    ['mineable-wreckages-4'] = true,
+    ['mineable-wreckages-5'] = true,
+    ['mineable-wreckages-6'] = true,
 }
 
 local rock_yield = {
     ['big-rock'] = 1,
     ['huge-rock'] = 2,
-    ['big-sand-rock'] = 1
+    ['big-sand-rock'] = 1,
+    ['huge-rock-crisp'] = 2,
+    ['big-rock-crisp'] = 1,
+    ['big-sand-rock-crisp'] = 1,
+    ['huge-rock-red'] = 2,
+    ['big-rock-red'] = 1,
+    ['big-sand-rock-red'] = 1,
+    ['huge-rock-green'] = 2,
+    ['big-rock-green'] = 1,
+    ['big-sand-rock-green'] = 1,
 }
 
 local particles = {

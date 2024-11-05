@@ -29,7 +29,7 @@ local cooldown_indicator_name = Gui.uid_name()
 
 Global.register(
     this,
-    function(tbl)
+    function (tbl)
         this = tbl
     end
 )
@@ -42,7 +42,7 @@ Public.events = {
 
 Public.points_per_level = 5
 
-Public.experience_levels = {0}
+Public.experience_levels = { 0 }
 for a = 1, 4999, 1 do -- max level
     Public.experience_levels[#Public.experience_levels + 1] = Public.experience_levels[#Public.experience_levels] + a * 8
 end
@@ -62,7 +62,7 @@ Public.die_cause = {
 
 Public.nth_tick = 18001
 Public.visuals_delay = 1800
-Public.xp_floating_text_color = {157, 157, 157}
+Public.xp_floating_text_color = { 157, 157, 157 }
 
 Public.enemy_types = {
     ['unit'] = true,
@@ -79,11 +79,11 @@ Public.classes = {
 }
 
 Public.auto_allocate_nodes = {
-    {'allocations.deactivated'},
-    {'allocations.str'},
-    {'allocations.mag'},
-    {'allocations.dex'},
-    {'allocations.vit'}
+    { 'allocations.deactivated' },
+    { 'allocations.str' },
+    { 'allocations.mag' },
+    { 'allocations.dex' },
+    { 'allocations.vit' }
 }
 
 Public.auto_allocate_nodes_func = {
@@ -101,6 +101,7 @@ function Public.reset_table(migrate)
     this.rpg_extra.level_limit_enabled = false
     this.rpg_extra.global_pool = 0
     this.rpg_extra.heal_modifier = 2
+    this.rpg_extra.mana_modifier = 2
     this.rpg_extra.personal_tax_rate = 0.3
     this.rpg_extra.leftover_pool = 0
     this.rpg_extra.turret_kills_to_global_pool = true
@@ -162,6 +163,16 @@ function Public.get(key)
         return this[key]
     else
         return this
+    end
+end
+
+--- Gets value from table
+---@param key string
+function Public.get_extra(key)
+    if key then
+        return this.rpg_extra[key]
+    else
+        return this.rpg_extra
     end
 end
 
@@ -232,6 +243,19 @@ function Public.set(key, value)
         return this[key]
     else
         return this
+    end
+end
+
+--- Sets value to table
+---@param key string
+function Public.set_extra(key, value)
+    if key and (value or value == false) then
+        this.rpg_extra[key] = value
+        return this.rpg_extra[key]
+    elseif key then
+        return this.rpg_extra[key]
+    else
+        return this.rpg_extra
     end
 end
 
@@ -499,14 +523,14 @@ Public.spell2_button_name = spell2_button_name
 Public.spell3_button_name = spell3_button_name
 Public.cooldown_indicator_name = cooldown_indicator_name
 
-local on_init = function()
+local on_init = function ()
     Public.reset_table()
 end
 
 Event.on_init(on_init)
 
 Event.on_configuration_changed(
-    function()
+    function ()
         print('[RPG] Migrating to new version')
         Public.migrate_to_new_version()
     end

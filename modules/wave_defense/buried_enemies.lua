@@ -113,12 +113,12 @@ local function spawn_worms(data)
     local unit_to_create = Public.wave_defense_roll_worm_name(sqrt(position.x ^ 2 + position.y ^ 2) * 0.20)
 
     local unit = surface.create_entity({ name = unit_to_create, position = position })
-    local worm_unit_settings = Public.get('worm_unit_settings')
+    local unit_settings = Public.get('unit_settings')
 
     if random(1, 30) == 1 then
         BiterHealthBooster.add_boss_unit(unit, modified_boss_unit_health.current_value, 0.38)
     else
-        local final_health = round(modified_unit_health.current_value * worm_unit_settings.scale_units_by_health[unit.name], 3)
+        local final_health = round(modified_unit_health.current_value * unit_settings.scale_worms_by_health[unit.name], 3)
         if final_health < 1 then
             final_health = 1
         end

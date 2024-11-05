@@ -222,13 +222,14 @@ local function is_unit_valid(biter, max_biter_age, tick)
 end
 
 local function refresh_active_unit_threat()
+    local threat_values = Public.get('threat_values')
     local active_biter_threat = Public.get('active_biter_threat')
     local generated_units = Public.get('generated_units')
     Public.debug_print('refresh_active_unit_threat - current value ' .. active_biter_threat)
     local biter_threat = 0
     for k, biter in pairs(generated_units.active_biters) do
         if valid(biter.entity) then
-            biter_threat = biter_threat + Public.threat_values[biter.entity.name]
+            biter_threat = biter_threat + threat_values[biter.entity.name]
         else
             generated_units.active_biters[k] = nil
         end
@@ -248,6 +249,7 @@ local function time_out_biters()
     local max_active_biters = Public.get('max_active_biters')
     local active_biter_threat = Public.get('active_biter_threat')
     local valid_enemy_forces = Public.get('valid_enemy_forces')
+    local threat_values = Public.get('threat_values')
 
     if active_biter_count < 0 then
         Public.set('active_biter_count', 0)
@@ -266,7 +268,7 @@ local function time_out_biters()
             Public.set('active_biter_count', active_biter_count - 1)
             local entity = biter.entity
             if entity and entity.valid then
-                Public.set('active_biter_threat', active_biter_threat - round(Public.threat_values[entity.name] * biter_health_boost, 2))
+                Public.set('active_biter_threat', active_biter_threat - round(threat_values[entity.name] * biter_health_boost, 2))
                 if valid_enemy_forces[entity.force.name] then
                     entity.destroy()
                 end
@@ -469,6 +471,7 @@ local function spawn_biter(surface, position, force_spawn, is_boss_biter, unit_s
     end
 
     local boosted_health = BiterHealthBooster.get('biter_health_boost')
+    local threat_values = Public.get('threat_values')
 
     local name
     if random(1, 100) > 73 then
@@ -567,7 +570,7 @@ local function spawn_biter(surface, position, force_spawn, is_boss_biter, unit_s
     local active_biter_count = Public.get('active_biter_count')
     Public.set('active_biter_count', active_biter_count + 1)
     local active_biter_threat = Public.get('active_biter_threat')
-    Public.set('active_biter_threat', active_biter_threat + round(Public.threat_values[name] * boosted_health, 2))
+    Public.set('active_biter_threat', active_biter_threat + round(threat_values[name] * boosted_health, 2))
     return biter
 end
 
@@ -609,7 +612,7 @@ local function spawn_worm(surface, position, is_boss_worm)
     if (increase_health_per_wave and (wave_number >= boost_units_when_wave_is_above)) and not is_boss_worm then
         local modified_unit_health = Public.get('modified_unit_health')
         local unit_settings = Public.get('unit_settings')
-        local final_health = round(modified_unit_health.current_value * unit_settings.worm_unit_settings[worm.name], 3)
+        local final_health = round(modified_unit_health.current_value * unit_settings.scale_worms_by_health[worm.name], 3)
         if final_health < 1 then
             final_health = 1
         end

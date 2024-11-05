@@ -544,12 +544,21 @@ function Public.extra_settings(player)
 
         local mana_grid = mana_frame.add({ type = 'table', column_count = 2 })
 
+        local modded_hotkeys = rpg_extra.modded_hotkeys
+
+        local magic_caption = ({ 'rpg_settings.magic_label' })
+        local magic_tooltip = ({ 'rpg_settings.magic_tooltip' })
+        if modded_hotkeys then
+            magic_caption = ({ 'rpg_settings.magic_label_custom' })
+            magic_tooltip = ({ 'rpg_settings.magic_tooltip_custom' })
+        end
+
         local enable_entity =
             setting_grid_2.add(
                 {
                     type = 'label',
-                    caption = ({ 'rpg_settings.magic_label' }),
-                    tooltip = ({ 'rpg_settings.magic_tooltip' })
+                    caption = magic_caption,
+                    tooltip = magic_tooltip
                 }
             )
 

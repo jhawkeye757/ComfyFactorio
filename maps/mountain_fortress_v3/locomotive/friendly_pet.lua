@@ -37,6 +37,15 @@ else
     }
 end
 
+if Public.is_modded then
+    biters = {
+        'mtn-addon-behemoth-acid-biter-t1',
+        'mtn-addon-behemoth-fire-biter-t3',
+        'mtn-addon-big-explosive-spitter-t3',
+        'mtn-addon-big-poison-spitter-t3'
+    }
+end
+
 local function shoo(event)
     local icw_locomotive = Public.get('icw_locomotive')
     if not icw_locomotive then return end

@@ -349,8 +349,8 @@ local function do_place_entities(data)
             if entity then
                 if e.note then -- small-worm-turret, medium-worm-turret, big-worm-turret, behemoth-worm-turret
                     local modified_unit_health = WD.get('modified_unit_health')
-                    local worm_unit_settings = WD.get('worm_unit_settings')
-                    local final_health = round(modified_unit_health.current_value * worm_unit_settings.scale_units_by_health[entity.name], 3)
+                    local unit_settings = WD.get('unit_settings')
+                    local final_health = round(modified_unit_health.current_value * unit_settings.scale_worms_by_health[entity.name], 3)
                     if final_health < 1 then
                         final_health = 1
                     end

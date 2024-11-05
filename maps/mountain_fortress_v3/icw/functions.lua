@@ -12,6 +12,13 @@ local deepcopy = table.deepcopy
 local random = math.random
 local sqrt = math.sqrt
 
+local is_modded = script.active_mods['MtnFortressAddons'] or false
+
+local out_of_map_tile = 'out-of-map'
+if is_modded then
+    out_of_map_tile = 'void-tile'
+end
+
 local scenario_name = WPT.scenario_name
 local fallout_width = 64
 local fallout_debris = {}
@@ -332,7 +339,7 @@ function Public.hazardous_debris()
             local position = fallout_debris[random(1, size_of_debris)]
             local p = { x = position[1], y = position[2] }
             local get_tile = surface.get_tile(p)
-            if get_tile.valid and get_tile.name == 'out-of-map' then
+            if get_tile.valid and get_tile.name == out_of_map_tile then
                 create({ name = 'slowdown-capsule', position = position, force = 'neutral', target = { position[1], position[2] + fallout_width * 2 }, speed = speed })
             end
         end
@@ -341,7 +348,7 @@ function Public.hazardous_debris()
             local position = fallout_debris[random(1, size_of_debris)]
             local p = { x = position[1], y = position[2] }
             local get_tile = surface.get_tile(p)
-            if get_tile.valid and get_tile.name == 'out-of-map' then
+            if get_tile.valid and get_tile.name == out_of_map_tile then
                 create({ name = 'slowdown-capsule', position = position, force = 'neutral', target = { position[1], position[2] + fallout_width * 2 }, speed = speed })
             end
         end
@@ -350,7 +357,7 @@ function Public.hazardous_debris()
             local position = fallout_debris[random(1, size_of_debris)]
             local p = { x = position[1], y = position[2] }
             local get_tile = surface.get_tile(p)
-            if get_tile.valid and get_tile.name == 'out-of-map' then
+            if get_tile.valid and get_tile.name == out_of_map_tile then
                 create(
                     {
                         name = 'atomic-bomb-wave-spawns-nuke-shockwave-explosion',
@@ -367,7 +374,7 @@ function Public.hazardous_debris()
             local position = fallout_debris[random(1, size_of_debris)]
             local p = { x = position[1], y = position[2] }
             local get_tile = surface.get_tile(p)
-            if get_tile.valid and get_tile.name == 'out-of-map' then
+            if get_tile.valid and get_tile.name == out_of_map_tile then
                 create(
                     {
                         name = 'slowdown-capsule',
@@ -384,7 +391,7 @@ function Public.hazardous_debris()
             local position = fallout_debris[random(1, size_of_debris)]
             local p = { x = position[1], y = position[2] }
             local get_tile = surface.get_tile(p)
-            if get_tile.valid and get_tile.name == 'out-of-map' then
+            if get_tile.valid and get_tile.name == out_of_map_tile then
                 create({ name = 'shotgun-pellet', position = position, force = 'neutral', target = { position[1], position[2] + fallout_width * 2 }, speed = speed })
             end
         end
@@ -393,7 +400,7 @@ function Public.hazardous_debris()
             local position = fallout_debris[random(1, size_of_debris)]
             local p = { x = position[1], y = position[2] }
             local get_tile = surface.get_tile(p)
-            if get_tile.valid and get_tile.name == 'out-of-map' then
+            if get_tile.valid and get_tile.name == out_of_map_tile then
                 create({ name = 'cannon-projectile', position = position, force = 'neutral', target = { position[1], position[2] + fallout_width * 2 }, speed = speed })
             end
         end
@@ -402,7 +409,7 @@ function Public.hazardous_debris()
             local position = fallout_debris[random(1, size_of_debris)]
             local p = { x = position[1], y = position[2] }
             local get_tile = surface.get_tile(p)
-            if get_tile.valid and get_tile.name == 'out-of-map' then
+            if get_tile.valid and get_tile.name == out_of_map_tile then
                 create(
                     {
                         name = 'atomic-bomb-wave-spawns-nuke-shockwave-explosion',
@@ -419,7 +426,7 @@ function Public.hazardous_debris()
             local position = fallout_debris[random(1, size_of_debris)]
             local p = { x = position[1], y = position[2] }
             local get_tile = surface.get_tile(p)
-            if get_tile.valid and get_tile.name == 'out-of-map' then
+            if get_tile.valid and get_tile.name == out_of_map_tile then
                 create(
                     {
                         name = 'uranium-cannon-projectile',
@@ -570,12 +577,12 @@ function Public.kill_wagon(icw, entity)
     kick_players_out_of_vehicles(wagon)
     kill_wagon_doors(icw, wagon)
     for _, tile in pairs(surface.find_tiles_filtered({ area = wagon.area })) do
-        surface.set_tiles({ { name = 'out-of-map', position = tile.position } }, true)
+        surface.set_tiles({ { name = out_of_map_tile, position = tile.position } }, true)
     end
     for _, x in pairs({ wagon.area.left_top.x - 1.5, wagon.area.right_bottom.x + 1.5 }) do
         local p = { x = x, y = wagon.area.left_top.y + ((wagon.area.right_bottom.y - wagon.area.left_top.y) * 0.5) }
-        surface.set_tiles({ { name = 'out-of-map', position = { x = p.x + 0.5, y = p.y } } }, true)
-        surface.set_tiles({ { name = 'out-of-map', position = { x = p.x - 1, y = p.y } } }, true)
+        surface.set_tiles({ { name = out_of_map_tile, position = { x = p.x + 0.5, y = p.y } } }, true)
+        surface.set_tiles({ { name = out_of_map_tile, position = { x = p.x - 1, y = p.y } } }, true)
     end
     wagon.entity.force.chart(surface, wagon.area)
     icw.wagons[entity.unit_number] = nil
@@ -607,7 +614,7 @@ function Public.create_room_surface(icw, unit_number)
     surface.force_generate_chunk_requests()
     exclude_surface(surface)
     for _, tile in pairs(surface.find_tiles_filtered({ area = { { -2, -2 }, { 2, 2 } } })) do
-        surface.set_tiles({ { name = 'out-of-map', position = tile.position } }, true)
+        surface.set_tiles({ { name = out_of_map_tile, position = tile.position } }, true)
     end
     icw.surfaces[#icw.surfaces + 1] = surface
     return surface
@@ -896,7 +903,7 @@ local function move_room_to_train(icw, train, wagon)
     end
 
     for _, tile in pairs(wagon.surface.find_tiles_filtered({ area = wagon.area })) do
-        wagon.surface.set_tiles({ { name = 'out-of-map', position = tile.position } }, true)
+        wagon.surface.set_tiles({ { name = out_of_map_tile, position = tile.position } }, true)
     end
     wagon.entity.force.chart(wagon.surface, wagon.area)
 

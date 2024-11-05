@@ -9,6 +9,7 @@ local Explosives = require 'modules.explosives'
 local StatData = require 'utils.datastore.statistics'
 local WD = require 'modules.wave_defense.table'
 local Math2D = require 'math2d'
+local Color = require 'utils.color_presets'
 
 StatData.add_normalize('spells', 'Spells casted')
 
@@ -887,6 +888,167 @@ local function tame_unit_effects(player, entity)
     }
 end
 
+local function on_player_used_capsule_custom(event)
+    local enable_mana = Public.get('rpg_extra').enable_mana
+    if not enable_mana then
+        return
+    end
+
+    local player = game.get_player(event.player_index)
+    if not player or not player.valid then
+        return
+    end
+
+    local
+    is_spamming = SpamProtection.is_spamming(player, nil, 'RPG - on_player_used_capsule_custom')
+    if is_spamming then
+        return
+    end
+    local projectile_types = Public.get_projectiles
+
+    if not player.character or not player.character.valid then
+        return
+    end
+
+    if not Public.check_is_surface_valid(player) then
+        return
+    end
+
+    local rpg_t = Public.get_value_from_player(player.index)
+
+    if not rpg_t.enable_entity_spawn then
+        player.print('[RPG] You must enable the button in the spell GUI to cast a spell.', { color = Color.warning })
+        return
+    end
+
+    local mana = rpg_t.mana
+    local surface = player.surface
+
+    local spell = Public.get_spell_by_name(rpg_t, rpg_t.dropdown_select_name)
+    if not spell then
+        return
+    end
+
+    if spell.enforce_cooldown then
+        if Public.is_cooldown_active_for_player(player) then
+            Public.cast_spell(player, true)
+            return
+        end
+    end
+
+    local position = event.cursor_position
+    if not position then
+        return
+    end
+
+    local radius = 15
+    local area = {
+        left_top = { x = position.x - radius, y = position.y - radius },
+        right_bottom = { x = position.x + radius, y = position.y + radius }
+    }
+
+    if not spell.enabled then
+        return Public.cast_spell(player, true)
+    end
+
+    if rpg_t.level < spell.level then
+        return Public.cast_spell(player, true)
+    end
+
+    if not Math2D.bounding_box.contains_point(area, player.physical_position) then
+        Public.cast_spell(player, true)
+        return
+    end
+
+    if mana < spell.mana_cost then
+        return Public.cast_spell(player, true)
+    end
+
+    local target_pos
+    if spell.target then
+        target_pos = { position.x, position.y }
+    elseif projectile_types[spell.entityName] then
+        local coord_modifier = get_near_coord_modifier(projectile_types[spell.entityName].max_range)
+        target_pos = { position.x + coord_modifier.x, position.y + coord_modifier.y }
+    end
+
+    local range
+    if spell.range then
+        range = spell.range
+    else
+        range = 0
+    end
+
+    local force
+    if spell.force then
+        force = spell.force
+    else
+        force = 'player'
+    end
+
+    local data = {
+        self = spell,
+        player = player,
+        damage_entity = damage_entity,
+        position = position,
+        surface = surface,
+        force = force,
+        target_pos = target_pos,
+        range = range,
+        tame_unit_effects = tame_unit_effects,
+        explosives = Explosives,
+        rpg_t = rpg_t
+    }
+
+    local funcs = {
+        remove_mana = Public.remove_mana,
+        damage_player_over_time = Public.damage_player_over_time,
+        cast_spell = Public.cast_spell
+    }
+
+    rpg_t.amount = 0
+
+    local cast_spell = spell.callback(data, funcs)
+    if not cast_spell then
+        return
+    end
+
+    if rpg_t.amount == 0 then
+        rpg_t.amount = 1
+    end
+
+    Event.raise(Public.events.on_spell_cast_success, { player_index = player.index, spell_name = spell.entityName, amount = rpg_t.amount })
+
+    StatData.get_data(player):increase('spells')
+
+    if spell.enforce_cooldown then
+        if player.gui.screen[spell_gui_frame_name] then
+            local f = player.gui.screen[spell_gui_frame_name]
+            if f then
+                if f[cooldown_indicator_name] then
+                    Public.register_cooldown_for_player_progressbar(player, spell)
+                end
+            end
+        else
+            Public.register_cooldown_for_player(player, spell)
+        end
+    end
+
+    Public.update_mana(player)
+
+    local reward_xp = spell.mana_cost * 0.085
+    if reward_xp < 1 then
+        reward_xp = 1
+    end
+
+    Public.gain_xp(player, reward_xp)
+
+    if spell.log_spell then
+        local msg = player.name .. ' casted ' .. spell.entityName .. '. '
+        AntiGrief.insert_into_capsule_history(player, position, msg)
+    end
+end
+
 local function on_player_used_capsule(event)
     local enable_mana = Public.get('rpg_extra').enable_mana
     if not enable_mana then
@@ -916,13 +1078,21 @@ local function on_player_used_capsule(event)
 
     local name = item.name
 
+    local rpg_t = Public.get_value_from_player(player.index)
+    if not rpg_t then return end
+
+    if name == 'cooked-fish' or name == 'grilled-fish' then
+        Public.get_mana_modifier_from_using_fish(player, name)
+        return
+    end
+
     if name ~= 'raw-fish' then
         return
     end
 
     Public.get_heal_modifier_from_using_fish(player)
 
-    local rpg_t = Public.get_value_from_player(player.index)
+
 
     if not rpg_t.enable_entity_spawn then
         return
@@ -1096,6 +1266,9 @@ Event.add(defines.events.on_player_repaired_entity, on_player_repaired_entity)
 Event.add(defines.events.on_player_respawned, on_player_respawned)
 Event.add(defines.events.on_player_rotated_entity, on_player_rotated_entity)
 Event.add(defines.events.on_pre_player_mined_item, on_pre_player_mined_item)
+if script.active_mods['MtnFortressAddons'] then
+    Event.add('mtn-ctrl-cast-spell', on_player_used_capsule_custom)
+end
 Event.add(defines.events.on_player_used_capsule, on_player_used_capsule)
 Event.add(defines.events.on_player_changed_surface, on_player_changed_surface)
 Event.add(defines.events.on_player_removed, on_player_removed)

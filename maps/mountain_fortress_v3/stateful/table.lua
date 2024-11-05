@@ -32,8 +32,10 @@ local round = math.round
 local floor = math.floor
 local dataset = 'scenario_settings'
 local dataset_key = 'mtn_v3'
+local dataset_key_modded = 'mtn_v3_modded'
 local dataset_key_dev = 'mtn_v3_dev'
 local dataset_key_previous = 'mtn_v3_previous'
+local dataset_key_modded_previous = 'mtn_v3_modded_previous'
 local dataset_key_previous_dev = 'mtn_v3_previous_dev'
 local send_ping_to_channel = Discord.channel_names.mtn_channel
 local scenario_name = Public.scenario_name
@@ -1339,7 +1341,11 @@ local function apply_startup_settings(settings)
         -- Server.stop_scenario()
 
         if server_name_matches then
-            Server.set_data(dataset, dataset_key, settings)
+            if Public.is_modded then
+                Server.set_data(dataset, dataset_key_modded, settings)
+            else
+                Server.set_data(dataset, dataset_key, settings)
+            end
         else
             Server.set_data(dataset, dataset_key_dev, settings)
         end
@@ -1363,7 +1369,11 @@ local apply_settings_token =
                     season = 1
                 }
                 if server_name_matches then
-                    Server.set_data(dataset, dataset_key, settings)
+                    if Public.is_modded then
+                        Server.set_data(dataset, dataset_key_modded, settings)
+                    else
+                        Server.set_data(dataset, dataset_key, settings)
+                    end
                 else
                     Server.set_data(dataset, dataset_key_dev, settings)
                 end
@@ -1436,6 +1446,12 @@ local function grant_non_limit_reached_buff()
     return all_buffs[1]
 end
 
+-- local Alert = require 'utils.alert'
+-- local Stateful = require 'maps.mountain_fortress_v3.stateful.table'
+-- local buff = Stateful.save_settings()
+-- Alert.alert_all_players(100, 'Buff granted from previous run: ' .. buff.discord)
+-- Alert.alert_all_players(100, 'Buff granted from previous run: ' .. buff.discord)
+-- Alert.alert_all_players(100, 'Buff granted from previous run: ' .. buff.discord)
 function Public.save_settings()
     local granted_buff = grant_non_limit_reached_buff()
     this.buffs[#this.buffs + 1] = granted_buff
@@ -1453,7 +1469,11 @@ function Public.save_settings()
 
     local server_name_matches = Server.check_server_name(Public.discord_name)
     if server_name_matches then
-        Server.set_data(dataset, dataset_key, settings)
+        if Public.is_modded then
+            Server.set_data(dataset, dataset_key_modded, settings)
+        else
+            Server.set_data(dataset, dataset_key, settings)
+        end
     else
         Server.set_data(dataset, dataset_key_dev, settings)
     end
@@ -1472,7 +1492,11 @@ function Public.save_settings_before_reset()
 
     local server_name_matches = Server.check_server_name(Public.discord_name)
     if server_name_matches then
-        Server.set_data(dataset, dataset_key_previous, settings)
+        if Public.is_modded then
+            Server.set_data(dataset, dataset_key_modded_previous, settings)
+        else
+            Server.set_data(dataset, dataset_key_previous, settings)
+        end
     else
         Server.set_data(dataset, dataset_key_previous_dev, settings)
     end
@@ -1883,7 +1907,11 @@ function Public.stateful_on_server_started()
     this.settings_applied = true
 
     if server_name_matches then
-        Server.try_get_data(dataset, dataset_key, apply_settings_token)
+        if Public.is_modded then
+            Server.try_get_data(dataset, dataset_key_modded, apply_settings_token)
+        else
+            Server.try_get_data(dataset, dataset_key, apply_settings_token)
+        end
     else
         Server.try_get_data(dataset, dataset_key_dev, apply_settings_token)
         this.test_mode = true
@@ -1902,7 +1930,11 @@ Event.add(
         this.settings_applied = true
 
         if server_name_matches then
-            Server.try_get_data(dataset, dataset_key, apply_settings_token)
+            if Public.is_modded then
+                Server.try_get_data(dataset, dataset_key_modded, apply_settings_token)
+            else
+                Server.try_get_data(dataset, dataset_key, apply_settings_token)
+            end
         else
             Server.try_get_data(dataset, dataset_key_dev, apply_settings_token)
             this.test_mode = true
@@ -1912,6 +1944,30 @@ Event.add(
 
 Server.on_data_set_changed(
     dataset_key,
+    function (data)
+        if data.value then
+            local settings = data.value
+            if settings.rounds_survived ~= nil then
+                this.rounds_survived = settings.rounds_survived
+            end
+            if settings.season ~= nil then
+                this.season = settings.season
+            end
+            if settings.test_mode ~= nil then
+                this.test_mode = settings.test_mode
+            end
+            if settings.buffs ~= nil then
+                this.buffs = settings.buffs
+            end
+            if settings.current_date ~= nil then
+                this.current_date = settings.current_date
+            end
+        end
+    end
+)
+
+Server.on_data_set_changed(
+    dataset_key_modded,
     function (data)
         if data.value then
             local settings = data.value

@@ -439,6 +439,10 @@ function Public.pre_init_task(current_task)
     Public.stateful.clear_all_frames()
     Public.sr_reset_forces()
     WD.set('wave_interval', 4500)
+    Public.set_threat_values()
+    Public.set_unit_raffle()
+    Public.set_worm_raffle()
+    RPG.set_extra('modded_hotkeys', true)
 
     current_task.message = 'Pre init done!'
     current_task.state = 'init_stateful'
@@ -792,6 +796,7 @@ function Public.init_mtn()
     T.sub_caption_color = { r = 0, g = 150, b = 0 }
 
     Explosives.set_destructible_tile('out-of-map', 1500)
+    Explosives.set_destructible_tile('void-tile', 1500)
     Explosives.set_destructible_tile('water', 1000)
     Explosives.set_destructible_tile('water-green', 1000)
     Explosives.set_destructible_tile('deepwater-green', 1000)
