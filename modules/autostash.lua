@@ -862,7 +862,7 @@ if script.active_mods['MtnFortressAddons'] then
     end)
 
     Event.add("mtn-ctrl-autostash-furnaces", function (event)
-        local is_spamming = SpamProtection.is_spamming(player, nil, 'Autostash click')
+        local is_spamming = SpamProtection.is_spamming(event.player, nil, 'Autostash click')
         if is_spamming then
             return
         end
@@ -889,7 +889,7 @@ if script.active_mods['MtnFortressAddons'] then
     end)
 
     Event.add("mtn-ctrl-autostash-filtered", function (event)
-        local is_spamming = SpamProtection.is_spamming(player, nil, 'Autostash click')
+        local is_spamming = SpamProtection.is_spamming(event.player, nil, 'Autostash click')
         if is_spamming then
             return
         end
@@ -916,7 +916,7 @@ if script.active_mods['MtnFortressAddons'] then
     end)
 
     Event.add("mtn-ctrl-autostash-wagon", function (event)
-        local is_spamming = SpamProtection.is_spamming(player, nil, 'Autostash click')
+        local is_spamming = SpamProtection.is_spamming(event.player, nil, 'Autostash click')
         if is_spamming then
             return
         end
