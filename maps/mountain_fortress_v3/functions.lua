@@ -20,12 +20,17 @@ local Modifiers = require 'utils.player_modifiers'
 local Session = require 'utils.datastore.session_data'
 local ICMinimap = require 'maps.mountain_fortress_v3.ic.minimap'
 local Score = require 'utils.gui.score'
+local Gui = require 'utils.gui'
+
 
 local scenario_name = Public.scenario_name
 local zone_settings = Public.zone_settings
 local remove_boost_movement_speed_on_respawn
 local de = defines.events
 local is_modded = Public.is_modded
+
+local notice_frame_name = Gui.uid_name()
+local close_notice_frame_name = Gui.uid_name()
 
 local this = {
     power_sources = { index = 1 },
@@ -131,6 +136,45 @@ local function debug_str(msg)
         return
     end
     print('Mtn: ' .. msg)
+end
+
+local function draw_notice_frame(player)
+    local main_frame, inside_table = Gui.add_main_frame_with_toolbar(player, 'screen', notice_frame_name, nil, close_notice_frame_name, 'Notice', true, 2)
+
+    if not main_frame or not inside_table then
+        return
+    end
+
+    local main_frame_style = main_frame.style
+    main_frame_style.width = 600
+    main_frame.auto_center = true
+
+    local content_flow = inside_table.add { type = 'flow', direction = 'horizontal' }
+    content_flow.style.top_padding = 16
+    content_flow.style.bottom_padding = 16
+    content_flow.style.left_padding = 24
+    content_flow.style.right_padding = 24
+    content_flow.style.horizontally_stretchable = false
+
+    local sprite_flow = content_flow.add { type = 'flow' }
+    sprite_flow.style.vertical_align = 'center'
+    sprite_flow.style.vertically_stretchable = false
+
+    sprite_flow.add { type = 'sprite', sprite = 'utility/warning_icon' }
+
+    local label_flow = content_flow.add { type = 'flow' }
+    label_flow.style.horizontal_align = 'left'
+    label_flow.style.top_padding = 10
+    label_flow.style.left_padding = 24
+
+    local info_message = '[font=heading-1]Work in progress - balance not guaranteed[/font]\n\nPlease note that this experience is a work in progress, and the gameplay balance may vary significantly.\nSome features are still being fine-tuned, so expect occasional bugs or unbalanced elements.\nYour feedback is welcome at our discord in #mount-fortress.\n\nEnjoy and explore, but proceed with caution! ☺\n\n/Gerkiz'
+
+    label_flow.style.horizontally_stretchable = false
+    local label = label_flow.add { type = 'label', caption = info_message }
+    label.style.single_line = false
+    label.style.font = 'heading-2'
+
+    player.opened = main_frame
 end
 
 local function show_text(msg, pos, surface, player)
@@ -2166,6 +2210,11 @@ function Public.on_player_joined_game(event)
     end
 end
 
+function Public.on_player_created(event)
+    local player = game.players[event.player_index]
+    draw_notice_frame(player)
+end
+
 function Public.on_player_left_game()
     Public.set_difficulty()
 end
@@ -2632,6 +2681,21 @@ function Public.reset_func_table()
         }
     }
 end
+
+Gui.on_click(
+    close_notice_frame_name,
+    function (event)
+        local player = event.player
+        if not player or not player.valid then
+            return
+        end
+
+        local screen = player.gui.screen[notice_frame_name]
+
+        if screen and screen.valid then
+            screen.destroy()
+        end
+    end)
 
 local on_player_joined_game = Public.on_player_joined_game
 local on_player_left_game = Public.on_player_left_game

@@ -573,6 +573,13 @@ function Public.init_stateful(current_task)
     Public.stateful.enable(true)
     Public.stateful.reset_stateful(false, true)
     Public.stateful.apply_startup_settings()
+
+    if Public.is_modded then
+        for _, player in pairs(game.connected_players) do
+            Public.on_player_created({ player_index = player.index })
+        end
+    end
+
     current_task.message = 'Initialized stateful!'
     current_task.state = 'clear_nauvis'
 end
