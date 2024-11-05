@@ -789,15 +789,16 @@ end
 Gui.on_click(
     auto_stash_button_name,
     function (event)
+        local is_spamming = SpamProtection.is_spamming(event.player, nil, 'Autostash click')
+        if is_spamming then
+            return
+        end
         local player = event.player
         if not player or not player.valid or not player.character then
             return player.print(module_name .. 'It seems that you are not in the realm of living.', { color = Color.warning })
         end
 
-        local is_spamming = SpamProtection.is_spamming(player, nil, 'Autostash click')
-        if is_spamming then
-            return
-        end
+
 
         if player.controller_type == defines.controllers.remote then
             return player.print(module_name .. 'It seems that you are not in the realm of living.', { color = Color.warning })
@@ -809,13 +810,13 @@ Gui.on_click(
 
 if script.active_mods['MtnFortressAddons'] then
     Event.add("mtn-ctrl-autostash-all", function (event)
-        local player = game.get_player(event.player_index)
-        if not player or not player.valid then
+        local is_spamming = SpamProtection.is_spamming(event.player, nil, 'Autostash click')
+        if is_spamming then
             return
         end
 
-        local is_spamming = SpamProtection.is_spamming(player, nil, 'Autostash click')
-        if is_spamming then
+        local player = game.get_player(event.player_index)
+        if not player or not player.valid then
             return
         end
 
@@ -835,13 +836,13 @@ if script.active_mods['MtnFortressAddons'] then
     end)
 
     Event.add("mtn-ctrl-autostash-ores", function (event)
-        local player = game.get_player(event.player_index)
-        if not player or not player.valid then
+        local is_spamming = SpamProtection.is_spamming(event.player, nil, 'Autostash click')
+        if is_spamming then
             return
         end
 
-        local is_spamming = SpamProtection.is_spamming(player, nil, 'Autostash click')
-        if is_spamming then
+        local player = game.get_player(event.player_index)
+        if not player or not player.valid then
             return
         end
 
@@ -861,13 +862,13 @@ if script.active_mods['MtnFortressAddons'] then
     end)
 
     Event.add("mtn-ctrl-autostash-furnaces", function (event)
-        local player = game.get_player(event.player_index)
-        if not player or not player.valid then
+        local is_spamming = SpamProtection.is_spamming(player, nil, 'Autostash click')
+        if is_spamming then
             return
         end
 
-        local is_spamming = SpamProtection.is_spamming(player, nil, 'Autostash click')
-        if is_spamming then
+        local player = game.get_player(event.player_index)
+        if not player or not player.valid then
             return
         end
 
@@ -888,15 +889,13 @@ if script.active_mods['MtnFortressAddons'] then
     end)
 
     Event.add("mtn-ctrl-autostash-filtered", function (event)
-        local player = game.get_player(event.player_index)
-        if not player or not player.valid then
+        local is_spamming = SpamProtection.is_spamming(player, nil, 'Autostash click')
+        if is_spamming then
             return
         end
 
-        if not player then return end
-
-        local is_spamming = SpamProtection.is_spamming(player, nil, 'Autostash click')
-        if is_spamming then
+        local player = game.get_player(event.player_index)
+        if not player or not player.valid then
             return
         end
 
@@ -917,13 +916,13 @@ if script.active_mods['MtnFortressAddons'] then
     end)
 
     Event.add("mtn-ctrl-autostash-wagon", function (event)
-        local player = game.get_player(event.player_index)
-        if not player or not player.valid then
+        local is_spamming = SpamProtection.is_spamming(player, nil, 'Autostash click')
+        if is_spamming then
             return
         end
 
-        local is_spamming = SpamProtection.is_spamming(player, nil, 'Autostash click')
-        if is_spamming then
+        local player = game.get_player(event.player_index)
+        if not player or not player.valid then
             return
         end
 
