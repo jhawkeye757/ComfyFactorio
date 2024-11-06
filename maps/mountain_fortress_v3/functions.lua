@@ -167,7 +167,7 @@ local function draw_notice_frame(player)
     label_flow.style.top_padding = 10
     label_flow.style.left_padding = 24
 
-    local info_message = '[font=heading-1]Work in progress - balance not guaranteed[/font]\n\nPlease note that this experience is a work in progress, and the gameplay balance may vary significantly.\nSome features are still being fine-tuned, so expect occasional bugs or unbalanced elements.\nYour feedback is welcome at our discord in #mount-fortress.\n\nEnjoy and explore, but proceed with caution! ☺\n\n/Gerkiz'
+    local info_message = '[font=heading-1]Work in progress - balance not guaranteed[/font]\n\nPlease note that this experience is a work in progress, and the gameplay balance may vary significantly.\nSome features are still being fine-tuned, so expect occasional bugs or unbalanced elements.\nPlease post your feedbacks in #mount-fortress.\n\nEnjoy and explore, but proceed with caution! ☺\n\n/Gerkiz'
 
     label_flow.style.horizontally_stretchable = false
     local label = label_flow.add { type = 'label', caption = info_message }
@@ -741,27 +741,68 @@ local set_worm_raffle_token =
     Task.register(
         function (event)
             local level = event.level
-            WD.set(
-                'worm_raffle',
-                {
-                    ['small-worm-turret'] = round(1000 - level * 1.75, 6),
-                    ['medium-worm-turret'] = round(level, 6),
-                    ['big-worm-turret'] = 0,
-                    ['behemoth-worm-turret'] = 0
-                }
-            )
-            local worm_raffle = WD.get('worm_raffle') --[[@as table]]
+            if not is_modded then
+                WD.set(
+                    'worm_raffle',
+                    {
+                        ['small-worm-turret'] = round(1000 - level * 1.75, 6),
+                        ['medium-worm-turret'] = round(level, 6),
+                        ['big-worm-turret'] = 0,
+                        ['behemoth-worm-turret'] = 0
+                    }
+                )
+                local worm_raffle = WD.get('worm_raffle') --[[@as table]]
 
-            if level > 500 then
-                worm_raffle['medium-worm-turret'] = round(500 - (level - 500), 6)
-                worm_raffle['big-worm-turret'] = round((level - 500) * 2, 6)
-            end
-            if level > 800 then
-                worm_raffle['behemoth-worm-turret'] = round((level - 800) * 3, 6)
-            end
-            for k, _ in pairs(worm_raffle) do
-                if worm_raffle[k] < 0 then
-                    worm_raffle[k] = 0
+                if level > 500 then
+                    worm_raffle['medium-worm-turret'] = round(500 - (level - 500), 6)
+                    worm_raffle['big-worm-turret'] = round((level - 500) * 2, 6)
+                end
+                if level > 800 then
+                    worm_raffle['behemoth-worm-turret'] = round((level - 800) * 3, 6)
+                end
+                for k, _ in pairs(worm_raffle) do
+                    if worm_raffle[k] < 0 then
+                        worm_raffle[k] = 0
+                    end
+                end
+            else
+                WD.set(
+                    'worm_raffle',
+                    {
+                        ['small-worm-turret'] = round(1000 - level * 1.75, 6),
+                        ['mtn-addon-small-explosive-worm-turret'] = round(1000 - level * 1.75, 6),
+                        ['mtn-addon-small-fire-worm-turret'] = round(1000 - level * 1.75, 6),
+                        ['mtn-addon-small-piercing-worm-turret'] = round(1000 - level * 1.75, 6),
+                        ['mtn-addon-small-poison-worm-turret'] = round(1000 - level * 1.75, 6),
+                        ['mtn-addon-small-electric-worm-turret'] = round(1000 - level * 1.75, 6),
+                        ['medium-worm-turret'] = round(level, 6),
+                        ['big-worm-turret'] = 0,
+                        ['behemoth-worm-turret'] = 0
+                    }
+                )
+                local worm_raffle = WD.get('worm_raffle') --[[@as table]]
+
+                if level > 500 then
+                    worm_raffle['mtn-addon-medium-explosive-worm-turret'] = round(500 - (level - 500), 6)
+                    worm_raffle['mtn-addon-medium-fire-worm-turret'] = round(500 - (level - 500), 6)
+                    worm_raffle['mtn-addon-medium-piercing-worm-turret'] = round(500 - (level - 500), 6)
+                    worm_raffle['mtn-addon-medium-poison-worm-turret'] = round(500 - (level - 500), 6)
+                    worm_raffle['mtn-addon-medium-electric-worm-turret'] = round(500 - (level - 500), 6)
+                    worm_raffle['medium-worm-turret'] = round(500 - (level - 500), 6)
+                    worm_raffle['big-worm-turret'] = round((level - 500) * 2, 6)
+                end
+                if level > 800 then
+                    worm_raffle['mtn-addon-big-explosive-worm-turret'] = round((level - 800) * 3, 6)
+                    worm_raffle['mtn-addon-big-fire-worm-turret'] = round((level - 800) * 3, 6)
+                    worm_raffle['mtn-addon-big-piercing-worm-turret'] = round((level - 800) * 3, 6)
+                    worm_raffle['mtn-addon-big-poison-worm-turret'] = round((level - 800) * 3, 6)
+                    worm_raffle['mtn-addon-big-electric-worm-turret'] = round((level - 800) * 3, 6)
+                    worm_raffle['behemoth-worm-turret'] = round((level - 800) * 3, 6)
+                end
+                for k, _ in pairs(worm_raffle) do
+                    if worm_raffle[k] < 0 then
+                        worm_raffle[k] = 0
+                    end
                 end
             end
         end
@@ -2126,6 +2167,7 @@ function Public.on_player_joined_game(event)
     local players = Public.get('players')
     local player = game.players[event.player_index]
 
+
     Difficulty.clear_top_frame(player)
     Modifiers.update_player_modifiers(player)
     local active_surface_index = Public.get('active_surface_index')
@@ -2156,6 +2198,10 @@ function Public.on_player_joined_game(event)
             Alert.alert_player(player, 15, death_message)
         end
         player.clear_items_inside()
+        if Public.is_modded then
+            draw_notice_frame(player)
+        end
+
         for item, data in pairs(this.starting_items) do
             player.insert({ name = item, count = data.count })
         end
