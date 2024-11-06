@@ -1111,14 +1111,13 @@ local function deny_building(event)
             end
         end
 
-        event.entity.surface.create_entity(
-            {
-                name = 'flying-text',
+        for _, p in pairs(game.connected_players) do
+            p.create_local_flying_text({
                 position = entity.position,
                 text = 'Can not be built beyond the lightning wall!',
                 color = { r = 0.98, g = 0.66, b = 0.22 }
-            }
-        )
+            })
+        end
 
         entity.destroy()
         return true
@@ -1142,24 +1141,26 @@ local function on_built_entity(event)
 
         if entity_limits[entity.type].placed < entity_limits[entity.type].limit then
             entity_limits[entity.type].placed = entity_limits[entity.type].placed + 1
-            surface.create_entity(
-                {
-                    name = 'flying-text',
-                    position = entity.position,
-                    text = entity_limits[entity.type].placed .. ' / ' .. entity_limits[entity.type].limit .. ' ' .. entity_limits[entity.type].str .. 's',
-                    color = { r = 0.98, g = 0.66, b = 0.22 }
-                }
-            )
+            for _, p in pairs(game.connected_players) do
+                if p.surface == surface then
+                    p.create_local_flying_text({
+                        position = entity.position,
+                        text = entity_limits[entity.type].placed .. ' / ' .. entity_limits[entity.type].limit .. ' ' .. entity_limits[entity.type].str .. 's',
+                        color = { r = 0.98, g = 0.66, b = 0.22 }
+                    })
+                end
+            end
             update_fd_stats()
         else
-            surface.create_entity(
-                {
-                    name = 'flying-text',
-                    position = entity.position,
-                    text = entity_limits[entity.type].str .. ' limit reached.',
-                    color = { r = 0.82, g = 0.11, b = 0.11 }
-                }
-            )
+            for _, p in pairs(game.connected_players) do
+                if p.surface == surface then
+                    p.create_local_flying_text({
+                        position = entity.position,
+                        text = entity_limits[entity.type].str .. ' limit reached.',
+                        color = { r = 0.82, g = 0.11, b = 0.11 }
+                    })
+                end
+            end
             local player = game.get_player(event.player_index)
             player.insert({ name = entity.name, count = 1 })
             if get_score then
@@ -1183,27 +1184,24 @@ local function on_robot_built_entity(event)
     local entity_limits = Public.get('entity_limits')
 
     if entity_limits[entity.type] then
-        local surface = entity.surface
         if entity_limits[entity.type].placed < entity_limits[entity.type].limit then
             entity_limits[entity.type].placed = entity_limits[entity.type].placed + 1
-            surface.create_entity(
-                {
-                    name = 'flying-text',
+            for _, p in pairs(game.connected_players) do
+                p.create_local_flying_text({
                     position = entity.position,
                     text = entity_limits[entity.type].placed .. ' / ' .. entity_limits[entity.type].limit .. ' ' .. entity_limits[entity.type].str .. 's',
                     color = { r = 0.98, g = 0.66, b = 0.22 }
-                }
-            )
+                })
+            end
             update_fd_stats()
         else
-            surface.create_entity(
-                {
-                    name = 'flying-text',
+            for _, p in pairs(game.connected_players) do
+                p.create_local_flying_text({
                     position = entity.position,
                     text = entity_limits[entity.type].str .. ' limit reached.',
                     color = { r = 0.82, g = 0.11, b = 0.11 }
-                }
-            )
+                })
+            end
             local inventory = event.robot.get_inventory(defines.inventory.robot_cargo)
             inventory.insert({ name = entity.name, count = 1 })
             entity.destroy()
