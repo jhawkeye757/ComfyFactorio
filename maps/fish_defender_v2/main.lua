@@ -490,16 +490,18 @@ local function send_unit_group(unit_group)
     if not (market and market.valid) then
         return
     end
-    commands[#commands + 1] = {
-        type = defines.command.attack_area,
-        destination = { x = market.position.x, y = unit_group.position.y },
-        radius = 16,
-        distraction = defines.distraction.by_enemy
-    }
+
     commands[#commands + 1] = {
         type = defines.command.attack,
         target = market,
         distraction = defines.distraction.by_enemy
+    }
+
+    commands[#commands + 1] = {
+        type = defines.command.attack_area,
+        destination = { x = market.position.x, y = market.position.y },
+        radius = 256,
+        distraction = defines.distraction.by_anything
     }
 
     unit_group.set_command(
@@ -606,9 +608,10 @@ local function wake_up_the_biters(surface)
     surface.set_multi_command(
         {
             command = {
-                type = defines.command.attack,
-                target = market,
-                distraction = defines.distraction.none
+                type = defines.command.attack_area,
+                destination = { x = market.position.x, y = market.position.y },
+                radius = 32,
+                distraction = defines.distraction.by_enemy
             },
             unit_count = 16,
             force = 'enemy',

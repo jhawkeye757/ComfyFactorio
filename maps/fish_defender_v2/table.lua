@@ -44,7 +44,7 @@ function Public.reset_table()
     this.market_age = nil
     this.last_reset = game.tick
     this.wave_interval = 3600
-    this.wave_grace_period = game.tick + 7200
+    this.wave_grace_period = game.tick + 72000
     -- this.wave_grace_period = game.tick + 3600
     this.boss_biters = {}
     this.acid_lines_delay = {}

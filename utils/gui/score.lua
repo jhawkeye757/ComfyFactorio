@@ -45,10 +45,12 @@ function Public.init_player_table(player, reset)
         return
     end
     if not this.score_table then return end
-    if not this.score_table[player.force.name] then return end
-    if not this.score_table[player.force.name].players then return end
+    if not this.score_table[player.force.name] then this.score_table[player.force.name] = { players = {} } end
+
+    local tbl_force = this.score_table[player.force.name]
+
     if reset then
-        this.score_table[player.force.name].players[player.name] = {
+        tbl_force.players[player.name] = {
             built_entities = 0,
             deaths = 0,
             killscore = 0,
@@ -57,18 +59,18 @@ function Public.init_player_table(player, reset)
         }
     end
 
-    if not this.score_table[player.force.name] then
-        this.score_table[player.force.name] = {}
+    if not tbl_force then
+        tbl_force = {}
     end
 
-    if not this.score_table[player.force.name].players then
-        this.score_table[player.force.name].players = {}
+    if not tbl_force.players then
+        tbl_force.players = {}
     end
 
     if not player.name then return end
 
-    if not this.score_table[player.force.name].players[player.name] then
-        this.score_table[player.force.name].players[player.name] = {
+    if not tbl_force.players[player.name] then
+        tbl_force.players[player.name] = {
             built_entities = 0,
             deaths = 0,
             killscore = 0,
