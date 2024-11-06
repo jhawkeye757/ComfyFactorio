@@ -516,9 +516,9 @@ end
 local function spawn_boss_units(surface)
     local wave_count = Public.get('wave_count')
     if wave_count <= 2000 then
-        game.print({ 'fish_defender_v2.boss_message', wave_count, { 'fish_defender_v2.' .. wave_count } }, { r = 0.8, g = 0.1, b = 0.1 })
+        game.print({ 'fish_defender_v2.boss_message', wave_count, { 'fish_defender_v2.' .. wave_count } }, { color = { r = 0.8, g = 0.1, b = 0.1 } })
     else
-        game.print({ 'fish_defender_v2.boss_message', wave_count }, { r = 0.8, g = 0.1, b = 0.1 })
+        game.print({ 'fish_defender_v2.boss_message', wave_count }, { color = { r = 0.8, g = 0.1, b = 0.1 } })
     end
 
     local boss_waves = Public.get('boss_waves')

@@ -107,7 +107,7 @@ local is_locomotive_valid = function ()
     if game.ticks_played < 1000 then return end
     if not locomotive or not locomotive.valid then
         Public.set('game_lost', true)
-        Public.loco_died(true)
+        Public.loco_died()
     end
 end
 
@@ -731,6 +731,14 @@ function Public.reset_map(current_task)
         Collapse.start_now(false)
         WD.disable_spawning_biters(true)
     end
+
+    game.forces.enemy.set_friend('player', false)
+    game.forces.aggressors.set_friend('player', false)
+    game.forces.aggressors_frenzy.set_friend('player', false)
+
+    game.forces.player.set_friend('enemy', false)
+    game.forces.player.set_friend('aggressors', false)
+    game.forces.player.set_friend('aggressors_frenzy', false)
 
     current_task.message = 'Reset map done!'
     current_task.delay = game.tick + 60

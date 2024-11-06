@@ -82,33 +82,6 @@ local protect_types = {
     ['car'] = true
 }
 
-local reset_game =
-    Task.register(
-        function (data)
-            local this = data.this
-            if this.soft_reset then
-                Public.set_scores()
-                this.game_reset_tick = nil
-                Public.set_task('move_players', 'Init')
-                return
-            end
-            if this.restart then
-                Public.set_scores()
-                local message = ({ 'entity.reset_game' })
-                Server.to_discord_bold(message, true)
-                Server.start_scenario('Mountain_Fortress_v3')
-                return
-            end
-            if this.shutdown then
-                Public.set_scores()
-                local message = ({ 'entity.shutdown_game' })
-                Server.to_discord_bold(message, true)
-                Server.stop_scenario()
-                return
-            end
-        end
-    )
-
 local change_force_for_drills_token =
     Task.register(
         function (event)
@@ -272,7 +245,7 @@ local function set_train_final_health(final_damage_amount, repair)
     end
 
     if locomotive_health <= 0 or locomotive.health <= 5 then
-        locomotive.destructible = false
+        Public.set('locomotive_position', locomotive.position)
         locomotive.health = 1
         Public.set('game_lost', true)
         Public.set_stateful('current_streak', 0)
@@ -510,7 +483,7 @@ local unstuck_player_token =
             end
 
             local surface = player.physical_surface
-            local position = surface.find_non_colliding_position('stone-furnace', player.physical_position, 32, 1)
+            local position = surface.find_non_colliding_position('character', player.physical_position, 32, 1)
             if not position then
                 return
             end
@@ -1349,7 +1322,7 @@ function Public.unstuck_player(index)
     player.teleport(position, surface)
 end
 
-function Public.loco_died(invalid_locomotive)
+function Public.loco_died()
     local game_lost = Public.get('game_lost')
     if not game_lost then
         return
@@ -1362,103 +1335,70 @@ function Public.loco_died(invalid_locomotive)
         return
     end
 
+    local notified_game_over = Public.get('notified_game_over')
+    if notified_game_over then
+        return
+    end
+
     local active_surface_index = Public.get('active_surface_index')
     if not active_surface_index then
         return
     end
 
-    local locomotive = Public.get('locomotive')
     local surface = game.surfaces[active_surface_index]
-    local wave_defense_table = WD.get_table()
-    if wave_defense_table.game_lost and not invalid_locomotive then
-        return
-    end
-    Collapse.start_now(false)
+
+    Collapse.start_now(false, true)
 
     for _, player in pairs(game.connected_players) do
         player.play_sound { path = 'utility/game_lost', volume_modifier = 0.75 }
         show_mvps(player)
-    end
-
-    if not locomotive or not locomotive.valid then
-        local this = Public.get()
-
-        local data = {}
-        if this.locomotive and this.locomotive.valid then
-            data.position = this.locomotive.position
-        else
-            data.position = { x = 0, y = 0 }
-        end
-
-        local msg = defeated_messages[random(1, #defeated_messages)]
-        Alert.alert_all_players_location(data, msg, nil, 15)
-
-        wave_defense_table.game_lost = true
-        wave_defense_table.target = nil
-
-        local params = {
-            this = this
-        }
-
-        if this.soft_reset then
-            this.game_reset_tick = nil
-            Task.set_timeout_in_ticks(600, reset_game, params)
-            this.announced_message = true
-            return
-        end
-        if this.restart then
-            game.print(({ 'entity.notify_restart' }), { r = 0.22, g = 0.88, b = 0.22 })
-            Task.set_timeout_in_ticks(600, reset_game, params)
-            this.announced_message = true
-            return
-        end
-        if this.shutdown then
-            game.print(({ 'entity.notify_shutdown' }), { r = 0.22, g = 0.88, b = 0.22 })
-            Task.set_timeout_in_ticks(600, reset_game, params)
-            this.announced_message = true
-            return
-        end
-
-        return
     end
 
     local this = Public.get()
 
     this.locomotive_health = 0
-    this.locomotive.color = { 0.49, 0, 255, 1 }
-    if this.health_text and this.health_text.valid then
+    if this.health_text and this.health_text.valid and this.locomotive and this.locomotive.valid then
+        this.locomotive.color = { 0.49, 0, 255, 1 }
         this.health_text.text = 'HP: ' .. round(this.locomotive_health) .. ' / ' .. round(this.locomotive_max_health)
     end
-    wave_defense_table.game_lost = true
-    wave_defense_table.target = nil
+    WD.set('game_lost', true)
+    WD.set('target', nil)
     local msg = defeated_messages[random(1, #defeated_messages)]
 
+    local p = this.locomotive_position or { x = 0, y = 0 }
+
     local pos = {
-        position = this.locomotive.position
+        position = p,
     }
     Alert.alert_all_players_location(pos, msg)
     game.forces.enemy.set_friend('player', true)
-    game.forces.player.set_friend('enemy', true)
+    game.forces.aggressors.set_friend('player', true)
+    game.forces.aggressors_frenzy.set_friend('player', true)
 
-    local fake_shooter = surface.create_entity({ name = 'character', position = this.locomotive.position, force = 'enemy' })
+    game.forces.player.set_friend('enemy', true)
+    game.forces.player.set_friend('aggressors', true)
+    game.forces.player.set_friend('aggressors_frenzy', true)
+
+    local fake_shooter = surface.create_entity({ name = 'character', position = p, force = 'enemy' })
     surface.create_entity(
         {
             name = 'atomic-rocket',
-            position = this.locomotive.position,
+            position = p,
             force = 'enemy',
             speed = 1,
             max_range = 1200,
-            target = this.locomotive,
+            target = p,
             source = fake_shooter
         }
     )
 
-    surface.spill_item_stack({ position = this.locomotive.position, stack = { name = 'coin', count = 512, quality = 'normal' } })
+    surface.spill_item_stack({ position = p, stack = { name = 'coin', count = 512, quality = 'normal' } })
     this.game_reset_tick = 5400
     for _, player in pairs(game.connected_players) do
         player.play_sound { path = 'utility/game_lost', volume_modifier = 0.75 }
         show_mvps(player)
     end
+    Public.set('notified_game_over', true)
 end
 
 local function on_entity_spawned(event)

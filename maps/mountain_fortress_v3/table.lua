@@ -155,6 +155,7 @@ function Public.reset_main_table()
     this.restart = false
     this.shutdown = false
     this.announced_message = false
+    this.notified_game_over = false
     this.game_reset_tick = nil
     -- @end
     this.breach_wall_warning = false
@@ -162,6 +163,7 @@ function Public.reset_main_table()
     this.game_lost = false
     this.death_mode = false
     this.collapse_started = false
+    this.locomotive_position = nil
     this.locomotive_health = 10000
     this.locomotive_max_health = 10000
     this.extra_wagons = 0
