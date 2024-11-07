@@ -93,6 +93,17 @@ local function do_tick()
     end
 end
 
+---Gets the amount of damage dealt per second
+function Module.get_damage()
+    return settings.damage_amount
+end
+
+---Sets the amount of damage dealt per second
+---@param number integer
+function Module.set_damage(number)
+    settings.damage_amount = number
+end
+
 ---Gets the limit to number of logistic robots in single network
 function Module.get_logistic_robot_limit()
     return settings.logi_robot_limit
@@ -102,6 +113,17 @@ end
 ---@param number integer
 function Module.set_logistic_robot_limit(number)
     settings.logi_robot_limit = number
+end
+
+---Gets the limit to number of construction robots in single network
+function Module.get_construction_robot_limit()
+    return settings.cons_robot_limit
+end
+
+---Sets the limit to number of construction robots in single network
+---@param number integer
+function Module.set_construction_robot_limit(number)
+    settings.cons_robot_limit = number
 end
 
 ---Gets the limit to number of roboports in single network
