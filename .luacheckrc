@@ -2010,7 +2010,10 @@ stds.factorio_defines = {
                         'change_blueprint_record_label',
                         'cycle_blueprint_backwards',
                         'cycle_blueprint_forwards',
-                        'upgrade_open_blueprint'
+                        'upgrade_open_blueprint',
+                        'parametrise_blueprint',
+                        'copy_large_opened_blueprint',
+                        'adjust_blueprint_snapping',
                     }
                 },
                 inventory = {
