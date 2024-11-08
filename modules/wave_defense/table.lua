@@ -2,6 +2,8 @@ local Global = require 'utils.global'
 local Core = require 'utils.core'
 local Gui = require 'utils.gui'
 local Event = require 'utils.event'
+local Server = require 'utils.server'
+local log = Server.output_data
 
 local this = {
     pause_waves_custom_callback = nil,
@@ -284,7 +286,7 @@ function Public.set_spawn_position(tbl)
     if type(tbl) == 'table' then
         this.spawn_position = tbl
     else
-        error('Tbl must be of type table.')
+        error('Tbl must be of type table.', 2)
     end
     return this.spawn_position
 end

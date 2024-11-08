@@ -2349,6 +2349,17 @@ function Public.on_player_changed_position(event)
     end
 
     if player.controller_type == defines.controllers.remote then
+        local loco_surface = Public.get('loco_surface')
+        if not loco_surface or not loco_surface.valid then
+            return
+        end
+        if player.surface.index == loco_surface.index then
+            local map_gen = loco_surface.map_gen_settings
+            if player.position.y > map_gen.height then player.set_controller { type = 1, character = player.character } end
+            if player.position.y < (-map_gen.height / 2) then player.set_controller { type = 1, character = player.character } end
+            if player.position.x > map_gen.width then player.set_controller { type = 1, character = player.character } end
+            if player.position.x < -map_gen.width then player.set_controller { type = 1, character = player.character } end
+        end
         return
     end
 

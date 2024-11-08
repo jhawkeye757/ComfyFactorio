@@ -682,8 +682,6 @@ Event.add(
             return
         end
 
-        print('Player joined game.')
-
         local player = game.players[event.player_index]
         on_player_joined_game(player)
         create_clear_corpse_frame(player)

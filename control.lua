@@ -255,6 +255,7 @@ local function on_player_created(event)
     local player = game.players[event.player_index]
     player.gui.top.style = 'packed_horizontal_flow'
     player.gui.left.style = 'vertical_flow'
+    player.show_on_map = false -- hide selection on minimap
 end
 
 local Event = require 'utils.event'

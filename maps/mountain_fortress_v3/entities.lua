@@ -46,6 +46,12 @@ local chests = {
     'crash-site-spaceship-wreck-medium-3'
 }
 
+local valid_forces = {
+    [2] = true,
+    [4] = true,
+    [5] = true
+}
+
 local size_chests = #chests
 
 local treasure_chest_messages = {
@@ -368,7 +374,7 @@ local function biters_chew_rocks_faster(data)
     if not cause.valid then
         return
     end
-    if cause.force.index ~= 2 then
+    if not valid_forces[cause.force.index] then
         return
     end --Enemy Force
 

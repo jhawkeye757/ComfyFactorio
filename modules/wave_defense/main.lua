@@ -93,11 +93,19 @@ local function remove_trees(entity)
     local radius = 10
     local pos = entity.position
     local area = { { pos.x - radius, pos.y - radius }, { pos.x + radius, pos.y + radius } }
+
+    -- Find all trees within the bounding rectangle
     local trees = surface.find_entities_filtered { area = area, type = 'tree' }
     if #trees > 0 then
         for _, tree in pairs(trees) do
             if tree and tree.valid then
-                tree.destroy()
+                local dx = tree.position.x - pos.x
+                local dy = tree.position.y - pos.y
+                local distance_squared = dx * dx + dy * dy
+
+                if distance_squared <= radius * radius then
+                    tree.destroy()
+                end
             end
         end
     end
@@ -115,7 +123,13 @@ local function remove_rocks(entity)
     if #rocks > 0 then
         for _, rock in pairs(rocks) do
             if rock and rock.valid then
-                rock.destroy()
+                local dx = rock.position.x - pos.x
+                local dy = rock.position.y - pos.y
+                local distance_squared = dx * dx + dy * dy
+
+                if distance_squared <= radius * radius then
+                    rock.destroy()
+                end
             end
         end
     end
@@ -140,7 +154,13 @@ local function fill_tiles(entity, size)
     local tiles = surface.find_tiles_filtered { area = area, name = t }
     if #tiles > 0 then
         for _, tile in pairs(tiles) do
-            surface.set_tiles({ { name = 'sand-1', position = tile.position } }, true)
+            local dx = tile.position.x - pos.x
+            local dy = tile.position.y - pos.y
+            local distance_squared = dx * dx + dy * dy
+
+            if distance_squared <= radius * radius then
+                surface.set_tiles({ { name = 'sand-1', position = tile.position } }, true)
+            end
         end
     end
     Public.debug_print('fill_tiles - filled tiles cause we found non-placable tiles.')
