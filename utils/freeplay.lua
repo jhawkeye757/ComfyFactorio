@@ -158,7 +158,7 @@ local on_player_created = function (event)
             util.remove_safe(player, this.crashed_debris_items)
             player.get_main_inventory().sort_and_merge()
 
-            if player.character then
+            if player.character and not this.skip_intro then
                 player.character.destructible = false
             end
 
@@ -243,7 +243,7 @@ local on_cutscene_cancelled = function (event)
     if player.gui.screen.skip_cutscene_label then
         player.gui.screen.skip_cutscene_label.destroy()
     end
-    if player.character then
+    if player.character and not this.skip_intro then
         player.character.destructible = true
     end
     BottomFrame.toggle_player_frame(player, true)
