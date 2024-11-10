@@ -1720,26 +1720,30 @@ function Public.find_void_tiles_and_replace()
         return
     end
 
-    local cp = Collapse.get_position()
-    local rp = Collapse.get_reverse_position()
+    if not Public.get('find_void_tiles_and_replace') then
+        Public.set('find_void_tiles_and_replace', true)
 
-    local area = {
-        left_top = { x = (-zone_settings.zone_width / 2) + 10, y = -rp.y - 1000 },
-        right_bottom = { x = (zone_settings.zone_width / 2) - 10, y = cp.y }
-    }
+        local cp = Collapse.get_position()
+        local rp = Collapse.get_reverse_position()
 
-    local adjusted_zones = Public.get('adjusted_zones')
-
-    if adjusted_zones.reversed then
-        area = {
-            left_top = { x = ((zone_settings.zone_width / 2) + 10) * -1, y = cp.y },
-            right_bottom = { x = math.abs((-zone_settings.zone_width / 2) - 10), y = rp.y },
+        local area = {
+            left_top = { x = (-zone_settings.zone_width / 2) + 10, y = rp.y },
+            right_bottom = { x = (zone_settings.zone_width / 2) - 10, y = cp.y }
         }
-    end
 
-    local tiles = surface.find_tiles_filtered({ area = area, name = { 'out-of-map', 'water', 'deepwater', 'water-green', 'deepwater-green', 'void-tile' } })
-    if tiles and #tiles > 0 then
-        Public.set('tiles_to_replace', tiles)
+        local adjusted_zones = Public.get('adjusted_zones')
+
+        if adjusted_zones.reversed then
+            area = {
+                left_top = { x = ((zone_settings.zone_width / 2) + 10) * -1, y = cp.y },
+                right_bottom = { x = math.abs((-zone_settings.zone_width / 2) - 10), y = rp.y },
+            }
+        end
+
+        local tiles = surface.find_tiles_filtered({ area = area, name = { 'out-of-map', 'water', 'deepwater', 'water-green', 'deepwater-green', 'void-tile' } })
+        if tiles and #tiles > 0 then
+            Public.set('tiles_to_replace', tiles)
+        end
     end
 end
 

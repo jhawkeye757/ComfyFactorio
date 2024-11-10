@@ -157,6 +157,7 @@ function Public.reset_main_table()
     this.announced_message = false
     this.notified_game_over = false
     this.game_reset_tick = nil
+    this.find_void_tiles_and_replace = nil
     -- @end
     this.breach_wall_warning = false
     this.icw_locomotive = nil
