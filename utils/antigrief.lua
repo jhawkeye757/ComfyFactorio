@@ -1024,6 +1024,24 @@ local function on_player_deconstructed_area(event)
     end
 end
 
+local function on_marked_for_upgrade(event)
+    local entity = event.entity
+    local player_index = event.player_index
+    local player = game.players[player_index]
+    if not (entity and entity.valid) then
+        return
+    end
+    if not (player and player.valid) then
+        return
+    end
+
+    local target = event.target
+    if not target then return end
+
+
+    Public.append_scenario_history(player, entity, player.name .. ' upgraded entity (' .. entity.name .. ') to target (' .. target.name .. ')')
+end
+
 local function on_cancelled_deconstruction(event)
     local player_index = event.player_index
     if player_index then
@@ -1345,6 +1363,7 @@ Event.add(de.on_built_entity, on_built_entity)
 Event.add(de.on_gui_opened, on_gui_opened)
 Event.add(de.on_marked_for_deconstruction, on_marked_for_deconstruction)
 Event.add(de.on_player_deconstructed_area, on_player_deconstructed_area)
+Event.add(de.on_marked_for_upgrade, on_marked_for_upgrade)
 Event.add(de.on_cancelled_deconstruction, on_cancelled_deconstruction)
 Event.add(de.on_player_ammo_inventory_changed, on_player_ammo_inventory_changed)
 Event.add(de.on_player_built_tile, on_player_built_tile)
