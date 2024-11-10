@@ -2,12 +2,11 @@ local Global = require 'utils.global'
 local Event = require 'utils.event'
 local BottomFrame = require 'utils.gui.bottom_frame'
 local Task = require 'utils.task_token'
-local handler = require("event_handler")
 
 if script.active_mods["space-age"] then
-    handler.add_lib(require("space-finish-script"))
+    require 'utils.freeplay.space_age_finish'
 else
-    handler.add_lib(require("silo-script"))
+    require 'utils.freeplay.silo_script'
 end
 
 local Public = {}

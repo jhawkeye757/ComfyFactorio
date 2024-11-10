@@ -1574,6 +1574,7 @@ stds.factorio_defines = {
                 events = {
                     fields = {
                         'on_picked_up_item',
+                        'on_space_platform_changed_state',
                         'on_object_destroyed',
                         'on_entity_cloned',
                         'on_player_main_inventory_changed',
