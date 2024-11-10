@@ -62,18 +62,6 @@ local this = {
     admin_button_validation = {}
 }
 
-local blacklisted_types = {
-    ['transport-belt'] = true,
-    ['wall'] = true,
-    ['underground-belt'] = true,
-    ['inserter'] = true,
-    ['land-mine'] = true,
-    ['gate'] = true,
-    ['lamp'] = true,
-    ['mining-drill'] = true,
-    ['splitter'] = true
-}
-
 local ammo_names = {
     ['artillery-targeting-remote'] = true,
     ['poison-capsule'] = true,
@@ -391,7 +379,7 @@ local function on_player_used_capsule(event)
             for i = 1, #entities do
                 local e = entities[i]
                 local entity_name = e.name
-                if entity_name ~= name and entity_name ~= 'entity-ghost' and not blacklisted_types[e.type] then
+                if entity_name ~= name and entity_name ~= 'entity-ghost' then
                     count = count + 1
                 end
             end
@@ -440,7 +428,7 @@ local function on_entity_died(event)
     local cause = event.cause
     local name
 
-    if (cause and cause.name == 'character' and cause.player and cause.force.name == event.entity.force.name and not blacklisted_types[event.entity.type]) then
+    if (cause and cause.name == 'character' and cause.player and cause.force.name == event.entity.force.name) then
         local player = cause.player
         name = player.name
 
@@ -487,7 +475,7 @@ local function on_entity_died(event)
         str = str .. 'surface:' .. event.entity.surface.index
         increment(this.friendly_fire_history, str)
         Server.log_antigrief_data('friendly_fire', str)
-    elseif not blacklisted_types[event.entity.type] and this.whitelist_types[event.entity.type] then
+    elseif this.whitelist_types[event.entity.type] then
         if cause then
             if cause.force.name ~= 'player' then
                 return
@@ -571,9 +559,6 @@ local function on_player_mined_entity(event)
         return
     end
     if entity.force.name ~= player.force.name then
-        return
-    end
-    if blacklisted_types[event.entity.type] then
         return
     end
     if not this.mining_history then

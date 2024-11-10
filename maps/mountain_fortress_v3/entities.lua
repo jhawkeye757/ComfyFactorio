@@ -93,8 +93,6 @@ local change_force_for_drills_token =
         function (event)
             local entity = event.entity
             if not entity or not entity.valid then return end
-            local tech = game.forces.player.technologies['uranium-processing'].researched
-            if not tech then return end
             entity.force = 'bonus_drill'
         end
     )

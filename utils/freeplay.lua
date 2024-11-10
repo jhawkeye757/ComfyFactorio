@@ -2,6 +2,13 @@ local Global = require 'utils.global'
 local Event = require 'utils.event'
 local BottomFrame = require 'utils.gui.bottom_frame'
 local Task = require 'utils.task_token'
+local handler = require("event_handler")
+
+if script.active_mods["space-age"] then
+    handler.add_lib(require("space-finish-script"))
+else
+    handler.add_lib(require("silo-script"))
+end
 
 local Public = {}
 
@@ -100,6 +107,25 @@ local chart_starting_area = function ()
     local surface = game.surfaces[1]
     local origin = force.get_spawn_position(surface)
     force.chart(surface, { { origin.x - r, origin.y - r }, { origin.x + r, origin.y + r } })
+end
+
+local init_ending_info = function ()
+    local is_space_age = script.active_mods["space-age"]
+    local info =
+    {
+        image_path = is_space_age and "victory-space-age.png" or "victory.png",
+        title = { "gui-game-finished.victory" },
+        message = is_space_age and { "victory-message-space-age" } or { "victory-message" },
+        bullet_points =
+        {
+            { "victory-bullet-point-1" },
+            { "victory-bullet-point-2" },
+            { "victory-bullet-point-3" },
+            { "victory-bullet-point-4" }
+        },
+        final_message = { "victory-final-message" },
+    }
+    game.set_win_ending_info(info)
 end
 
 local on_player_joined_game = function (event)
@@ -310,6 +336,7 @@ Event.on_init(
             this.crashed_ship_items = ship_items()
             this.crashed_debris_items = debris_items()
             this.crashed_ship_parts = this.crashed_ship_parts or ship_parts()
+            init_ending_info()
         end
     end
 )
@@ -324,6 +351,7 @@ local on_configuration_changed = function ()
     if not this.init_ran then
         this.init_ran = #game.players > 0
     end
+    init_ending_info()
 end
 
 Event.on_configuration_changed(on_configuration_changed)

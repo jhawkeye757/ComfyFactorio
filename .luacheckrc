@@ -363,6 +363,7 @@ stds.factorio_control = {
             other_fields = false,
             read_only = false,
             fields = {
+                'set_win_ending_info',
                 'disable_tutorial_triggers',
                 'auto_save',
                 'ban_player',
