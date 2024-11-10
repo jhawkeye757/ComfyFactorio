@@ -801,15 +801,15 @@ function Public.save_car(event)
     kick_players_from_surface(car)
     get_player_data(player)
 
-    if car.owner == player.index then
+    if car.owner == player.name then
         save_surface(entity, player)
         if not players[player.index].notified then
             player.print(module_tag .. player.name .. ', the ' .. car.name .. ' surface has been saved.', { color = Color.success })
             players[player.index].notified = true
         end
     else
-        local p = game.players[car.owner]
-        if not p then
+        local p = game.get_player(car.owner)
+        if not p or not p.valid then
             return
         end
 
@@ -1319,7 +1319,7 @@ function Public.create_car(event)
             health = health,
             max = health
         },
-        owner = player.index,
+        owner = player.name,
         owner_name = player.name,
         name = ce.name,
         type = ce.type,

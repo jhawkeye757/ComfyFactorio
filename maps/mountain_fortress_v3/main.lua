@@ -442,6 +442,9 @@ function Public.pre_init_task(current_task)
     Public.set_threat_values()
     Public.set_unit_raffle()
     Public.set_worm_raffle()
+    if Public.is_modded then
+        Public.set_xp_yield()
+    end
     RPG.set_extra('modded_hotkeys', true)
 
     current_task.message = 'Pre init done!'
