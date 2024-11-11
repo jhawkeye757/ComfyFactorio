@@ -2851,6 +2851,8 @@ function Public.equip_players(starting_items, recreate)
                                 for _ = 1, item_data.count do
                                     p_armor[1].grid.put({ name = item })
                                 end
+                            else
+                                player.insert({ name = item, count = item_data.count })
                             end
                         else
                             player.insert({ name = item, count = item_data.count })
