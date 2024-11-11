@@ -384,7 +384,6 @@ local function objective_frames(player, stateful, player_frame, objective, data)
 
     local objective_locale_right_label = right_flow.add({ type = 'label', caption = objective_locale_right, tooltip = tooltip_right })
     data.random_objectives[#data.random_objectives + 1] = { name = objective_name, frame = objective_locale_right_label }
-    return
 end
 
 local function buff_window(player)

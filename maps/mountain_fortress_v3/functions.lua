@@ -2847,7 +2847,7 @@ function Public.equip_players(starting_items, recreate)
                         local equip = prototypes.equipment[item]
                         if equip then
                             local p_armor = player.get_inventory(defines.inventory.character_armor)
-                            if p_armor and p_armor.valid and p_armor[1] and p_armor[1].grid then
+                            if p_armor and p_armor.valid and p_armor[1] and p_armor[1].valid_for_read and p_armor[1].grid and p_armor[1].grid.valid then
                                 for _ = 1, item_data.count do
                                     p_armor[1].grid.put({ name = item })
                                 end

@@ -106,7 +106,6 @@ local is_locomotive_valid = function ()
     local locomotive = Public.get('locomotive')
     if game.ticks_played < 1000 then return end
     if not locomotive or not locomotive.valid then
-        Public.set('game_lost', true)
         Public.game_is_over()
     end
 end

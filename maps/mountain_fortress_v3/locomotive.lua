@@ -478,7 +478,6 @@ local function set_locomotive_health()
     local locomotive = Public.get('locomotive')
 
     if not locomotive or not locomotive.valid then
-        Public.game_is_over()
         return
     end
 
