@@ -1164,6 +1164,14 @@ local function update_raw()
                     Public.set_stateful_settings('reversed', true)
                 end
 
+                game.forces.enemy.set_friend('player', true)
+                game.forces.aggressors.set_friend('player', true)
+                game.forces.aggressors_frenzy.set_friend('player', true)
+
+                game.forces.player.set_friend('enemy', true)
+                game.forces.player.set_friend('aggressors', true)
+                game.forces.player.set_friend('aggressors_frenzy', true)
+
                 collection.game_won_notified = true
                 refresh_boss_frame()
                 play_game_won()

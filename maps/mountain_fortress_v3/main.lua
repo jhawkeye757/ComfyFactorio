@@ -107,7 +107,7 @@ local is_locomotive_valid = function ()
     if game.ticks_played < 1000 then return end
     if not locomotive or not locomotive.valid then
         Public.set('game_lost', true)
-        Public.loco_died()
+        Public.game_is_over()
     end
 end
 
@@ -615,10 +615,7 @@ function Public.reset_map(current_task)
 
     Misc.reset()
 
-
     LinkedChests.reset()
-
-
 
     BottomFrame.reset()
     Public.reset_buried_biters()

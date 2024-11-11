@@ -473,7 +473,7 @@ local function get_items(player)
         static = false
     }
 
-    if not Public.is_modded then
+    if Public.is_modded then
         main_market_items['raw-fish'] = {
             stack = 1,
             value = 'coin',

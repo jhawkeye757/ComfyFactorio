@@ -972,12 +972,7 @@ function Public.reconstruct_all_trains(icw)
         if not validate_entity(wagon.entity) then
             icw.wagons[unit_number] = nil
             Public.request_reconstruction(icw)
-            return
-        end
-
-        local locomotive = WPT.get('locomotive')
-        if not (locomotive and locomotive.valid) then
-            return
+            goto cont
         end
 
         if not wagon.surface then
@@ -986,7 +981,8 @@ function Public.reconstruct_all_trains(icw)
         end
         local carriages = wagon.entity.train.carriages
 
-        Public.construct_train(icw, locomotive, carriages)
+        Public.construct_train(icw, wagon.entity, carriages)
+        ::cont::
     end
     delete_empty_surfaces(icw)
     return true
