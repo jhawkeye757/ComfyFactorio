@@ -1532,7 +1532,7 @@ Event.add(Public.events.on_spawn_unit_group, spawn_unit_group)
 Event.add(Public.events.on_spawn_unit_group_simple, spawn_unit_group_simple)
 
 Event.on_nth_tick(
-    50,
+    100,
     function ()
         local final_battle = Public.get('final_battle')
         if final_battle then

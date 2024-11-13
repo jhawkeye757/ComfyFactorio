@@ -561,18 +561,6 @@ local set_unit_raffle_token =
                         ['mtn-addon-small-explosive-biter-t1'] = round(2500 - level * 1.75, 6),
                         ['mtn-addon-small-poison-biter-t1'] = round(2500 - level * 1.75, 6),
                         ['mtn-addon-small-fire-biter-t1'] = round(2500 - level * 1.75, 6),
-
-                        ['mtn-addon-small-piercing-biter-t2'] = round(2000 - level * 1.75, 6),
-                        ['mtn-addon-small-acid-biter-t2'] = round(2000 - level * 1.75, 6),
-                        ['mtn-addon-small-explosive-biter-t2'] = round(2000 - level * 1.75, 6),
-                        ['mtn-addon-small-poison-biter-t2'] = round(2000 - level * 1.75, 6),
-                        ['mtn-addon-small-fire-biter-t2'] = round(2000 - level * 1.75, 6),
-
-                        ['mtn-addon-small-piercing-biter-t3'] = round(1500 - level * 1.75, 6),
-                        ['mtn-addon-small-acid-biter-t3'] = round(1500 - level * 1.75, 6),
-                        ['mtn-addon-small-explosive-biter-t3'] = round(1500 - level * 1.75, 6),
-                        ['mtn-addon-small-poison-biter-t3'] = round(1500 - level * 1.75, 6),
-                        ['mtn-addon-small-fire-biter-t3'] = round(1500 - level * 1.75, 6),
                     }
                 )
                 WD.set(
@@ -583,22 +571,38 @@ local set_unit_raffle_token =
                         ['mtn-addon-small-explosive-spitter-t1'] = round(2500 - level * 1.75, 6),
                         ['mtn-addon-small-poison-spitter-t1'] = round(2500 - level * 1.75, 6),
                         ['mtn-addon-small-fire-spitter-t1'] = round(2500 - level * 1.75, 6),
-
-                        ['mtn-addon-small-piercing-spitter-t2'] = round(2000 - level * 1.75, 6),
-                        ['mtn-addon-small-acid-spitter-t2'] = round(2000 - level * 1.75, 6),
-                        ['mtn-addon-small-explosive-spitter-t2'] = round(2000 - level * 1.75, 6),
-                        ['mtn-addon-small-poison-spitter-t2'] = round(2000 - level * 1.75, 6),
-                        ['mtn-addon-small-fire-spitter-t2'] = round(2000 - level * 1.75, 6),
-
-                        ['mtn-addon-small-piercing-spitter-t3'] = round(1500 - level * 1.75, 6),
-                        ['mtn-addon-small-acid-spitter-t3'] = round(1500 - level * 1.75, 6),
-                        ['mtn-addon-small-explosive-spitter-t3'] = round(1500 - level * 1.75, 6),
-                        ['mtn-addon-small-poison-spitter-t3'] = round(1500 - level * 1.75, 6),
-                        ['mtn-addon-small-fire-spitter-t3'] = round(1500 - level * 1.75, 6),
                     }
                 )
                 local biter_raffle = WD.get('biter_raffle') --[[@as table]]
                 local spitter_raffle = WD.get('spitter_raffle') --[[@as table]]
+
+                if level > 100 then
+                    biter_raffle['mtn-addon-small-piercing-biter-t2'] = round(2000 - level * 1.75, 6)
+                    biter_raffle['mtn-addon-small-acid-biter-t2'] = round(2000 - level * 1.75, 6)
+                    biter_raffle['mtn-addon-small-explosive-biter-t2'] = round(2000 - level * 1.75, 6)
+                    biter_raffle['mtn-addon-small-poison-biter-t2'] = round(2000 - level * 1.75, 6)
+                    biter_raffle['mtn-addon-small-fire-biter-t2'] = round(2000 - level * 1.75, 6)
+                    spitter_raffle['mtn-addon-small-piercing-spitter-t2'] = round(2000 - level * 1.75, 6)
+                    spitter_raffle['mtn-addon-small-acid-spitter-t2'] = round(2000 - level * 1.75, 6)
+                    spitter_raffle['mtn-addon-small-explosive-spitter-t2'] = round(2000 - level * 1.75, 6)
+                    spitter_raffle['mtn-addon-small-poison-spitter-t2'] = round(2000 - level * 1.75, 6)
+                    spitter_raffle['mtn-addon-small-fire-spitter-t2'] = round(2000 - level * 1.75, 6)
+                end
+
+                if level > 200 then
+                    biter_raffle['mtn-addon-small-piercing-biter-t3'] = round(1500 - level * 1.75, 6)
+                    biter_raffle['mtn-addon-small-acid-biter-t3'] = round(1500 - level * 1.75, 6)
+                    biter_raffle['mtn-addon-small-explosive-biter-t3'] = round(1500 - level * 1.75, 6)
+                    biter_raffle['mtn-addon-small-poison-biter-t3'] = round(1500 - level * 1.75, 6)
+                    biter_raffle['mtn-addon-small-fire-biter-t3'] = round(1500 - level * 1.75, 6)
+
+
+                    spitter_raffle['mtn-addon-small-piercing-spitter-t3'] = round(1500 - level * 1.75, 6)
+                    spitter_raffle['mtn-addon-small-acid-spitter-t3'] = round(1500 - level * 1.75, 6)
+                    spitter_raffle['mtn-addon-small-explosive-spitter-t3'] = round(1500 - level * 1.75, 6)
+                    spitter_raffle['mtn-addon-small-poison-spitter-t3'] = round(1500 - level * 1.75, 6)
+                    spitter_raffle['mtn-addon-small-fire-spitter-t3'] = round(1500 - level * 1.75, 6)
+                end
                 if level > 250 then
                     biter_raffle['mtn-addon-medium-piercing-biter-t1'] = round(250 - (level - 250), 6)
                     biter_raffle['mtn-addon-medium-acid-biter-t1'] = round(250 - (level - 250), 6)
