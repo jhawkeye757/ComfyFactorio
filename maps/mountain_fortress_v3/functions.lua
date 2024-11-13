@@ -2515,7 +2515,7 @@ function Public.on_player_changed_position(event)
         if not loco_surface or not loco_surface.valid then
             return
         end
-        if player.character ~= nil and player.character.surface.index == loco_surface.index then
+        if player.character ~= nil and player.character.surface.index == loco_surface.index and player.surface.index == loco_surface.index then
             local map_gen = loco_surface.map_gen_settings
             if player.position.y > map_gen.height then player.set_controller { type = 1, character = player.character } end
             if player.position.y < (-map_gen.height / 2) then player.set_controller { type = 1, character = player.character } end
