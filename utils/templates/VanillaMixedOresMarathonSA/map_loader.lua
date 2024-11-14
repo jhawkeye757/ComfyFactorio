@@ -505,7 +505,7 @@ local map_gen = {
 		name = "",
 		richness = 1
 	},
-	default_enable_all_autoplace_controls = true,
+	default_enable_all_autoplace_controls = false,
 	no_enemies_mode = false,
 	peaceful_mode = false,
 	property_expression_names = {},
