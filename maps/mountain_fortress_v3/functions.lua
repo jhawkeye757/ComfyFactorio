@@ -1370,6 +1370,40 @@ local function on_player_cursor_stack_changed(event)
     end
 end
 
+local function on_chart_tag_added(event)
+    local player = game.get_player(event.player_index)
+    if not player or not player.valid then
+        return
+    end
+
+    local tag = event.tag
+    if not tag then return end
+    local force = event.force
+    if not force then return end
+
+    local charts = Public.get('charts')
+    if not charts then return end
+    if not charts.tags then return end
+
+
+    charts.tags[#charts.tags + 1] = tag
+end
+
+function Public.clear_all_chart_tags()
+    local charts = Public.get('charts')
+    if not charts then return end
+    if not charts.tags then return end
+
+    for i = 1, #charts.tags do
+        local tag = charts.tags[i]
+        if tag and tag.valid then
+            tag.destroy()
+        end
+    end
+
+    charts.tags = {}
+end
+
 function Public.set_xp_yield()
     RPG.set_rpg_xp_yield({
         ['biter-spawner'] = 64,
@@ -2934,6 +2968,7 @@ Event.add(de.on_player_respawned, on_player_respawned)
 Event.add(de.on_player_driving_changed_state, on_player_driving_changed_state)
 Event.add(de.on_pre_player_toggled_map_editor, on_pre_player_toggled_map_editor)
 Event.add(de.on_player_cursor_stack_changed, on_player_cursor_stack_changed)
+Event.add(de.on_chart_tag_added, on_chart_tag_added)
 Event.on_nth_tick(10, tick)
 Event.add(WD.events.on_wave_created, on_wave_created)
 Event.add(WD.events.on_primary_target_missing, on_primary_target_missing)
