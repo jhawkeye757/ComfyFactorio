@@ -1371,11 +1371,6 @@ local function on_player_cursor_stack_changed(event)
 end
 
 local function on_chart_tag_added(event)
-    local player = game.get_player(event.player_index)
-    if not player or not player.valid then
-        return
-    end
-
     local tag = event.tag
     if not tag then return end
     local force = event.force
