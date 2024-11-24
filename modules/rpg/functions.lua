@@ -1388,10 +1388,6 @@ end
 
 -- Checks if the player is on the correct surface.
 function Public.check_is_surface_valid(player)
-    if is_game_modded() then
-        return true
-    end
-
     local is_surface_valid = false
 
     local surface_name = Public.get('rpg_extra').surface_name
