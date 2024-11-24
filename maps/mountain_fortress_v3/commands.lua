@@ -102,7 +102,7 @@ Commands.new('mtn_set_queue_speed', 'Usable only for admins - sets the queue spe
         end
     )
 
-Commands.new('mtn_complete_quests', 'Usable only for admins - sets the queue speed of this map!')
+Commands.new('mtn_complete_quests', 'Usable only for admins - completes all the quests!')
     :require_admin()
     :require_validation()
     :add_parameter('no_grace', true, 'boolean')

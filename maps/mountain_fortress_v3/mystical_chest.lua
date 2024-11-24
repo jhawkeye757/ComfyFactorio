@@ -120,7 +120,12 @@ local function get_random_weighted(weighted_table, weight_index)
     end
 end
 
-local function init_price_check(locomotive, mystical_chest)
+local function init_price_check(locomotive)
+    local mystical_chest = Public.get('mystical_chest')
+    if not (mystical_chest and mystical_chest.valid) then
+        return
+    end
+
     local roll = 48 + abs(locomotive.position.y) * 1.75
     roll = roll * random(25, 1337) * 0.01
 
@@ -141,7 +146,7 @@ local function init_price_check(locomotive, mystical_chest)
         insert(price, { min = v, value = { comparator = "=", name = k, quality = "normal" } })
     end
 
-    mystical_chest.price = price
+    Public.set('mystical_chest_price', price)
 end
 
 local function roll_item_stacks(remaining_budget, max_slots, blacklist)
@@ -358,14 +363,11 @@ local function container_opened(event)
     end
 
     local mystical_chest = Public.get('mystical_chest')
-    if not mystical_chest then
-        return
-    end
-    if not (mystical_chest.entity and mystical_chest.entity.valid) then
+    if not (mystical_chest and mystical_chest.valid) then
         return
     end
 
-    if entity.unit_number ~= mystical_chest.entity.unit_number then
+    if entity.unit_number ~= mystical_chest.unit_number then
         return
     end
 
@@ -502,30 +504,32 @@ function Public.add_mystical_chest(player)
         return
     end
 
+    local mystical_chest_price = Public.get('mystical_chest_price')
     local mystical_chest = Public.get('mystical_chest')
-    if not (mystical_chest.entity and mystical_chest.entity.valid) then
+    if not (mystical_chest and mystical_chest.valid) then
         return
     end
 
-    if not mystical_chest.price then
-        init_price_check(locomotive, mystical_chest)
+    if not mystical_chest_price then
+        init_price_check(locomotive)
+        mystical_chest_price = Public.get('mystical_chest_price')
     end
 
-    local entity = mystical_chest.entity
+    local entity = mystical_chest
 
     local inventory = entity.get_inventory(defines.inventory.chest)
 
-    for key, item_stack in pairs(mystical_chest.price) do
+    for key, item_stack in pairs(mystical_chest_price) do
         local stack = { name = item_stack.value.name, count = item_stack.min }
         local count_removed = inventory.remove(stack)
-        mystical_chest.price[key].min = mystical_chest.price[key].min - count_removed
-        if mystical_chest.price[key].min <= 0 then
-            table.remove(mystical_chest.price, key)
+        mystical_chest_price[key].min = mystical_chest_price[key].min - count_removed
+        if mystical_chest_price[key].min <= 0 then
+            table.remove(mystical_chest_price, key)
         end
     end
 
-    if #mystical_chest.price == 0 then
-        init_price_check(locomotive, mystical_chest)
+    if #mystical_chest_price == 0 then
+        init_price_check(locomotive)
         if player and player.valid then
             mystical_chest_reward(player)
             local mystical_chest_completed = Public.get('mystical_chest_completed')
@@ -538,7 +542,7 @@ function Public.add_mystical_chest(player)
         entity.get_requester_point().remove_section(1)
         entity.get_requester_point().add_section()
 
-        for slot, item_stack in pairs(mystical_chest.price) do
+        for slot, item_stack in pairs(mystical_chest_price) do
             entity.get_requester_point().get_section(1).set_slot(slot, item_stack)
         end
     end

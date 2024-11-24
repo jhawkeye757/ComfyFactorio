@@ -165,6 +165,9 @@ function Public.reset_main_table()
     this.charts = {
         tags = {}
     }
+    this.statistics = {
+        surfaces_produced = {}
+    }
     this.death_mode = false
     this.collapse_started = false
     this.locomotive_position = nil
@@ -305,6 +308,7 @@ function Public.reset_main_table()
         construction_bot_cost = random(150, 350),
         chest_cost = random(400, 600)
     }
+    this.mystical_chest_price = nil
     this.collapse_grace = true
     this.corpse_removal_disabled = true
     this.locomotive_biter = nil

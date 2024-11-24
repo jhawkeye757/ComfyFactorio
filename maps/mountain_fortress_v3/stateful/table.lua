@@ -472,25 +472,48 @@ end
 
 local function get_item_produced_count(_, item_name)
     local force = game.forces.player
+    local statistics = Public.get('statistics')
 
     local loco_surface = Public.get('loco_surface')
 
     local production = force.get_item_production_statistics('nauvis').input_counts[item_name]
     if not production then
-        return false
+        production = 0
     end
 
     if not loco_surface or not loco_surface.valid then
         return production
     end
 
-    local loco_production = force.get_item_production_statistics(loco_surface.name).input_counts[item_name]
-    if not loco_production then
-        return production
+    if not statistics.surfaces_produced then
+        statistics.surfaces_produced = {}
     end
 
+    if not statistics.surfaces_produced[loco_surface.name] then
+        statistics.surfaces_produced[loco_surface.name] = {}
+    end
 
-    return production + loco_production
+    local loco_production = force.get_item_production_statistics(loco_surface.name).input_counts[item_name]
+    if not loco_production then
+        loco_production = 0
+    end
+    if not statistics.surfaces_produced[loco_surface.name][item_name] then
+        statistics.surfaces_produced[loco_surface.name][item_name] = loco_production
+    else
+        statistics.surfaces_produced[loco_surface.name][item_name] = statistics.surfaces_produced[loco_surface.name][item_name] + (loco_production - statistics.surfaces_produced[loco_surface.name][item_name])
+    end
+
+    local item_count = 0
+
+    for _, data in pairs(statistics.surfaces_produced) do
+        for name, count in pairs(data) do
+            if name == item_name then
+                item_count = item_count + count
+            end
+        end
+    end
+
+    return production + item_count
 end
 
 local function get_entity_mined_count(_, item_name)
@@ -502,19 +525,6 @@ local function get_entity_mined_count(_, item_name)
             count = count + entity_count
         end
     end
-
-    local loco_surface = Public.get('loco_surface')
-
-    if not loco_surface or not loco_surface.valid then
-        return count
-    end
-
-    for name, entity_count in pairs(force.get_entity_build_count_statistics(loco_surface.name).output_counts) do
-        if name:find(item_name) then
-            count = count + entity_count
-        end
-    end
-
 
     return count
 end
@@ -940,7 +950,7 @@ end
 local function get_random_research_recipe()
     -- scale(10, 20)
     local research_level_list = {
-        'energy-weapons-damage-7',
+        'laser-weapons-damage-7',
         'stronger-explosives-7',
         'mining-productivity-4',
         'worker-robots-speed-6',

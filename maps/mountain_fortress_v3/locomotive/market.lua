@@ -41,6 +41,36 @@ local function add_space(frame)
     add_style(frame.add { type = 'line', direction = 'horizontal' }, space)
 end
 
+local function add_mystical_chest(surface)
+    local this = Public.get()
+
+    if this.mystical_chest_enabled then
+        if this.mystical_chest and this.mystical_chest.valid then
+            this.mystical_chest.destroy()
+        end
+
+        local req_chest = surface.find_entities_filtered { name = 'requester-chest', position = { x = this.market.position.x, y = this.market.position.y + 2 } }
+        if req_chest and #req_chest > 0 then
+            req_chest[#req_chest].destroy()
+        end
+
+        this.mystical_chest = surface.create_entity { name = 'requester-chest', position = { x = this.market.position.x, y = this.market.position.y + 2 }, force = 'neutral' }
+        this.mystical_chest.minable = false
+        this.mystical_chest.destructible = false
+        if not this.mystical_chest_price then
+            Public.add_mystical_chest()
+        end
+        rendering.draw_text {
+            text = 'Mystical chest',
+            surface = surface,
+            target = this.mystical_chest,
+            scale = 1.2,
+            color = { r = 0.98, g = 0.66, b = 0.22 },
+            alignment = 'center'
+        }
+    end
+end
+
 local function get_player_data(player, remove)
     local storage_data = Public.get('player_market_settings')
     if not storage_data then
@@ -1668,29 +1698,7 @@ local function create_market(data, rebuild)
         )
     end
 
-    if this.mystical_chest_enabled then
-        if this.mystical_chest and this.mystical_chest.entity then
-            this.mystical_chest.entity.destroy()
-            this.mystical_chest.entity = nil
-        end
 
-        this.mystical_chest = {
-            entity = surface.create_entity { name = 'requester-chest', position = { x = center_position.x, y = center_position.y + 2 }, force = 'neutral' }
-        }
-        this.mystical_chest.entity.minable = false
-        this.mystical_chest.entity.destructible = false
-        if not this.mystical_chest.price then
-            Public.add_mystical_chest()
-        end
-        rendering.draw_text {
-            text = 'Mystical chest',
-            surface = surface,
-            target = this.mystical_chest.entity,
-            scale = 1.2,
-            color = { r = 0.98, g = 0.66, b = 0.22 },
-            alignment = 'center'
-        }
-    end
 
     Public.wintery(this.market, 5.5)
 
@@ -1753,6 +1761,30 @@ local function place_market()
     end
 end
 
+local function place_chest()
+    local locomotive = Public.get('locomotive')
+    if not locomotive then
+        return
+    end
+
+    if not locomotive.valid then
+        return
+    end
+
+    local icw_table = ICW.get_table()
+    local unit_surface = locomotive.unit_number
+    if not icw_table.wagons[unit_surface] then
+        return
+    end
+
+    local surface = game.surfaces[icw_table.wagons[unit_surface].surface.index]
+    local mystical_chest = Public.get('mystical_chest')
+
+    if not mystical_chest or not mystical_chest.valid or mystical_chest.surface.index ~= surface.index then
+        add_mystical_chest(surface)
+    end
+end
+
 function Public.close_gui_player(frame)
     if not frame then
         return
@@ -1788,6 +1820,7 @@ local function tick()
 
     if ticker % 30 == 0 then
         place_market()
+        place_chest()
     end
 end
 
