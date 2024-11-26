@@ -927,6 +927,11 @@ function Public._esp:check_unit_group()
         return false
     end
 
+    if self.entity.force.index ~= self.group.force.index then
+        log('EnemyStates::CheckUnitGroup - Unit group force is not the same as the entity force')
+        return false
+    end
+
     self.group.add_member(self.entity)
     return true
 end
