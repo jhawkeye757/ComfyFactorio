@@ -1076,7 +1076,7 @@ function Public.set_world_selectors(journey)
     Server.to_discord_embed('World ' .. journey.world_number + 1 .. ' selection has started!')
     Public.set_minimum_to_vote(journey)
     journey.importing = false
-
+    game.forces.player.set_surface_hidden(game.surfaces.nauvis, true)
     journey.game_state = 'delete_nauvis_chunks'
 end
 
@@ -1397,6 +1397,7 @@ function Public.place_teleporter_into_world(journey)
     surface.request_to_generate_chunks({ x = 0, y = 0 }, 3)
     surface.force_generate_chunk_requests()
     place_teleporter(journey, surface, Constants.mothership_teleporter_position, true)
+    game.forces.player.set_surface_hidden(surface, false)
     journey.game_state = 'make_it_night'
 end
 
@@ -1572,8 +1573,11 @@ function Public.teleporters(journey, player)
     if not player.character.valid then
         return
     end
-    local surface = player.surface
+    local surface = player.physical_surface
     local tile = surface.get_tile(player.physical_position)
+    if not tile or not tile.valid then
+        return
+    end
     if tile.name ~= Constants.teleporter_tile and tile.hidden_tile ~= Constants.teleporter_tile then
         return
     end
