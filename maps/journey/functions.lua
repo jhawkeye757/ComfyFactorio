@@ -130,7 +130,7 @@ local function drop_player_items(journey, player)
     end
 
     local surface = player.surface
-    local spill_blockage = surface.create_entity { name = 'oil-refinery', position = journey.beacon_objective.position or player.position }
+    local spill_blockage = surface.create_entity { name = 'oil-refinery', position = journey.beacon_objective.position or player.physical_position }
 
     for _, define in pairs({ defines.inventory.character_main, defines.inventory.character_guns, defines.inventory.character_ammo, defines.inventory.character_armor, defines.inventory.character_vehicle, defines.inventory.character_trash }) do
         local inventory = character.get_inventory(define)
@@ -138,7 +138,7 @@ local function drop_player_items(journey, player)
             for i = 1, #inventory, 1 do
                 local slot = inventory[i]
                 if slot.valid and slot.valid_for_read then
-                    surface.spill_item_stack({ position = player.position, stack = slot, enable_looted = true, allow_belts = false })
+                    surface.spill_item_stack({ position = player.physical_position, stack = slot, enable_looted = true, allow_belts = false })
                 end
             end
             inventory.clear()
@@ -1573,7 +1573,7 @@ function Public.teleporters(journey, player)
         return
     end
     local surface = player.surface
-    local tile = surface.get_tile(player.position)
+    local tile = surface.get_tile(player.physical_position)
     if tile.name ~= Constants.teleporter_tile and tile.hidden_tile ~= Constants.teleporter_tile then
         return
     end

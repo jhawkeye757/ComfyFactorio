@@ -425,10 +425,10 @@ Public.volcanic = {
         if surface.index ~= 1 then
             return
         end
-        if solid_tiles[surface.get_tile(player.position.x, player.position.y).name] then
+        if solid_tiles[surface.get_tile(player.physical_position.x, player.physical_position.y).name] then
             return
         end
-        surface.create_entity({ name = 'fire-flame', position = player.position })
+        surface.create_entity({ name = 'fire-flame', position = player.physical_position })
     end,
     on_world_start = function (journey)
         local surface = game.surfaces.nauvis
