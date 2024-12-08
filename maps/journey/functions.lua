@@ -696,7 +696,7 @@ function Public.draw_mothership(journey)
             only_in_alt_mode = false
         }
 
-    for k, item_name in pairs({ 'arithmetic-combinator', 'constant-combinator', 'decider-combinator', 'programmable-speaker', 'small-lamp', 'substation', 'pipe', 'gate', 'stone-wall', 'transport-belt' }) do
+    for k, item_name in pairs({ 'arithmetic-combinator', 'constant-combinator', 'decider-combinator', 'selector-combinator', 'display-panel', 'programmable-speaker', 'small-lamp', 'substation', 'pipe', 'gate', 'stone-wall', 'transport-belt' }) do
         local chest = surface.create_entity({ name = 'infinity-chest', position = { -7 + k, Constants.mothership_radius - 3 }, force = 'player' })
         if not chest or not chest.valid then break end
         chest.set_infinity_container_filter(1, { name = item_name, count = prototypes.item[item_name].stack_size, index = 1 })
@@ -905,7 +905,7 @@ function Public.set_world_selectors(journey)
             world_selector.modifiers = {}
             world_selector.bonus_goods = {}
             world_selector.world_trait = unique_world_traits[k]
-            world_selector.fuel_requirement = Math.random(25, 50)
+            world_selector.fuel_requirement = Math.random(5, 10)
         end
         local position = Constants.world_selector_areas[k].left_top
         local texts = world_selector.texts

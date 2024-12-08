@@ -188,6 +188,10 @@ local function on_rocket_launched(event)
 	end
 	rocket_inventory.clear()
 	rocket_inventory.insert({name = 'space-science-pack', count = 200})
+	local force = event.rocket.force
+	force.technologies['space-science-pack'].researched = true
+	force.print('[technology=space-science-pack] researched.')
+	force.play_sound({path = 'utility/research_completed'})
 	Functions.draw_gui(journey)
 end
 

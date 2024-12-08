@@ -346,25 +346,18 @@ Public.wasteland = {
         local surface = game.surfaces.nauvis
         local mgs = surface.map_gen_settings
         mgs.terrain_segmentation = 2.7
-        mgs.water = mgs.water + 1
         surface.map_gen_settings = mgs
         surface.clear(true)
     end,
-    clear = function (journey)
-        local surface = game.surfaces.nauvis
-        local mgs = surface.map_gen_settings
-        mgs.water = mgs.water - 1
-        surface.map_gen_settings = mgs
+    set_specials = function (journey)
+        journey.world_specials['water'] = 2
     end
 }
 
 Public.oceanic = {
     on_world_start = function (journey)
         local surface = game.surfaces.nauvis
-        local mgs = surface.map_gen_settings
-        mgs.terrain_segmentation = 0.5
-        mgs.water = mgs.water + 6
-        surface.map_gen_settings = mgs
+
         surface.clear(true)
     end,
     on_robot_built_entity = function (event)
@@ -391,11 +384,8 @@ Public.oceanic = {
             entity.die()
         end
     end,
-    clear = function (journey)
-        local surface = game.surfaces.nauvis
-        local mgs = surface.map_gen_settings
-        mgs.water = mgs.water - 6
-        surface.map_gen_settings = mgs
+    set_specials = function (journey)
+        journey.world_specials['water'] = 6
     end
 }
 
@@ -764,9 +754,9 @@ Public.crazy_science = {
     on_research_finished = function (event, journey)
         local name = 'technology_price_multiplier'
         local force = event.research.force
-        journey.world_specials[name] = math.max(0.1, journey.world_specials[name] * 0.95)
+        journey.world_specials[name] = math.max(0.1, journey.world_specials[name] * 0.96)
         game.difficulty_settings.technology_price_multiplier = journey.world_modifiers[name] * (journey.world_specials[name] or 1)
-        force.laboratory_productivity_bonus = math.max(0.1, force.laboratory_productivity_bonus * 0.95)
+        force.laboratory_productivity_bonus = math.max(0.1, force.laboratory_productivity_bonus * 0.96)
     end
 }
 
