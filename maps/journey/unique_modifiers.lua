@@ -346,25 +346,18 @@ Public.wasteland = {
         local surface = game.surfaces.nauvis
         local mgs = surface.map_gen_settings
         mgs.terrain_segmentation = 2.7
-        mgs.water = mgs.water + 1
         surface.map_gen_settings = mgs
         surface.clear(true)
     end,
-    clear = function (journey)
-        local surface = game.surfaces.nauvis
-        local mgs = surface.map_gen_settings
-        mgs.water = mgs.water - 1
-        surface.map_gen_settings = mgs
+    set_specials = function (journey)
+        journey.world_specials['water'] = 2
     end
 }
 
 Public.oceanic = {
     on_world_start = function (journey)
         local surface = game.surfaces.nauvis
-        local mgs = surface.map_gen_settings
-        mgs.terrain_segmentation = 0.5
-        mgs.water = mgs.water + 6
-        surface.map_gen_settings = mgs
+
         surface.clear(true)
     end,
     on_robot_built_entity = function (event)
@@ -391,11 +384,8 @@ Public.oceanic = {
             entity.die()
         end
     end,
-    clear = function (journey)
-        local surface = game.surfaces.nauvis
-        local mgs = surface.map_gen_settings
-        mgs.water = mgs.water - 6
-        surface.map_gen_settings = mgs
+    set_specials = function (journey)
+        journey.world_specials['water'] = 6
     end
 }
 
