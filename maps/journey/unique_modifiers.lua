@@ -764,9 +764,9 @@ Public.crazy_science = {
     on_research_finished = function (event, journey)
         local name = 'technology_price_multiplier'
         local force = event.research.force
-        journey.world_specials[name] = math.max(0.1, journey.world_specials[name] * 0.95)
+        journey.world_specials[name] = math.max(0.1, journey.world_specials[name] * 0.96)
         game.difficulty_settings.technology_price_multiplier = journey.world_modifiers[name] * (journey.world_specials[name] or 1)
-        force.laboratory_productivity_bonus = math.max(0.1, force.laboratory_productivity_bonus * 0.95)
+        force.laboratory_productivity_bonus = math.max(0.1, force.laboratory_productivity_bonus * 0.96)
     end
 }
 
