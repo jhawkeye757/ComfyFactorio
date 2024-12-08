@@ -2,7 +2,7 @@ local Event = require 'utils.event'
 local quality_init = require("quality_init") -- Import the quality_init module
 
 -- Probability for quality progression (default 1%)
-local QUALITY_PROGRESSION_PROBABILITY = .01 -- 1% chance as a decimal
+local QUALITY_PROGRESSION_PROBABILITY = .02 -- 2% chance as a decimal
 
 -- Handle handcrafting quality progression
 local function on_player_crafted_item(event)
