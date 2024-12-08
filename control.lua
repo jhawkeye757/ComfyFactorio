@@ -21,12 +21,18 @@ require 'modules.floaty_chat'
 require 'modules.show_inventory'
 require 'modules.inserter_drops_pickup'
 require 'modules.autostash'
+require 'modules.quality_init'
 
 require 'utils.gui.init'
 require 'utils.freeplay'
 require 'utils.remote_chunks'
 
 ---------------- !ENABLE MODULES HERE ----------------
+--require 'modules.quality_character'
+--require 'modules.quality_crash_site'
+--require 'modules.quality_enemies'
+--require 'modules.quality_global'
+--require 'modules.quality_handcraft'
 --require 'modules.rpg.main'
 --require 'modules.admins_operate_biters'
 --require 'modules.the_floor_is_lava'
