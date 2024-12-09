@@ -220,7 +220,9 @@ Public.replicant_fauna = {
             return
         end
         if cause.force.index == 2 then
-            cause.surface.create_entity({ name = BiterRaffle.roll('mixed', game.forces.enemy.evolution_factor), position = entity.position, force = 'enemy' })
+            local surface = entity.surface
+            local force = game.forces.enemy
+            surface.create_entity({ name = BiterRaffle.roll('mixed', force.get_evolution_factor(surface)), position = entity.position, force = force })
         end
     end
 }
@@ -279,6 +281,7 @@ Public.tarball = {
 Public.swamps = {
     set_specials = function (journey)
         journey.world_specials['water'] = 2
+        journey.world_specials['scale'] = 0.5
     end,
     on_chunk_generated = function (event, journey)
         local surface = event.surface
@@ -326,7 +329,7 @@ Public.wasteland = {
         if math_random(1, 3) ~= 1 then
             return
         end
-        for _ = 1, math_random(0, 5), 1 do
+        for _ = 1, math_random(0, 8), 1 do
             local name = wrecks[math_random(1, size_of_wrecks)]
             local position = surface.find_non_colliding_position(name, { left_top_x + math_random(0, 31), left_top_y + math_random(0, 31) }, 16, 1)
             if position then
@@ -342,24 +345,13 @@ Public.wasteland = {
             end
         end
     end,
-    on_world_start = function (journey)
-        local surface = game.surfaces.nauvis
-        local mgs = surface.map_gen_settings
-        mgs.terrain_segmentation = 2.7
-        surface.map_gen_settings = mgs
-        surface.clear(true)
-    end,
     set_specials = function (journey)
         journey.world_specials['water'] = 2
+        journey.world_specials['scale'] = 2.7
     end
 }
 
 Public.oceanic = {
-    on_world_start = function (journey)
-        local surface = game.surfaces.nauvis
-
-        surface.clear(true)
-    end,
     on_robot_built_entity = function (event)
         local entity = event.entity
         if not entity.valid then
@@ -386,6 +378,8 @@ Public.oceanic = {
     end,
     set_specials = function (journey)
         journey.world_specials['water'] = 6
+        journey.world_specials['scale'] = 0.5
+        journey.world_specials['stone'] = 2
     end
 }
 
@@ -490,7 +484,9 @@ Public.infested = {
         if entity.type ~= 'simple-entity' and entity.type ~= 'tree' then
             return
         end
-        entity.surface.create_entity({ name = BiterRaffle.roll('mixed', game.forces.enemy.evolution_factor + 0.1), position = entity.position, force = 'enemy' })
+        local surface = entity.surface
+        local force = game.forces.enemy
+        surface.create_entity({ name = BiterRaffle.roll('mixed', force.get_evolution_factor(surface) + 0.1), position = entity.position, force = force })
     end,
     on_player_mined_entity = function (event)
         if math_random(1, 2) == 1 then
@@ -506,7 +502,9 @@ Public.infested = {
         if entity.type ~= 'simple-entity' and entity.type ~= 'tree' then
             return
         end
-        entity.surface.create_entity({ name = BiterRaffle.roll('mixed', game.forces.enemy.evolution_factor + 0.1), position = entity.position, force = 'enemy' })
+        local surface = entity.surface
+        local force = game.forces.enemy
+        surface.create_entity({ name = BiterRaffle.roll('mixed', force.get_evolution_factor(surface) + 0.1), position = entity.position, force = force })
     end,
     on_robot_mined_entity = function (event)
         local entity = event.entity
@@ -519,7 +517,9 @@ Public.infested = {
         if entity.type ~= 'simple-entity' and entity.type ~= 'tree' then
             return
         end
-        entity.surface.create_entity({ name = BiterRaffle.roll('mixed', game.forces.enemy.evolution_factor + 0.1), position = entity.position, force = 'enemy' })
+        local surface = entity.surface
+        local force = game.forces.enemy
+        surface.create_entity({ name = BiterRaffle.roll('mixed', force.get_evolution_factor(surface) + 0.1), position = entity.position, force = force })
     end
 }
 

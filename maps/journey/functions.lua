@@ -196,10 +196,11 @@ local function set_map_modifiers(journey)
     mgs.autoplace_controls['enemy-base'].richness = calc_modifier(journey, 'enemy_base_richness')
     mgs.autoplace_controls['enemy-base'].size = calc_modifier(journey, 'enemy_base_size')
     mgs.autoplace_controls['enemy-base'].frequency = calc_modifier(journey, 'enemy_base_frequency')
+    mgs.autoplace_controls['water'].size = calc_modifier(journey, 'water')
+    mgs.autoplace_controls['water'].frequency = calc_modifier(journey, 'scale')
     mgs.starting_area = calc_modifier(journey, 'starting_area')
     mgs.cliff_settings.cliff_elevation_interval = calc_modifier(journey, 'cliff_frequency')
     mgs.cliff_settings.richness = calc_modifier(journey, 'cliff_continuity')
-    mgs.water = calc_modifier(journey, 'water')
     game.map_settings.enemy_evolution['time_factor'] = calc_modifier(journey, 'time_factor')
     game.map_settings.enemy_evolution['destroy_factor'] = calc_modifier(journey, 'destroy_factor')
     game.map_settings.enemy_evolution['pollution_factor'] = calc_modifier(journey, 'pollution_factor')
@@ -325,14 +326,11 @@ local function cargo_gui(name, itemname, tooltip, value, hidden)
             sprite.style.maximal_height = 28
             sprite.style.margin = 0
             sprite.style.padding = 0
-            local progressbar = frame.add({ type = 'progressbar', name = name .. '_progressbar', value = 0 })
-            progressbar.style = 'achievement_progressbar'
-            local progressbar_style = progressbar.style --[[@as LuaGuiElementStyle]]
+            local progressbar = frame.add({ type = 'progressbar', name = name .. '_progressbar', value = 0, style = 'achievement_progressbar' })
+            local progressbar_style = progressbar.style
             progressbar_style.minimal_width = 100
             progressbar_style.maximal_width = 100
-            ---@diagnostic disable-next-line: inject-field
             progressbar_style.top_margin = 2
-            ---@diagnostic disable-next-line: inject-field
             progressbar_style.right_margin = 6
             progressbar_style.height = 20
         end
@@ -1270,8 +1268,9 @@ function Public.create_the_world(journey)
     local surface = game.surfaces.nauvis
     local mgs = surface.map_gen_settings
     mgs.seed = Math.random(1, 4294967295)
-    mgs.terrain_segmentation = Math.random(10, 20) * 0.1
+    journey.world_modifiers['scale'] = Math.random(10, 20) * 0.1
     mgs.peaceful_mode = false
+    surface.map_gen_settings = mgs
 
     local modifiers = journey.world_selectors[journey.selected_world].modifiers
     for _, modifier in pairs(modifiers) do
@@ -1280,7 +1279,6 @@ function Public.create_the_world(journey)
         local extremes = { Constants.modifiers[name].min, Constants.modifiers[name].max }
         journey.world_modifiers[name] = math.round(math.min(extremes[2], math.max(extremes[1], journey.world_modifiers[name] * m)) * 100000, 5) / 100000
     end
-    surface.map_gen_settings = mgs
     journey.world_trait = journey.world_selectors[journey.selected_world].world_trait
 
     local unique_modifier = Unique_modifiers[journey.world_trait]
