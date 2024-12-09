@@ -264,7 +264,7 @@ local function cmd_handler()
 	end
 	if player and not player.admin then
 		p('You are not an admin!')
-		return false
+		return false, nil, p
 	end
 	return true, player or {name = 'Server'}, p
 end
